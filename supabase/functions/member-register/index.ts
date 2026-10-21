@@ -28,17 +28,21 @@ Deno.serve(async (req: Request) => {
   if (req.method !== "POST") return json({ error: "Metode tidak didukung." }, 405, origin);
   if (origin && !allowedOrigins.has(origin)) return json({ error: "Origin tidak diizinkan." }, 403, origin);
 
-  let body: { displayName?: unknown; username?: unknown; password?: unknown; registrationProofBase64?: unknown; registrationProofMime?: unknown; registrationNote?: unknown };
+  let body: { displayName?: unknown; username?: unknown; confirmUsername?: unknown; password?: unknown; confirmPassword?: unknown; registrationProofBase64?: unknown; registrationProofMime?: unknown; registrationNote?: unknown };
   try { body = await req.json(); }
   catch { return json({ error: "Format permintaan tidak valid." }, 400, origin); }
 
   const displayName = typeof body.displayName === "string" ? body.displayName.trim() : "";
   const username = typeof body.username === "string" ? body.username.trim().toLowerCase() : "";
+  const confirmUsername = typeof body.confirmUsername === "string" ? body.confirmUsername.trim().toLowerCase() : "";
   const password = typeof body.password === "string" ? body.password : "";
+  const confirmPassword = typeof body.confirmPassword === "string" ? body.confirmPassword : "";
 
   if (displayName.length < 2 || displayName.length > 80) return json({ error: "Nama karakter harus 2–80 karakter." }, 400, origin);
   if (!/^[a-z0-9._-]{3,30}$/.test(username)) return json({ error: "Username harus 3–30 karakter: huruf kecil, angka, titik, garis bawah, atau tanda hubung." }, 400, origin);
+  if (username !== confirmUsername) return json({ error: "Konfirmasi username tidak sama." }, 400, origin);
   if (password.length < 8 || password.length > 72) return json({ error: "Kata sandi harus 8–72 karakter." }, 400, origin);
+  if (password !== confirmPassword) return json({ error: "Konfirmasi kata sandi tidak sama." }, 400, origin);
   const proofBase64 = typeof body.registrationProofBase64 === "string" ? body.registrationProofBase64 : "";
   const proofMime = typeof body.registrationProofMime === "string" ? body.registrationProofMime : "";
   const registrationNote = typeof body.registrationNote === "string" ? body.registrationNote.trim() : "";
