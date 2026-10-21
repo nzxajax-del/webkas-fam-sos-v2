@@ -281,3 +281,12 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .rank-symbol-p6 .rank-emblem-base{fill:#f2d36d;stroke:none}
 .rank-symbol-p3 .rank-emblem-gold,.rank-symbol-p4 .rank-emblem-gold,.rank-symbol-p5 .rank-emblem-gold,.rank-symbol-p6 .rank-emblem-gold{fill:#f4cf63;stroke:#c99b35;stroke-width:.45}
 .rank-symbol-p3 .rank-emblem-base,.rank-symbol-p4 .rank-emblem-base,.rank-symbol-p5 .rank-emblem-base,.rank-symbol-p6 .rank-emblem-base{stroke:#e4b94f;stroke-width:.45}
+
+
+/* Global temporary toast notifications: never remain attached to drawer sections */
+.dashboard-shell .alert.error,.dashboard-shell .alert.success{display:none!important}
+.app-toast{position:fixed;z-index:1000;top:max(14px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);width:min(calc(100vw - 28px),520px);box-sizing:border-box;padding:13px 16px;border:1px solid #536344;border-radius:13px;background:#172015;color:#eef7e7;box-shadow:0 12px 36px #000b;font-size:13px;font-weight:750;line-height:1.45;text-align:center;overflow-wrap:anywhere;animation:app-toast-in .16s ease-out}
+.app-toast-success{border-color:#4e8b4f;background:#142317;color:#d8f7d7}
+.app-toast-error{border-color:#a84d4d;background:#301818;color:#ffdada}
+@keyframes app-toast-in{from{opacity:0;transform:translate(-50%,-8px)}to{opacity:1;transform:translate(-50%,0)}}
+@media(prefers-reduced-motion:reduce){.app-toast{animation:none}}
