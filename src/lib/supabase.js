@@ -1,13 +1,13 @@
 import { createClient } from "@supabase/supabase-js";
 
-const url = import.meta.env.VITE_SUPABASE_URL;
-const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// This is a public publishable key, designed to be included in browser apps.
+// RLS and database grants are the security boundary. Never place service-role keys here.
+const url = import.meta.env.VITE_SUPABASE_URL || "https://lzciyzibqbujshoizlbu.supabase.co";
+const publishableKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "sb_publishable_5dAQkGDqGl0W4GeIhWuO4A_gXkomasS";
 
-// Browser code may use only the public anon/publishable key.
-// Never use a Supabase service_role or secret key in VITE_* variables.
-export const supabaseConfigured = Boolean(url && anonKey);
+export const supabaseConfigured = Boolean(url && publishableKey);
 export const supabase = supabaseConfigured
-  ? createClient(url, anonKey, {
+  ? createClient(url, publishableKey, {
       auth: {
         persistSession: true,
         autoRefreshToken: true,
