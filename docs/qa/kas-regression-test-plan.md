@@ -59,3 +59,7 @@ Do not apply a production schema or enable live payment approval until the sourc
 - Tests 21–34 are **specified, not yet executed**. Supabase Security Advisor returns no security lints, and the current database has zero Auth users. Build/CI status has not been verified.
 - Payment review RPCs and UI are implemented, but **do not use them for real cash until tests 21–34 pass**, especially concurrent review, NextPay, and partial-arrears date advancement.
 - Daily dues automation remains disabled; do not schedule it until the daily rate/effective-date and report-date semantics are fully tested.
+
+35. First-admin bootstrap fails for anon, missing token, incorrect token, or after an admin role exists.
+36. Valid bootstrap token can promote only the currently authenticated pending member, once; it cannot be reused and is not readable from API schemas.
+37. Bootstrap sets admin active, sets admin KAS exemption/ADM due to zero, and writes one audit log entry. Normal member registration still cannot set role=admin.
