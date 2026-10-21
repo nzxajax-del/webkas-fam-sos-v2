@@ -1,22 +1,39 @@
 # WEBKAS FAM SOS V2
 
-Fondasi website kas baru untuk Fam SOS.
+Website kas baru Fam SOS dengan hosting Netlify, frontend React/Vite, dan backend Supabase V2 terpisah.
 
 ## Hosting Netlify
 - Build command: `npm run build`
 - Publish directory: `dist`
-- Konfigurasi ada di `netlify.toml`.
-- Hubungkan repository GitHub ini ke Netlify agar deployment otomatis mengikuti branch `main`.
+- Konfigurasi SPA ada di `netlify.toml`.
+- Repository: [nzxajax-del/webkas-fam-sos-v2](https://github.com/nzxajax-del/webkas-fam-sos-v2), branch `main`.
+- Deployment otomatis memerlukan repository ini terhubung ke situs Netlify.
 
-## Environment variables
-Set di Netlify Site configuration → Environment variables:
-- `VITE_SUPABASE_URL=https://lzciyzibqbujshoizlbu.supabase.co`
-- `VITE_SUPABASE_ANON_KEY` = publishable/anon key dari proyek Supabase V2.
+## Supabase V2
+- Project ref: `lzciyzibqbujshoizlbu`
+- URL: `https://lzciyzibqbujshoizlbu.supabase.co`
+- Frontend memakai public publishable key fallback di `src/lib/supabase.js`; `VITE_SUPABASE_URL` dan `VITE_SUPABASE_ANON_KEY` dapat digunakan untuk override.
+- Publishable key memang dirancang untuk browser. **Jangan pernah** memasukkan service-role key, password, atau secret ke frontend, GitHub, atau variabel `VITE_*`.
+- Migrasi database berada di `supabase/migrations/`; source Edge Function pendaftaran berada di `supabase/functions/member-register/index.ts`.
+- Fungsi `member-register` membuat akun member berstatus menunggu persetujuan. Jangan berikan role admin melalui browser atau metadata pendaftaran.
 
-Gunakan hanya key publishable/anon di frontend. Jangan pernah memasukkan service-role key, secret, password, atau token administratif ke repository atau variabel `VITE_*`.
+## Status fitur
+Sudah disiapkan:
+- UI Bahasa Indonesia yang responsif untuk ponsel.
+- Login username/kata sandi dan pendaftaran anggota.
+- Status pending/ditolak serta dashboard baca-saja untuk saldo, tunggakan, ADM, NextPay, dan riwayat pengajuan.
+- Tujuh tabel aplikasi dengan RLS dan grant database berprinsip least privilege.
+- Bucket bukti pembayaran privat, dibatasi 5 MB dan JPG/PNG/WEBP.
+- Security Advisor terbaru bersih (`lints: []`).
 
-## Status aplikasi
-Saat ini UI masih mode persiapan. Client Supabase baru disiapkan; login, skema database, RLS, transaksi, pembayaran, upload bukti, dan kalkulasi kas belum aktif. Jangan gunakan untuk transaksi nyata sebelum keamanan backend dan tes regresi selesai.
+Belum diaktifkan:
+- Provisioning akun admin pertama.
+- Approval/rejection pembayaran yang mengubah ledger secara atomik.
+- Pengiriman bukti pembayaran dari UI.
+- Pemotongan kas harian otomatis dan perhitungan NextPay/tunggakan.
+- Build CI dan deployment Netlify terbaru belum diverifikasi.
 
-## Referensi
-Lihat [MASTER_BLUEPRINT.md](./MASTER_BLUEPRINT.md) untuk batasan keamanan, aturan bisnis kas, dan urutan implementasi.
+**Jangan gunakan untuk transaksi kas nyata dulu.** Perhitungan kas/NextPay harus dipetakan dengan lengkap dari implementasi lama dan tes regresi sebelum settlement diaktifkan.
+
+## Dokumentasi
+Baca [MASTER BLUEPRINT](./MASTER_BLUEPRINT.md) untuk seluruh keputusan, audit, batasan, dan urutan implementasi.
