@@ -115,3 +115,77 @@ input[type=color]{height:48px;padding:5px;cursor:pointer}
 @media(max-width:420px){.profile-photo-settings{gap:10px;padding:10px}.profile-avatar-wrap{flex-basis:74px;width:74px;height:74px}.profile-photo-controls input[type=file]{font-size:10px;padding:8px}.member-card{padding:11px}.member-card-top{grid-template-columns:minmax(86px,38%) minmax(0,1fr);gap:10px}.member-rank-line{min-height:52px}.member-actions-buttons{grid-template-columns:minmax(0,1fr)}}
 
 .danger-button{width:100%;padding:10px 11px;border:1px solid #8d3838;border-radius:10px;background:#351919;color:#ffc1c1;font-size:11px;font-weight:850}.danger-button:hover{background:#4b2020;color:#fff}
+
+
+/* Compact member list: aim for about five rows visible before scrolling */
+.member-card-grid{
+  grid-template-columns:minmax(0,1fr);
+  gap:7px;
+  max-height: min(68vh, 720px);
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  padding:2px 5px 2px 1px;
+  scrollbar-width:thin;
+  scrollbar-color:#536344 #11150e;
+}
+.member-card{
+  padding:9px 11px;
+  border-radius:12px;
+}
+.member-card-top{
+  grid-template-columns:76px minmax(0,1fr);
+  gap:10px;
+  align-items:center;
+}
+.member-avatar-frame{
+  width:76px;
+  height:76px;
+  aspect-ratio:1/1;
+  max-height:76px;
+  border-radius:9px;
+}
+.member-rank-line{
+  flex-direction:row;
+  align-items:center;
+  gap:7px;
+  min-height:0;
+  padding:0 0 5px;
+}
+.member-rank-line .rank-badge{padding:3px 6px;font-size:10px}
+.member-rank-line .rank-badge span{font-size:13px}
+.member-rank-name{font-size:10px}
+.member-card-details{gap:5px}
+.member-character-name{font-size:14px}
+.member-card-details>small{font-size:10px}
+.member-finance-row{gap:7px;margin:7px 0}
+.member-finance-row>div{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 8px;border-radius:8px}
+.member-finance-row span{font-size:10px}
+.member-finance-row strong{font-size:12px}
+.member-menu-toggle{padding:7px 8px;font-size:11px;gap:7px}
+.member-menu-lines{font-size:14px}
+.member-menu-chevron{font-size:15px}
+.member-actions-panel{gap:8px;padding:9px 1px 1px}
+.member-actions-panel label{gap:4px;font-size:11px}
+.member-actions-panel input:not([type=checkbox]),.member-actions-panel select{padding:8px 9px;font-size:11px}
+.member-actions-panel button{padding:8px 9px;font-size:10px}
+.member-actions-buttons{gap:6px}
+.member-actions-panel>.muted{font-size:9px;line-height:1.4}
+@media(min-width:761px){
+  .member-card-grid{max-height:min(72vh,800px)}
+  .member-card{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,35%);column-gap:12px;align-items:center}
+  .member-card-top{grid-column:1;grid-row:1}
+  .member-finance-row{grid-column:1;grid-row:2;margin-bottom:0}
+  .member-menu-toggle{grid-column:2;grid-row:1;align-self:center}
+  .member-actions-panel{grid-column:2;grid-row:2/4;align-self:start}
+}
+@media(max-width:420px){
+  .member-card{padding:8px}
+  .member-card-top{grid-template-columns:62px minmax(0,1fr);gap:8px}
+  .member-avatar-frame{width:62px;height:62px;max-height:62px}
+  .member-rank-line{gap:5px}
+  .member-rank-line .rank-badge{padding:2px 5px;font-size:9px}
+  .member-rank-name{font-size:9px}
+  .member-character-name{font-size:13px}
+  .member-finance-row>div{padding:6px}
+  .member-finance-row strong{font-size:11px}
+}
