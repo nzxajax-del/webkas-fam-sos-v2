@@ -3,7 +3,7 @@
 select{width:100%;min-width:0;padding:13px 14px;color:#f5f8ef;background:#0d110c;border:1px solid #414d37;border-radius:11px;outline:none}select:focus{border-color:var(--lime);box-shadow:0 0 0 3px #c1f45a1a}input[type=file]{padding:10px;font-size:12px}.review-actions{display:flex;gap:6px;flex-wrap:wrap}.review-actions .primary,.review-actions .secondary{padding:8px 10px;font-size:11px}td small{display:block;color:var(--muted);font-size:10px;margin-top:3px}@media(max-width:560px){.review-actions{min-width:100px}.review-actions button{width:100%}}
 
 /* Configurable family branding and responsive admin navigation */
-.admin-layout{display:grid;grid-template-columns:190px minmax(0,1fr);gap:16px;align-items:start}
+.admin-layout{display:block;min-width:0}
 .admin-sidebar{position:sticky;top:14px;display:grid;gap:7px;padding:14px;border:1px solid var(--line);border-radius:16px;background:rgba(19,23,16,.97)}
 .admin-sidebar strong{padding:8px 10px;color:var(--lime);font-size:11px;letter-spacing:.12em}
 .admin-sidebar a{display:block;padding:11px 10px;border-radius:9px;color:#dce4d2;text-decoration:none;font-size:13px;font-weight:750}
