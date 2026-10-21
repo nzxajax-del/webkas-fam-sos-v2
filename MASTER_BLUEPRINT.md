@@ -1,6 +1,6 @@
 # MASTER BLUEPRINT — WEBKAS FAM SOS V2
 
-Versi: 1.4 (21 Oktober 2026)
+Versi: 1.5 (21 Oktober 2026)
 
 ## Keputusan hosting
 - Hosting statis: Netlify (menggantikan rencana Vercel).
@@ -20,8 +20,9 @@ Versi: 1.4 (21 Oktober 2026)
 
 ## Backend
 - Proyek Supabase V2: `https://lzciyzibqbujshoizlbu.supabase.co`.
-- Hasil audit sebelumnya: proyek aktif, tetapi tabel `public`, migrasi, bucket storage, dan Edge Functions belum ada.
-- Fungsi `public.rls_auto_enable()` pernah mendapat peringatan advisor karena `SECURITY DEFINER` dan executable oleh `anon` serta `authenticated`. Jangan mengubahnya sebelum evaluasi terkontrol.
+- Audit ulang 21 Oktober 2026: proyek aktif; `public` belum memiliki tabel dan daftar migrasi masih kosong. Belum ada skema aplikasi yang siap dihubungkan.
+- Security advisor masih melaporkan `public.rls_auto_enable()` sebagai fungsi `SECURITY DEFINER` yang dapat dipanggil `anon` dan `authenticated`. Event trigger `ensure_rls` juga terdeteksi pada `ddl_command_end` untuk `CREATE TABLE`, `CREATE TABLE AS`, dan `SELECT INTO`. Query baca-saja belum memberikan definisi fungsi dalam hasil tool; jangan mengubah fungsi/trigger sampai definisinya bisa diperiksa secara penuh.
+- Publishable key tersedia dari proyek, tetapi belum dipasang ke Netlify; tidak perlu menaruh key apa pun di source. Integrasi tidak dilanjutkan sebelum skema, RLS, dan autentikasi dirancang.
 - Jangan mengubah atau menghapus proyek/database lama. Gunakan hanya sebagai referensi setelah akses dan perilakunya dapat diperiksa.
 
 ## Batasan keamanan dan perubahan
@@ -56,6 +57,12 @@ Versi: 1.4 (21 Oktober 2026)
 - UI Bahasa Indonesia, responsif untuk Android, sederhana, tanpa slogan login.
 - Footer: `©Designed by Vergil D Ajax`; hilangkan `STREET OF STYLE FAMILY · 2026`.
 - Hapus placeholder akun `ADM_SOS`.
+
+## Status lanjutan 21 Oktober 2026
+- Audit Supabase V2 diulang: nol tabel `public`, nol migrasi; peringatan fungsi keamanan tetap ada.
+- Repository V2 sudah memiliki dependensi Supabase JS, namun belum memiliki koneksi aktif atau autentikasi.
+- Repository lama dapat dibaca sebagian lewat GitHub, tetapi akses ke proyek Supabase lama belum tersedia. Kode frontend saja tidak cukup untuk memastikan perilaku backend, trigger, RPC, dan RLS.
+- Keputusan aman: belum membuat tabel aplikasi, belum mengaktifkan login, dan belum mengubah fungsi `rls_auto_enable`; langkah tersebut ditahan sampai skema lama/definisi fungsi dapat diaudit agar tidak merusak logika kas atau keamanan.
 
 ## Urutan implementasi aman
 1. Verifikasi repository, struktur, branch, dan build.
