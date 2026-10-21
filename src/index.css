@@ -521,3 +521,11 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
   .chat-sender-rank-column .rank-badge .rank-emblem,.chat-sender-rank-column .rank-badge .admin-skull-icon{width:17px;height:18px;flex-basis:17px}
   .chat-message-sender time{font-size:8px}
 }
+
+
+/* Place admin emblem and rank on a dedicated row directly below the sender name. */
+.chat-sender-columns{display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-width:0}
+.chat-sender-name-line{display:block;width:100%;min-width:0;max-width:100%;white-space:nowrap;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;flex-wrap:nowrap}
+.chat-sender-name-line .chat-profile-trigger{display:block;width:max-content;max-width:none;white-space:nowrap;overflow-wrap:normal}
+.chat-sender-rank-column{display:flex;align-items:center;justify-content:flex-start;gap:5px;min-width:0;max-width:100%;white-space:nowrap;color:var(--muted,#a6af9a);font-size:10px}
+@media(max-width:520px){.chat-sender-columns{gap:2px}.chat-sender-rank-column{justify-content:flex-start}}
