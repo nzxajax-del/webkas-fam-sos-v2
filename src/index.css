@@ -46,7 +46,7 @@ input[type=color]{height:48px;padding:5px;cursor:pointer}
 .drawer-close{width:34px;height:34px;border:1px solid #46543a;border-radius:9px;background:#20271b;color:#f1f4e9;font-size:24px;line-height:1}
 .drawer-item{width:100%;padding:13px 12px;text-align:left;border:1px solid transparent;border-radius:10px;background:transparent;color:#dce4d2;font-size:14px;font-weight:750}
 .drawer-item:hover,.drawer-item.active{background:#26331c;border-color:#465b32;color:var(--lime)}
-.admin-content>section{display:none}
+.admin-content>section{display:none}.admin-content>.notice{display:none}
 .dashboard-shell[data-view="admin-home"] .admin-layout{display:none}
 .dashboard-shell[data-view^="admin-"]:not([data-view="admin-home"]) .welcome-panel,
 .dashboard-shell[data-view^="admin-"]:not([data-view="admin-home"]) .admin-safe-notice{display:none}
