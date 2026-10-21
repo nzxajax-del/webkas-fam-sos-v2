@@ -271,3 +271,13 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .rank-admin{color:#e3bf63;background:#050505;border-color:#a9822e;box-shadow:inset 0 0 0 1px #30240c;letter-spacing:.1em}
 .rank-admin .admin-skull-icon{width:22px;height:22px;flex:0 0 22px;color:#d9b34f;filter:drop-shadow(0 0 2px #8e6b20)}
 .rank-badge-label{font-size:11px;letter-spacing:.015em}
+
+
+/* Refined rank emblems: symmetric five-point staff star, gold centers, six-point deputy star, and OG crown */
+.rank-symbol-p3,.rank-symbol-p4,.rank-symbol-p5,.rank-symbol-p6{overflow:visible;stroke:none;fill:none}
+.rank-symbol-p3 .rank-emblem-base{fill:#72a9ff;stroke:none}
+.rank-symbol-p4 .rank-emblem-base{fill:#75c978;stroke:none}
+.rank-symbol-p5 .rank-emblem-base{fill:#ff7373;stroke:none}
+.rank-symbol-p6 .rank-emblem-base{fill:#f2d36d;stroke:none}
+.rank-symbol-p3 .rank-emblem-gold,.rank-symbol-p4 .rank-emblem-gold,.rank-symbol-p5 .rank-emblem-gold,.rank-symbol-p6 .rank-emblem-gold{fill:#f4cf63;stroke:#c99b35;stroke-width:.45}
+.rank-symbol-p3 .rank-emblem-base,.rank-symbol-p4 .rank-emblem-base,.rank-symbol-p5 .rank-emblem-base,.rank-symbol-p6 .rank-emblem-base{stroke:#e4b94f;stroke-width:.45}
