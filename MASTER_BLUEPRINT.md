@@ -158,3 +158,9 @@ Versi: 1.8 (21 Oktober 2026)
 - Admin bootstrap hanya menyelesaikan akses awal. Akun admin pertama masih belum dibuat dan tidak ada pengguna Auth saat pemeriksaan terakhir.
 
 - **Build check after admin bootstrap UI:** GitHub Actions run 39525799143 completed successfully for commit 798f2c3ce8177dc6e312a581c02bb54545bd00f1. Subsequent commits only changed migration naming/documentation/test-plan files; their workflows were queued/running at the last poll. The React/Vite source including the bootstrap screen has therefore passed the repository build workflow.
+
+### Safety interlock for payment operations
+- Column `dues_settings.cash_operations_enabled` exists and is false by default. A database trigger rejects any transition from pending to approved while false, even if an RPC is called directly. Direct UPDATE on `dues_settings` was revoked from authenticated users; no UI can enable it accidentally.
+- Member payment submission controls and admin approval buttons are disabled while this flag is false. Admin rejection remains available so a pending request can be declined without changing the ledger.
+- Migration applied as version 20261021011213 and repository filename matches the database history. Security Advisor remained `lints: []` after the change.
+- Do not enable cash operations until the full regression test plan passes and the daily-dues/NextPay design is complete.
