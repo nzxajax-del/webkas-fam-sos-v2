@@ -126,7 +126,7 @@ export default function App() {
       if (settingsRes.data) {
         setDailyDraft(String(settingsRes.data.daily_amount ?? 1000));
         setReportDateDraft(settingsRes.data.report_date || "");
-        setAdmDraft(String(settingsRes.data.adm_default ?? 10000));
+        setAdmDraft(String(settingsRes.data.adm_default ?? 15000));
         setRetentionDraft(String(settingsRes.data.proof_retention_days ?? 7));
       }
       setPayments(paymentsRes.data || []);
