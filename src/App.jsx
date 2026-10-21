@@ -423,7 +423,7 @@ export default function App() {
 
   async function refreshAdminSnapshot() {
     const [allMemberRes, walletListRes, transactionRes, auditRes] = await Promise.all([
-      supabase.from("member_profiles").select("id,display_name,login_username,status,created_at").eq("role", "member").order("display_name", { ascending: true }).limit(500),
+      supabase.from("member_profiles").select("id,display_name,login_username,status,created_at,rank_code").eq("role", "member").order("display_name", { ascending: true }).limit(500),
       supabase.from("member_wallets").select("member_id,balance,arrears,next_pay,unpaid_from,adm_due,exempt_kas"),
       supabase.from("wallet_transactions").select("id,member_id,transaction_type,amount,description,created_at,member_profiles(display_name,login_username)").order("created_at", { ascending: false }).limit(100),
       supabase.from("admin_audit_log").select("id,action,target_type,target_id,details,created_at").order("created_at", { ascending: false }).limit(100),
