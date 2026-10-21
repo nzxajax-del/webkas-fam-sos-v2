@@ -112,6 +112,7 @@ Migration history langsung diperiksa. File dengan versi yang sama harus tetap ad
 - `20261021013619_guard_settings_and_report_date_wib`
 - `20261021013635_allow_trusted_db_scheduler_for_daily_dues`
 - `20261021013828_index_rate_history_created_by`
+- `20261021014000_fix_fractional_arrears_payment_nextpay`
 
 ## 7. Build dan deployment
 
@@ -144,3 +145,9 @@ Admin pertama belum dibuat dan database belum memiliki Auth user. Pemilik harus 
 - Jangan ubah sistem lama.
 - Jangan impor data lama sebelum mapping selesai.
 - Jangan aktifkan `cash_operations_enabled`, jangan jadwalkan cron, dan jangan menyebut proyek siap produksi sampai seluruh tes regresi lulus dan Netlify deployment terbaru terbukti aktif.
+
+
+## Smoke-test update — 21 October 2026
+- Transactional SQL smoke tests passed for prepaid daily deduction, arrears accrual, exempt members, same-date idempotency, fractional arrears payment settlement, gap detection without wallet mutation, and the disabled cash-operations interlock. Test fixtures were rolled back; database remains free of test members/transactions.
+- The tests exposed a NextPay edge case when the arrears amount was fractional (for example 500 units) and the submitted payment was one full daily rate. The prior logic floored arrears-paid days and prepaid days separately, resulting in zero NextPay advancement. Migration `20261021014000_fix_fractional_arrears_payment_nextpay` fixes this by advancing NextPay based on full days represented by the entire KAS payment while retaining the arrears-day count for unpaid_from.
+- These smoke tests do not cover concurrency, full RLS/storage, the whole UI, or Netlify deployment. Cash operations remain disabled; cron remains unscheduled.
