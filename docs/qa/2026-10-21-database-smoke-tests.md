@@ -29,3 +29,7 @@ A second hardening migration, `20261021014711_require_current_report_date_for_pa
 - Every synthetic Auth user, profile, wallet, payment submission, daily log, and wallet transaction was created inside a SQL transaction and rolled back. No test data was retained.
 - The current database remains at `cash_operations_enabled=false`; no daily cron was created.
 - This report does not claim the full acceptance suite passed. Concurrency, authorization/RLS, private storage, upload cleanup, UI workflows, real registration/bootstrap, and Netlify deployment still require verification.
+
+
+## Realtime schema check
+- The six core tables used by the dashboard are in `supabase_realtime`; database inspection confirmed RLS is enabled on all six. The browser-level two-session event test has not yet been performed.
