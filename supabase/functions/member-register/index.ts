@@ -28,7 +28,7 @@ Deno.serve(async (req: Request) => {
   if (req.method !== "POST") return json({ error: "Metode tidak didukung." }, 405, origin);
   if (origin && !allowedOrigins.has(origin)) return json({ error: "Origin tidak diizinkan." }, 403, origin);
 
-  let body: { displayName?: unknown; username?: unknown; password?: unknown };
+  let body: { displayName?: unknown; username?: unknown; password?: unknown; registrationProofBase64?: unknown; registrationProofMime?: unknown; registrationNote?: unknown };
   try { body = await req.json(); }
   catch { return json({ error: "Format permintaan tidak valid." }, 400, origin); }
 
@@ -39,6 +39,15 @@ Deno.serve(async (req: Request) => {
   if (displayName.length < 2 || displayName.length > 80) return json({ error: "Nama karakter harus 2–80 karakter." }, 400, origin);
   if (!/^[a-z0-9._-]{3,30}$/.test(username)) return json({ error: "Username harus 3–30 karakter: huruf kecil, angka, titik, garis bawah, atau tanda hubung." }, 400, origin);
   if (password.length < 8 || password.length > 72) return json({ error: "Kata sandi harus 8–72 karakter." }, 400, origin);
+  const proofBase64 = typeof body.registrationProofBase64 === "string" ? body.registrationProofBase64 : "";
+  const proofMime = typeof body.registrationProofMime === "string" ? body.registrationProofMime : "";
+  const registrationNote = typeof body.registrationNote === "string" ? body.registrationNote.trim() : "";
+  if (!["image/jpeg", "image/png", "image/webp"].includes(proofMime)) return json({ error: "Screenshot administrasi wajib berupa JPG, PNG, atau WEBP." }, 400, origin);
+  if (!proofBase64 || proofBase64.length > 2_850_000) return json({ error: "Screenshot administrasi wajib diunggah dan maksimal 2 MB." }, 400, origin);
+  if (registrationNote.length > 500) return json({ error: "Keterangan maksimal 500 karakter." }, 400, origin);
+  if (!/^[A-Za-z0-9+/]+={0,2}$/.test(proofBase64)) return json({ error: "Format screenshot tidak valid." }, 400, origin);
+  const proofBytes = Uint8Array.from(atob(proofBase64), (c) => c.charCodeAt(0));
+  if (proofBytes.byteLength > 2 * 1024 * 1024) return json({ error: "Screenshot administrasi maksimal 2 MB." }, 400, origin);
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -61,5 +70,23 @@ Deno.serve(async (req: Request) => {
     const duplicateLike = error?.message?.toLowerCase().includes("already") || error?.message?.toLowerCase().includes("duplicate");
     return json({ error: duplicateLike ? "Username sudah digunakan." : "Pendaftaran gagal diproses. Periksa data dan coba lagi." }, duplicateLike ? 409 : 400, origin);
   }
-  return json({ success: true, message: "Pendaftaran berhasil dikirim. Akun menunggu persetujuan admin utama." }, 201, origin);
+  const ext = proofMime === "image/jpeg" ? "jpg" : proofMime === "image/png" ? "png" : "webp";
+  const proofPath = data.user.id + "/" + crypto.randomUUID() + "." + ext;
+  const { error: uploadError } = await admin.storage.from("registration-proofs").upload(proofPath, proofBytes, {
+    upsert: false, contentType: proofMime, cacheControl: "3600",
+  });
+  if (uploadError) {
+    await admin.auth.admin.deleteUser(data.user.id);
+    return json({ error: "Screenshot administrasi gagal disimpan. Pendaftaran belum selesai; silakan coba lagi." }, 500, origin);
+  }
+  const { error: profileUpdateError } = await admin.from("member_profiles").update({
+    registration_proof_path: proofPath,
+    registration_note: registrationNote || null,
+  }).eq("id", data.user.id);
+  if (profileUpdateError) {
+    await admin.storage.from("registration-proofs").remove([proofPath]);
+    await admin.auth.admin.deleteUser(data.user.id);
+    return json({ error: "Data bukti administrasi gagal disimpan. Pendaftaran belum selesai; silakan coba lagi." }, 500, origin);
+  }
+  return json({ success: true, message: "Pendaftaran dan screenshot administrasi berhasil dikirim. Akun menunggu pemeriksaan admin." }, 201, origin);
 });
