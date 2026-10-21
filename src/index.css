@@ -17,3 +17,16 @@ input[type=color]{height:48px;padding:5px;cursor:pointer}
 .brand-mark strong{overflow-wrap:anywhere}
 @media(max-width:760px){.admin-layout{grid-template-columns:148px minmax(0,1fr);gap:10px;align-items:start}.admin-sidebar{position:sticky;top:10px;display:grid;grid-template-columns:minmax(0,1fr);gap:5px;overflow-x:hidden;overflow-y:auto;max-height:calc(100vh - 20px);white-space:normal;padding:8px}.admin-sidebar strong{display:block;padding:7px 6px;font-size:9px;letter-spacing:.08em}.admin-sidebar a{display:block;min-width:0;flex:none;padding:10px 7px;white-space:normal;overflow-wrap:anywhere;font-size:12px}.admin-content{min-width:0}.admin-content .history-panel{padding:14px 10px}.admin-content .section-head{align-items:flex-start;flex-wrap:wrap}.admin-content .stats-grid{grid-template-columns:minmax(0,1fr)}}@media(max-width:420px){.admin-layout{grid-template-columns:112px minmax(0,1fr);gap:8px}.admin-sidebar{padding:6px}.admin-sidebar strong{font-size:8px;padding:6px 4px}.admin-sidebar a{font-size:11px;padding:9px 6px}.admin-content .history-panel{padding:12px 8px}.admin-content h2{font-size:18px}.admin-content .stats-grid{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:420px){.color-settings{grid-template-columns:minmax(0,1fr)}.admin-sidebar a{font-size:12px;padding:9px 10px}}
+
+
+/* P1-P6 rank insignia and compact admin editor */
+.rank-badge{display:inline-flex;align-items:center;gap:7px;padding:6px 10px;border:1px solid currentColor;border-radius:8px;background:#0d110c;color:var(--rank-color,#d6a34d);font-size:12px;font-weight:900;letter-spacing:.06em}
+.rank-badge span{font-size:17px;line-height:1;letter-spacing:-.08em}
+.rank-p1,.rank-p2{--rank-color:#d6a34d;background:#382b17}
+.rank-p3{--rank-color:#72a9ff;background:#172b45}
+.rank-p4{--rank-color:#75c978;background:#18351d}
+.rank-p5{--rank-color:#ff7373;background:#401d1d}
+.rank-p6{--rank-color:#f2d36d;background:#171717}
+.rank-editor{display:grid;gap:6px;min-width:112px}
+.rank-editor select{padding:8px;font-size:12px}
+.rank-editor button{padding:8px;font-size:11px}
