@@ -1,6 +1,6 @@
 # MASTER BLUEPRINT — WEBKAS FAM SOS V2
 
-Versi: 1.5 (21 Oktober 2026)
+Versi: 1.6 (21 Oktober 2026)
 
 ## Keputusan hosting
 - Hosting statis: Netlify (menggantikan rencana Vercel).
@@ -57,6 +57,10 @@ Versi: 1.5 (21 Oktober 2026)
 - UI Bahasa Indonesia, responsif untuk Android, sederhana, tanpa slogan login.
 - Footer: `©Designed by Vergil D Ajax`; hilangkan `STREET OF STYLE FAMILY · 2026`.
 - Hapus placeholder akun `ADM_SOS`.
+
+## Ketentuan pemisahan proyek Supabase
+
+- **Penegasan pemisahan proyek (wajib):** Supabase V2 adalah proyek baru terpisah dengan ref `lzciyzibqbujshoizlbu` dan URL `https://lzciyzibqbujshoizlbu.supabase.co`. Supabase lama `jjnmaylxjzgixnrqopro` adalah sumber referensi saja; tidak boleh diubah/dihapus dan bukan target koneksi V2. Jangan meminta pengguna mengulangi URL/ref lama yang sudah tercatat. Jika konektor tidak dapat membaca proyek lama, lanjutkan dengan sumber kode yang dapat diakses dan tandai bagian yang belum terverifikasi; minta bantuan pengguna hanya jika ada langkah yang benar-benar membutuhkan izin pemilik.
 
 ## Status lanjutan 21 Oktober 2026
 - Audit Supabase V2 diulang: nol tabel `public`, nol migrasi; peringatan fungsi keamanan tetap ada.
