@@ -22,7 +22,7 @@ Website kas baru Fam SOS dengan hosting Netlify, frontend React/Vite, dan backen
 - Login username/kata sandi dan pendaftaran anggota.
 - Status pending/ditolak dan antrean persetujuan pendaftaran untuk admin.
 - Dashboard anggota untuk saldo, tunggakan, ADM, NextPay, dan riwayat pengajuan.
-- Pengajuan KAS/ADM dengan bukti privat JPG/PNG/WEBP maksimal 5 MB.
+- UI pengajuan KAS/ADM dan unggah bukti privat JPG/PNG/WEBP maksimal 5 MB sudah disiapkan; pengiriman masih dikunci sampai tes regresi selesai.
 - Antrean bukti pembayaran untuk admin, URL bukti sementara, serta RPC keputusan admin.
 - Persetujuan KAS menggunakan satu transaksi database: bayar tunggakan terlebih dahulu, sisa masuk saldo ke depan, transaksi dan audit log ditulis bersama.
 - Pembayaran ADM hanya mengurangi sisa ADM; status lunas tidak boleh melampaui nilai ADM yang tersisa.
@@ -33,7 +33,7 @@ Website kas baru Fam SOS dengan hosting Netlify, frontend React/Vite, dan backen
 - Belum ada akun admin pertama; database saat ini belum memiliki pengguna Auth. Pemilik harus mendaftar dengan username/kata sandi pilihannya, login, lalu memasukkan kode bootstrap satu kali yang diberikan terpisah. Kode tidak disimpan di repository dan hanya dapat digunakan sekali.
 - Kalkulasi kas harian otomatis dan cron belum diaktifkan. NextPay/tunggakan harus melewati regression tests sebelum dijalankan harian.
 - GitHub Actions build berhasil untuk commit kode `89965a907a3b22bbe3d667da44f3769c06f17576`; pemeriksaan untuk commit dokumentasi sesudahnya masih berjalan. Deployment Netlify terbaru tetap belum diverifikasi. Jangan menyatakan aplikasi lolos build atau live sudah diperbarui tanpa hasil nyata.
-- Settlement RPC telah diterapkan, tetapi perlu uji terisolasi terhadap skenario tunggakan, pembayaran parsial, ADM, dan pengajuan ganda sebelum digunakan untuk kas nyata.
+- Settlement RPC telah diterapkan, tetapi approval dan pengajuan pembayaran dikunci oleh flag database `cash_operations_enabled=false` sampai skenario tunggakan, pembayaran parsial, ADM, NextPay, dan pengajuan ganda lulus tes terisolasi.
 
 **Jangan gunakan untuk transaksi kas nyata dulu** sampai akun admin aman tersedia, build/deploy diverifikasi, dan tes regresi settlement serta daily dues lulus.
 
