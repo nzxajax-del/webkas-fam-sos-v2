@@ -1,6 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const allowedOrigins = new Set([
+  "https://webkas-fam-sos-v2.nzxajax.workers.dev",
   "https://webkas-fam-sos-v2.netlify.app",
   "http://localhost:5173",
   "http://127.0.0.1:5173",
