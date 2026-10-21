@@ -100,3 +100,6 @@ These are transactional smoke tests against the current V2 schema, not the compl
 
 57. Authenticated role can SELECT wallets but cannot directly INSERT/UPDATE/DELETE wallet rows; the audited admin RPC remains executable. **PASS** (database ACL checked).
 58. Payment submission insert policy requires the proof path to begin with the submitting member's UUID folder and an active member role. **Policy definition verified; live cross-member negative insert test still required.**
+
+59. Proof retention setting accepts only 3, 7, or 30 days and records an admin audit event. **Schema/RPC implementation verified; authenticated admin runtime test pending.**
+60. Proof cleanup function requires an active admin, paginates old storage objects, and preserves proof paths belonging to pending submissions. **Function deployed; live cleanup test pending because the project has no admin user or proof objects.** Automatic scheduler remains a release task.
