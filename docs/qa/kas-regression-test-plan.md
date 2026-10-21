@@ -36,3 +36,26 @@ These tests must pass before production transactions are enabled. They are based
 ## Release gate
 
 Do not apply a production schema or enable live payment approval until the source schema/auth/RLS/storage paths are audited, migration reviewed, and cases 1–20 pass in an isolated V2 test project.
+
+
+## V2 implementation-specific tests (added 21 October 2026)
+
+21. New member registration always creates role `member`, status `pending`; supplied metadata cannot create an admin.
+22. Admin approval/rejection only accepts a pending member; repeat decision must fail and create no second audit row.
+23. Non-admin and anon calls to `review_member_registration` / `review_payment` fail; direct member profile status updates and payment status updates are denied.
+24. KAS payment with arrears 5K and payment 3K -> arrears 2K, balance unchanged, unpaid_from advances by 3 days, and one payment_credit transaction plus audit event is recorded.
+25. KAS payment with arrears 2K and payment 5K -> arrears 0, balance +3K, NextPay is advanced from the report date by exactly 3 days, and one ledger transaction is recorded.
+26. KAS amount that is not a multiple of the configured daily amount is rejected without changing wallet, submission status, ledger, or audit log.
+27. ADM payment must not exceed ADM due; approved ADM payment reduces only ADM due and must not change KAS balance, arrears, or NextPay.
+28. Rejected payment does not mutate wallet or wallet_transactions; both approve and reject write reviewer, timestamp, and audit log atomically.
+29. Two concurrent review attempts on the same submission result in exactly one successful decision and one wallet/ledger effect.
+30. Private proof object cannot be read by anon or a different member; owner and active admin can generate short-lived signed URLs.
+31. Amounts displayed/entered in the UI use K units (1K = 1,000 stored units); verify 1,000 displays as 1K and a user input of 5 becomes 5,000 stored units.
+32. Admin registration queue can only activate/reject pending members and writes an audit log; no browser operation can grant admin role.
+33. Failed upload or failed database insert must not be represented as a submitted payment; orphaned uploaded objects should be cleaned up by a safe maintenance process.
+34. Netlify production build must pass and the deployed URL must serve the latest commit before the release is declared ready.
+
+## Current execution status
+- Tests 21–34 are **specified, not yet executed**. Supabase Security Advisor returns no security lints, and the current database has zero Auth users. Build/CI status has not been verified.
+- Payment review RPCs and UI are implemented, but **do not use them for real cash until tests 21–34 pass**, especially concurrent review, NextPay, and partial-arrears date advancement.
+- Daily dues automation remains disabled; do not schedule it until the daily rate/effective-date and report-date semantics are fully tested.
