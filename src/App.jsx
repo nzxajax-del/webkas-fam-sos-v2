@@ -19,7 +19,7 @@ const AdminSkull = () => <svg viewBox="0 0 32 32" aria-hidden="true" className="
 const RankBadge = ({ rank, isAdmin = false }) => {
   if (isAdmin) return <span className="rank-badge rank-admin" title="Pangkat Admin"><AdminSkull /> ADMIN</span>;
   const item = rankInfo(rank);
-  return <span className={"rank-badge rank-" + item.label.toLowerCase()} title={rankNames[rank] || item.label}><RankSymbol rank={rank} /><span className="rank-badge-label">{rankNames[rank] || item.label}</span></span>;
+  return <span className={"rank-badge rank-" + item.label.toLowerCase()} title={rankNames[rank] || item.label} aria-label={(rankNames[rank] || item.label) + " (" + item.label + ")"}><RankSymbol rank={rank} /></span>;
 };
 const csvCell = (value) => {
   let text = String(value ?? "");
