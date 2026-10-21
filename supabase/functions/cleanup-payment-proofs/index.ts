@@ -55,10 +55,16 @@ Deno.serve(async (req: Request) => {
   if (![3, 7, 30].includes(retentionDays)) return json({ error: "Nilai retensi bukti tidak valid." }, 500, origin);
 
   const cutoff = new Date(Date.now() - retentionDays * 24 * 60 * 60 * 1000);
-  const { data: pendingRows, error: pendingError } = await admin
-    .from("payment_submissions").select("proof_path").eq("status", "pending").limit(5000);
-  if (pendingError) return json({ error: "Daftar pengajuan pending tidak dapat dibaca." }, 500, origin);
-  const pendingPaths = new Set((pendingRows || []).map((row) => row.proof_path).filter(Boolean));
+  const pendingPaths = new Set<string>();
+  for (let offset = 0; ; offset += 1000) {
+    const { data: pendingRows, error: pendingError } = await admin
+      .from("payment_submissions").select("proof_path").eq("status", "pending").range(offset, offset + 999);
+    if (pendingError) return json({ error: "Daftar pengajuan pending tidak dapat dibaca." }, 500, origin);
+    for (const row of pendingRows || []) {
+      if (row.proof_path) pendingPaths.add(row.proof_path);
+    }
+    if (!pendingRows || pendingRows.length < 1000) break;
+  }
   const candidates: string[] = [];
 
   async function scanFolder(folder: string) {
