@@ -716,10 +716,15 @@ export default function App() {
     const messages = rows || [];
     const senderIds = [...new Set(messages.map((item) => item.sender_id).filter(Boolean))];
     if (!senderIds.length) return messages;
-    const { data: senders, error: senderError } = await supabase.from("member_profiles")
-      .select("id,display_name,role,rank_code,profile_photo_path,phone_number,created_at")
-      .in("id", senderIds);
-    if (senderError || !senders?.length) return messages;
+
+    // Read only the chat-safe identity fields through a guarded RPC. Direct
+    // member_profiles SELECT is intentionally restricted by RLS for members.
+    const { data: senders, error: senderError } = await supabase.rpc(
+      "get_chat_sender_profiles",
+      { p_member_ids: senderIds }
+    );
+    if (senderError || !Array.isArray(senders) || !senders.length) return messages;
+
     const sendersWithPhotos = await withPhotoUrls(senders);
     const senderById = new Map(sendersWithPhotos.map((sender) => [sender.id, sender]));
     return messages.map((item) => {
