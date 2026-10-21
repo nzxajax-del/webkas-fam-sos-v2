@@ -117,6 +117,7 @@ Migration history langsung diperiksa. File dengan versi yang sama harus tetap ad
 - `20261021015007_enable_realtime_for_core_kas_tables`
 - `20261021015504_revoke_direct_wallet_mutations`
 - `20261021015531_bind_payment_proof_path_to_submitter`
+- `20261021015658_configure_payment_proof_retention`
 
 ## 7. Build dan deployment
 
@@ -175,3 +176,9 @@ Admin pertama belum dibuat dan database belum memiliki Auth user. Pemilik harus 
 ## Wallet/proof-path integrity hardening — 21 October 2026
 - ACL audit found that authenticated users still had direct INSERT/UPDATE/DELETE grants on `member_wallets`, despite RLS policies. Migration `20261021015504_revoke_direct_wallet_mutations` revokes those grants; verified: authenticated retains SELECT, has no direct wallet INSERT/UPDATE/DELETE, and can still call the audited `admin_update_member` RPC.
 - Migration `20261021015531_bind_payment_proof_path_to_submitter` strengthens the payment-submission insert policy so `proof_path` must be under the submitting member's own UUID folder. Storage read/upload policies continue to restrict proof objects to the owner and active admin.
+
+
+## Payment proof retention — 21 October 2026
+- Migration `20261021015658_configure_payment_proof_retention` adds admin-configurable retention of 3, 7, or 30 days (default 7), restricted through an audited admin RPC.
+- Supabase Edge Function `cleanup-payment-proofs` is deployed and requires a valid JWT plus an active admin profile. It scans the private `payment-proofs` bucket, deletes objects older than the configured cutoff, preserves every proof path attached to a pending submission, and also cleans old orphaned objects. It processes pending submissions with pagination.
+- Admin UI has a retention selector and a manual cleanup button. Automatic scheduling is not configured yet; it remains a release task because no trusted scheduler secret/connection is configured and production release gates are not complete. The cleanup function has not been executed against live objects because there are currently no admin users and no payment proofs.
