@@ -20,14 +20,15 @@ input[type=color]{height:48px;padding:5px;cursor:pointer}
 
 
 /* P1-P7 rank insignia and compact admin editor */
-.rank-badge{display:inline-flex;align-items:center;gap:7px;padding:6px 10px;border:1px solid currentColor;border-radius:8px;background:#0d110c;color:var(--rank-color,#d6a34d);font-size:12px;font-weight:900;letter-spacing:.06em}
+.rank-badge{display:inline-flex;align-items:center;gap:7px;padding:5px 9px;border:1px solid color-mix(in srgb,currentColor 72%,#fff 10%);border-radius:999px;background:linear-gradient(145deg,#17221b,#090d0b);color:var(--rank-color,#d6a34d);font-size:12px;font-weight:900;letter-spacing:.055em;box-shadow:inset 0 1px 0 #ffffff12,0 2px 7px #0004}
 .rank-badge span{font-size:17px;line-height:1;letter-spacing:-.08em}
-.rank-p1,.rank-p2{--rank-color:#d6a34d;background:#382b17}
-.rank-p3{--rank-color:#72a9ff;background:#172b45}
-.rank-p4{--rank-color:#75c978;background:#18351d}
-.rank-p5{--rank-color:#ff7373;background:#401d1d}
-.rank-p6{--rank-color:#f2d36d;background:#171717}
-.rank-vip{--rank-color:#f2d36d;background:#050505;border-color:#b38b2f;box-shadow:inset 0 0 0 1px #30240c;letter-spacing:.12em}
+.rank-badge .rank-symbol{width:23px;height:23px;flex:0 0 23px;filter:drop-shadow(0 1px 2px #0008)}
+.rank-p1,.rank-p2{--rank-color:#e6bd68;background:linear-gradient(145deg,#46351b,#17120b);border-color:#9b7738}
+.rank-p3{--rank-color:#8fc0ff;background:linear-gradient(145deg,#203f65,#101a2b);border-color:#477db8}
+.rank-p4{--rank-color:#8ce09a;background:linear-gradient(145deg,#1c4929,#101b13);border-color:#438652}
+.rank-p5{--rank-color:#ff9999;background:linear-gradient(145deg,#5a2428,#211012);border-color:#a94d53}
+.rank-p6{--rank-color:#f7df83;background:linear-gradient(145deg,#51431d,#19160b);border-color:#a88b35}
+.rank-vip{--rank-color:#f8df83;background:linear-gradient(145deg,#26231b,#070706);border-color:#b38b2f;box-shadow:inset 0 0 0 1px #30240c;letter-spacing:.12em}
 .rank-symbol-p7{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:20px;color:#f2d36d;font-size:13px;font-weight:1000;letter-spacing:.08em;text-shadow:0 0 5px #9c7527}
 .rank-editor{display:grid;gap:6px;min-width:112px}
 .rank-editor select{padding:8px;font-size:12px}
@@ -271,8 +272,10 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .rank-symbol-p5{color:#ff7373}
 .rank-symbol-p6{color:#f2d36d}
 .rank-symbol-p4{color:#75c978;stroke-width:1.6}
-.rank-admin{color:#e3bf63;background:#050505;border-color:#a9822e;box-shadow:inset 0 0 0 1px #30240c;letter-spacing:.1em}
-.rank-admin .admin-skull-icon{width:22px;height:22px;flex:0 0 22px;color:#d9b34f;filter:drop-shadow(0 0 2px #8e6b20)}
+.rank-admin{color:#f2d16d;background:linear-gradient(145deg,#27241a,#090a08);border:1px solid #a9822e;box-shadow:inset 0 0 0 1px #30240c,0 2px 8px #0005;letter-spacing:.085em}
+.rank-admin .admin-skull-icon{width:24px;height:24px;flex:0 0 24px;color:#e8bd52;filter:drop-shadow(0 0 3px #8e6b20)}
+.rank-admin-assistant{color:#d6e7b0;background:linear-gradient(145deg,#263622,#0c120a);border-color:#718d4c}
+.rank-admin-assistant .admin-skull-icon{color:#b7d87b;filter:drop-shadow(0 0 3px #526c2c)}
 .rank-badge-label{font-size:11px;letter-spacing:.015em}
 
 
