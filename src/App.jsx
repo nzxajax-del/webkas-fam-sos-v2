@@ -155,7 +155,7 @@ export default function App() {
           supabase.from("member_profiles").select("id,display_name,login_username,created_at,rank_code,registration_proof_path,registration_note").eq("role", "member").eq("status", "pending").order("created_at", { ascending: true }).limit(100),
           supabase.from("member_profiles").select("id,display_name,login_username,status,created_at,rank_code,profile_photo_path,registration_proof_path,phone_number").eq("role", "member").order("display_name", { ascending: true }).limit(500),
           supabase.from("member_wallets").select("member_id,balance,arrears,unpaid_from,exempt_kas"),
-          profileRes.data?.role === "admin" ? supabase.from("wallet_transactions").select("id,member_id,transaction_type,amount,description,created_at,member_profiles(display_name,login_username)").order("created_at", { ascending: false }).limit(100) : Promise.resolve({ data: [], error: null }),
+          profileRes.data?.role === "admin" ? supabase.from("wallet_transactions").select("id,member_id,transaction_type,amount,description,created_at,member_profiles(display_name,login_username)").order("created_at", { ascending: false }).limit(10) : Promise.resolve({ data: [], error: null }),
           supabase.from("payment_submissions").select("id,member_id,amount,payment_type,status,created_at,review_note,member_profiles(display_name,login_username)").in("status", ["approved", "rejected"]).order("created_at", { ascending: false }).limit(1000),
           profileRes.data?.role === "admin" ? supabase.from("member_profiles").select("id,display_name,login_username,status,rank_code,created_at").eq("role", "admin_assistant").order("display_name", { ascending: true }).limit(100) : Promise.resolve({ data: [], error: null }),
         ]);
@@ -715,7 +715,7 @@ export default function App() {
     const [allMemberRes, walletListRes, transactionRes, completedRes, assistantRes] = await Promise.all([
       supabase.from("member_profiles").select("id,display_name,login_username,status,created_at,rank_code,profile_photo_path,registration_proof_path,phone_number").eq("role", "member").order("display_name", { ascending: true }).limit(500),
       supabase.from("member_wallets").select("member_id,balance,arrears,unpaid_from,exempt_kas"),
-      supabase.from("wallet_transactions").select("id,member_id,transaction_type,amount,description,created_at,member_profiles(display_name,login_username)").order("created_at", { ascending: false }).limit(100),
+      supabase.from("wallet_transactions").select("id,member_id,transaction_type,amount,description,created_at,member_profiles(display_name,login_username)").order("created_at", { ascending: false }).limit(10),
       supabase.from("payment_submissions").select("id,member_id,amount,payment_type,status,created_at,review_note,member_profiles(display_name,login_username)").in("status", ["approved", "rejected"]).order("created_at", { ascending: false }).limit(1000),
       profile?.role === "admin" ? supabase.from("member_profiles").select("id,display_name,login_username,status,rank_code,created_at").eq("role", "admin_assistant").order("display_name", { ascending: true }).limit(100) : Promise.resolve({ data: [], error: null }),
     ]);
