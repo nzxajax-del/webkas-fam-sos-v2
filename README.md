@@ -15,25 +15,30 @@ Website kas baru Fam SOS dengan hosting Netlify, frontend React/Vite, dan backen
 - Frontend memakai public publishable key fallback di `src/lib/supabase.js`; `VITE_SUPABASE_URL` dan `VITE_SUPABASE_ANON_KEY` dapat digunakan untuk override.
 - Publishable key memang dirancang untuk browser. **Jangan pernah** memasukkan service-role key, password, atau secret ke frontend, GitHub, atau variabel `VITE_*`.
 - Migrasi database berada di `supabase/migrations/`; source Edge Function pendaftaran berada di `supabase/functions/member-register/index.ts`.
-- Fungsi `member-register` membuat akun member berstatus menunggu persetujuan. Jangan berikan role admin melalui browser atau metadata pendaftaran.
+- Fungsi `member-register` membuat akun member berstatus menunggu persetujuan. Role admin tidak dapat dipilih saat pendaftaran.
 
-## Status fitur
-Sudah disiapkan:
-- UI Bahasa Indonesia yang responsif untuk ponsel.
+## Fitur yang sudah diimplementasikan
+- UI Bahasa Indonesia responsif untuk ponsel.
 - Login username/kata sandi dan pendaftaran anggota.
-- Status pending/ditolak serta dashboard baca-saja untuk saldo, tunggakan, ADM, NextPay, dan riwayat pengajuan.
-- Tujuh tabel aplikasi dengan RLS dan grant database berprinsip least privilege.
-- Bucket bukti pembayaran privat, dibatasi 5 MB dan JPG/PNG/WEBP.
-- Security Advisor terbaru bersih (`lints: []`).
+- Status pending/ditolak dan antrean persetujuan pendaftaran untuk admin.
+- Dashboard anggota untuk saldo, tunggakan, ADM, NextPay, dan riwayat pengajuan.
+- Pengajuan KAS/ADM dengan bukti privat JPG/PNG/WEBP maksimal 5 MB.
+- Antrean bukti pembayaran untuk admin, URL bukti sementara, serta RPC keputusan admin.
+- Persetujuan KAS menggunakan satu transaksi database: bayar tunggakan terlebih dahulu, sisa masuk saldo ke depan, transaksi dan audit log ditulis bersama.
+- Pembayaran ADM hanya mengurangi sisa ADM; status lunas tidak boleh melampaui nilai ADM yang tersisa.
+- RLS aktif dan grant tabel dibatasi. Security Advisor terakhir menghasilkan `lints: []`.
+- Pengguna tidak dapat mengubah status pembayaran, status pendaftaran, role, ledger, atau daily dues log secara langsung lewat tabel.
 
-Belum diaktifkan:
-- Provisioning akun admin pertama.
-- Approval/rejection pembayaran yang mengubah ledger secara atomik.
-- Pengiriman bukti pembayaran dari UI.
-- Pemotongan kas harian otomatis dan perhitungan NextPay/tunggakan.
-- Build CI dan deployment Netlify terbaru belum diverifikasi.
+## Batasan yang masih harus dituntaskan
+- Belum ada akun admin pertama; database saat ini belum memiliki pengguna Auth. Provisioning admin harus dilakukan melalui jalur pemilik/server yang tepercaya, bukan tombol publik.
+- Kalkulasi kas harian otomatis dan cron belum diaktifkan. NextPay/tunggakan harus melewati regression tests sebelum dijalankan harian.
+- Build CI dan deployment Netlify terbaru belum dapat diverifikasi. Jangan menyatakan aplikasi lolos build atau live sudah diperbarui tanpa hasil nyata.
+- Settlement RPC telah diterapkan, tetapi perlu uji terisolasi terhadap skenario tunggakan, pembayaran parsial, ADM, dan pengajuan ganda sebelum digunakan untuk kas nyata.
 
-**Jangan gunakan untuk transaksi kas nyata dulu.** Perhitungan kas/NextPay harus dipetakan dengan lengkap dari implementasi lama dan tes regresi sebelum settlement diaktifkan.
+**Jangan gunakan untuk transaksi kas nyata dulu** sampai akun admin aman tersedia, build/deploy diverifikasi, dan tes regresi settlement serta daily dues lulus.
 
 ## Dokumentasi
-Baca [MASTER BLUEPRINT](./MASTER_BLUEPRINT.md) untuk seluruh keputusan, audit, batasan, dan urutan implementasi.
+- [MASTER BLUEPRINT](./MASTER_BLUEPRINT.md)
+- [Audit logika kas lama](./docs/audit/legacy-daily-dues-review.md)
+- [Tambahan audit hardening lama](./docs/audit/legacy-hardening-migration-addendum.md)
+- [Rencana tes regresi](./docs/qa/kas-regression-test-plan.md)
