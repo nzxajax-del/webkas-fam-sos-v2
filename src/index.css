@@ -459,3 +459,18 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .rank-p2 .emblem-symbol{fill:#ff9d45;stroke:#ffe0bd}
 .rank-p2 .emblem-detail{stroke:#ffd0a0}
 .rank-p2 .emblem-detail-fill{fill:#ff9d45;stroke:#ffe0bd}
+
+
+/* P1 and P2 flat colors: remove metallic gradients, highlights, and glow without changing symbols or rank behavior. */
+.rank-p1{--rank-color:#cbd2d9;background:#171b20;border-color:#cbd2d9;box-shadow:none}
+.rank-p1 .rank-emblem{filter:none}
+.rank-p1 .emblem-frame{stroke:#cbd2d9;fill:#171b20}
+.rank-p1 .emblem-symbol{fill:#cbd2d9;stroke:#cbd2d9}
+.rank-p1 .emblem-detail{stroke:#b87345}
+.rank-p1 .emblem-detail-fill{fill:#b87345;stroke:#b87345}
+.rank-p2{--rank-color:#d8894b;background:#24170f;border-color:#d8894b;box-shadow:none}
+.rank-p2 .rank-emblem{filter:none}
+.rank-p2 .emblem-frame{stroke:#d8894b;fill:#24170f}
+.rank-p2 .emblem-symbol{fill:#d8894b;stroke:#d8894b}
+.rank-p2 .emblem-detail{stroke:#d8894b}
+.rank-p2 .emblem-detail-fill{fill:#d8894b;stroke:#d8894b}
