@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase, supabaseConfigured } from "./lib/supabase.js";
 
-const money = (value) => new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 }).format(Number(value || 0)) + " K";
+const money = (value) => new Intl.NumberFormat("id-ID", { maximumFractionDigits: 2 }).format(Number(value || 0) / 1000) + "K";
 const date = (value) => value ? new Date(value + "T00:00:00+07:00").toLocaleDateString("id-ID", { day: "2-digit", month: "long", year: "numeric", timeZone: "Asia/Jakarta" }) : "Belum ditetapkan";
 const authEmail = (username) => username.trim().toLowerCase() + "@login.webkas-fam-sos.invalid";
 
@@ -11,6 +11,11 @@ export default function App() {
   const [wallet, setWallet] = useState(null);
   const [settings, setSettings] = useState(null);
   const [payments, setPayments] = useState([]);
+  const [pendingPayments, setPendingPayments] = useState([]);
+  const [paymentType, setPaymentType] = useState("kas");
+  const [paymentAmount, setPaymentAmount] = useState("");
+  const [proofFile, setProofFile] = useState(null);
+  const [reviewNote, setReviewNote] = useState("");
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [mode, setMode] = useState("login");
@@ -29,7 +34,7 @@ export default function App() {
     const { data: listener } = supabase.auth.onAuthStateChange((_event, nextSession) => {
       setSession(nextSession);
       if (!nextSession) {
-        setProfile(null); setWallet(null); setSettings(null); setPayments([]);
+        setProfile(null); setWallet(null); setSettings(null); setPayments([]); setPendingPayments([]);
       }
     });
     return () => { alive = false; listener.subscription.unsubscribe(); };
@@ -49,10 +54,20 @@ export default function App() {
       if (!alive) return;
       const firstError = [profileRes, walletRes, settingsRes, paymentsRes].find((r) => r.error);
       if (firstError) setError("Data akun belum dapat dimuat. " + firstError.error.message);
+      let pendingRows = [];
+      if (profileRes.data?.role === "admin" && profileRes.data?.status === "active") {
+        const pendingRes = await supabase.from("payment_submissions")
+          .select("id,member_id,amount,payment_type,proof_path,status,created_at,member_profiles(display_name,login_username)")
+          .eq("status", "pending").order("created_at", { ascending: true }).limit(100);
+        if (pendingRes.error) setError("Antrean pembayaran tidak dapat dimuat. " + pendingRes.error.message);
+        pendingRows = pendingRes.data || [];
+      }
+      if (!alive) return;
       setProfile(profileRes.data || null);
       setWallet(walletRes.data || null);
       setSettings(settingsRes.data || null);
       setPayments(paymentsRes.data || []);
+      setPendingPayments(pendingRows);
       setLoading(false);
     })();
     return () => { alive = false; };
