@@ -322,3 +322,5 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .chat-compose-footer small{font-size:11px;max-width:100%}
 .chat-compose-footer button{flex-shrink:0}
 @media(max-width:520px){.chat-message{width:94%;padding:10px}.chat-message-list{padding:8px;max-height:55vh}.chat-compose-footer{align-items:stretch}.chat-compose-footer button{width:100%}}
+
+.dashboard-shell[data-view="chat"] #member-rate-panel{display:none}
