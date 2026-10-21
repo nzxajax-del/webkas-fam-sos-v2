@@ -149,3 +149,10 @@ Versi: 1.8 (21 Oktober 2026)
 - GitHub Actions run 39525588015 for commit 89965a907a3b22bbe3d667da44f3769c06f17576 was still in progress during the last check; dependency installation had started and the Vite build step was pending. Do not mark it successful until the workflow reports completion.
 
 - **Build check verified:** GitHub Actions run 39525588015 completed with `success` for code commit 89965a907a3b22bbe3d667da44f3769c06f17576 (React/Vite build). A documentation-only commit after it triggered run 39525632815, which was still in progress at last check. Netlify deployment is not verified by the available connector.
+
+### Bootstrap admin utama (versi 2.1)
+- Database V2 awalnya memiliki 0 akun Auth. Dibuat mekanisme bootstrap satu kali yang aman: token hanya disimpan sebagai SHA-256 hash di tabel privat, tidak ada token plaintext di repository, dan fungsi hanya bekerja jika belum ada profil dengan role admin.
+- Pemilik membuat akun lewat halaman Daftar anggota, login saat status pending, lalu memasukkan token bootstrap yang diberikan secara terpisah. Fungsi mengubah hanya akun yang sedang login menjadi admin aktif, menandai token terpakai, mengatur akun admin agar tidak terkena ADM/KAS, dan mencatat audit log.
+- Setelah bootstrap berhasil, tidak ada cara kedua untuk memakai token. Jangan menyalin token ke README, kode frontend, atau commit publik.
+- Migrasi bootstrap sudah diterapkan dengan versi Supabase 20261021011042 dan file migrasi repository diselaraskan ke versi tersebut.
+- Admin bootstrap hanya menyelesaikan akses awal. Akun admin pertama masih belum dibuat dan tidak ada pengguna Auth saat pemeriksaan terakhir.
