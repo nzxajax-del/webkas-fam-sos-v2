@@ -30,6 +30,35 @@ create policy payment_submissions_select_admin_assistant
 on public.payment_submissions for select to authenticated
 using (private.is_admin_assistant());
 
+-- The chat trigger must also accept an active Admin Assistant as sender.
+create or replace function private.chat_set_sender_metadata()
+returns trigger
+language plpgsql
+security definer
+set search_path = pg_catalog
+as $function$
+declare
+  v_name text;
+  v_role text;
+begin
+  if auth.uid() is null or new.sender_id <> auth.uid() then
+    raise exception 'Pengirim chat tidak valid' using errcode = '42501';
+  end if;
+  select mp.display_name, mp.role into v_name, v_role
+  from public.member_profiles mp
+  where mp.id = auth.uid()
+    and mp.status = 'active'
+    and mp.role in ('admin', 'admin_assistant', 'member');
+  if v_name is null then
+    raise exception 'Hanya akun aktif yang dapat mengirim pesan' using errcode = '42501';
+  end if;
+  new.sender_display_name := v_name;
+  new.sender_role := v_role;
+  return new;
+end;
+$function$;
+revoke all on function private.chat_set_sender_metadata() from public, anon, authenticated;
+
 -- Shared chat: active assistants may read messages and send their own messages.
 drop policy if exists chat_messages_select_admin_assistant on public.chat_messages;
 create policy chat_messages_select_admin_assistant
