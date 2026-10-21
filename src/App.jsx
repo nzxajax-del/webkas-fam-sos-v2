@@ -151,7 +151,7 @@ export default function App() {
       let pendingRows = [];
       let pendingMemberRows = [];
       if (["admin", "admin_assistant"].includes(profileRes.data?.role) && profileRes.data?.status === "active") {
-        const [pendingRes, memberRes, allMemberRes, walletListRes, transactionRes, completedRes, assistantRes] = await Promise.all([
+        const [pendingRes, memberRes, allMemberRes, walletListRes, _transactionPlaceholder, completedRes, assistantRes] = await Promise.all([
           supabase.from("payment_submissions").select("id,member_id,amount,payment_type,proof_path,status,created_at,member_profiles(display_name,login_username)").eq("status", "pending").order("created_at", { ascending: true }).limit(100),
           supabase.from("member_profiles").select("id,display_name,login_username,created_at,rank_code,registration_proof_path,registration_note").eq("role", "member").eq("status", "pending").order("created_at", { ascending: true }).limit(100),
           supabase.from("member_profiles").select("id,display_name,login_username,status,created_at,rank_code,profile_photo_path,registration_proof_path,phone_number").eq("role", "member").order("display_name", { ascending: true }).limit(500),
