@@ -13,6 +13,7 @@ on storage.objects for select to authenticated
 using (bucket_id='registration-proofs' and (select private.is_admin()));
 
 update public.dues_settings set adm_default=0 where id=1;
+alter table public.member_wallets alter column adm_due set default 0;
 update public.member_wallets set adm_due=0 where adm_due is not null and adm_due <> 0;
 
 create or replace function public.handle_new_auth_user()
