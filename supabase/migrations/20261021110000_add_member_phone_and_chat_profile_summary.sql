@@ -10,6 +10,7 @@ as $$
 declare
   v_user_id uuid := auth.uid();
   v_phone text := nullif(btrim(coalesce(p_phone_number, '')), '');
+  v_status text;
 begin
   if v_user_id is null then
     raise exception 'Login diperlukan' using errcode = '42501';
