@@ -148,7 +148,19 @@ export default function App() {
       setError("Admin berhasil diproses, tetapi profil belum dapat dimuat. Keluar lalu masuk kembali.");
       setBusy(false); return;
     }
-    setProfile(data); setBootstrapToken("");
+    const [walletRes, settingsRes] = await Promise.all([
+      supabase.from("member_wallets").select("balance,arrears,next_pay,unpaid_from,adm_due,exempt_kas").eq("member_id", session.user.id).maybeSingle(),
+      supabase.from("dues_settings").select("report_date,daily_amount,adm_default,cash_operations_enabled").eq("id", 1).maybeSingle(),
+    ]);
+    if (walletRes.error || !walletRes.data || settingsRes.error || !settingsRes.data) {
+      setError("Admin aktif, tetapi data dashboard belum termuat. Keluar lalu masuk kembali untuk memuat ulang.");
+      setProfile(data);
+      setBusy(false); return;
+    }
+    setProfile(data); setWallet(walletRes.data); setSettings(settingsRes.data);
+    setDailyDraft(String(settingsRes.data.daily_amount ?? 1000));
+    setAdmDraft(String(settingsRes.data.adm_default ?? 10000));
+    setBootstrapToken("");
     setMessage("Admin utama berhasil diaktifkan.");
     setBusy(false);
   }
