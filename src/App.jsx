@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { supabase, supabaseConfigured } from "./lib/supabase.js";
+import { supabase, supabaseConfigured, createTemporarySupabaseClient } from "./lib/supabase.js";
 
 const money = (value) => new Intl.NumberFormat("id-ID", { maximumFractionDigits: 2 }).format(Number(value || 0)) + " UIC";
 const dailyRateForRank = (dailyAmount, rank) => ["P5", "P6", "P7"].includes(rank) ? 0 : rank === "P4" ? Number(dailyAmount || 0) / 2 : Number(dailyAmount || 0);
@@ -369,8 +369,23 @@ export default function App() {
       });
       if (invokeError) throw new Error(data?.error || invokeError.message || "Layanan pendaftaran belum dapat dihubungi.");
       if (data?.error) throw new Error(data.error);
+      let phoneSaved = false;
+      const registrationClient = createTemporarySupabaseClient();
+      try {
+        const { data: signedIn, error: signInError } = await registrationClient.auth.signInWithPassword({ email: authEmail(normalized), password });
+        if (signInError || !signedIn?.session) throw new Error(signInError?.message || "Sesi pendaftaran belum tersedia.");
+        const { error: phoneSaveError } = await registrationClient.rpc("set_my_phone_number", { p_phone_number: normalizedPhone });
+        if (phoneSaveError) throw new Error(phoneSaveError.message);
+        phoneSaved = true;
+      } catch {
+        phoneSaved = false;
+      } finally {
+        await registrationClient.auth.signOut().catch(() => {});
+      }
       setMode("login"); setPassword(""); setConfirmPassword(""); setUsername(""); setConfirmUsername(""); setRegistrationProofFile(null); setRegistrationNote(""); setRegistrationPhone("");
-      setMessage(data?.message || "Pendaftaran terkirim. Akun menunggu pemeriksaan bukti administrasi dan persetujuan admin.");
+      setMessage(phoneSaved
+        ? (data?.message || "Pendaftaran terkirim. Nomor HP tersimpan dan akun menunggu pemeriksaan admin.")
+        : "Pendaftaran terkirim, tetapi nomor HP belum tersimpan otomatis. Setelah akun aktif, buka Pengaturan profil untuk menyimpannya.");
     } catch (err) {
       setError(err.message || "Pendaftaran gagal.");
     } finally { setBusy(false); }
