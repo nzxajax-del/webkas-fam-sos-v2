@@ -328,3 +328,18 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 
 .chat-header-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
 @media(max-width:560px){.chat-header-actions{width:100%;justify-content:stretch}.chat-header-actions button{flex:1;min-width:0}}
+
+
+/* Admin home database usage monitor */
+.db-usage-panel{display:none;margin:0 0 18px}
+.dashboard-shell[data-view="admin-home"] .db-usage-panel{display:block}
+.db-usage-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:16px 0}
+.db-usage-card{display:grid;gap:7px;min-width:0;padding:13px;border:1px solid var(--line);border-radius:12px;background:#11160f}
+.db-usage-card span{color:var(--muted);font-size:12px;font-weight:750}
+.db-usage-card strong{font-size:clamp(17px,3vw,24px);line-height:1.2;overflow-wrap:anywhere}
+.db-usage-card small,.db-usage-meter small{font-size:11px;line-height:1.5;color:var(--muted)}
+.db-usage-meter{display:grid;gap:9px;padding:13px;border:1px solid #3c4932;border-radius:12px;background:#10150e}
+.db-usage-meter-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:12px}
+.db-usage-meter-track{height:8px;overflow:hidden;border-radius:99px;background:#30372b}
+.db-usage-meter-track span{display:block;height:100%;border-radius:99px;background:var(--accent,#c1f45a)}
+@media(max-width:440px){.db-usage-grid{gap:7px}.db-usage-card{padding:10px}.db-usage-card strong{font-size:16px}.db-usage-card small{font-size:10px}}
