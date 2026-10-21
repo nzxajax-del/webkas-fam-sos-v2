@@ -33,3 +33,5 @@ A second hardening migration, `20261021014711_require_current_report_date_for_pa
 
 ## Realtime schema check
 - The six core tables used by the dashboard are in `supabase_realtime`; database inspection confirmed RLS is enabled on all six. The browser-level two-session event test has not yet been performed.
+
+| Scheduled catch-up | Stale report date is caught up through yesterday, report date advances to today WIB, and an audit event is written | PASS |
