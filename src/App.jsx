@@ -456,6 +456,11 @@ export default function App() {
   const filteredAdminMembers = adminMembers.filter((m) => (String(m.display_name || "") + " " + String(m.login_username || "")).toLowerCase().includes(memberSearch.trim().toLowerCase()));
 
   useEffect(() => {
+    setActiveSection("home");
+    setDrawerOpen(false);
+  }, [profile?.id, profile?.role]);
+
+  useEffect(() => {
     document.documentElement.style.setProperty("--lime", branding.accent_color || "#c1f45a");
     document.documentElement.style.setProperty("--page-bg", branding.background_color || "#0b0e0b");
     document.body.style.background = "radial-gradient(ellipse at 50% 0%, " + (branding.accent_color || "#c1f45a") + "22 0%, " + (branding.background_color || "#0b0e0b") + " 58%)";
