@@ -498,3 +498,8 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .dashboard-shell[data-view="member-directory"] .welcome-panel{display:none}
 .member-directory-card .member-name-bar{justify-content:flex-start}
 .member-directory-card .member-card-top{align-items:center}
+
+.member-rank-group{display:grid;gap:10px;margin-top:18px}
+.member-rank-group-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#11160f}
+.member-rank-group-heading>div{display:flex;align-items:center;gap:9px;min-width:0}
+.member-rank-group-heading>div>strong{font-size:13px;letter-spacing:.02em}
