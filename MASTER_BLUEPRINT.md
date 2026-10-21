@@ -19,17 +19,18 @@ Zona waktu bisnis: Asia/Jakarta (WIB)
 
 ## 2. Aturan bisnis kas yang wajib dipertahankan
 
-- Ledger transaksi adalah sumber kebenaran. Kas Lebih/saldo prabayar, NextPay, tunggakan, dan ADM adalah konsep terpisah.
-- Tarif default KAS: 1.000 unit = 1K per hari. ADM default anggota baru: 15.000 unit = 15K (tarif terbaru yang dipilih pengguna).
-- Pembayaran KAS menutup tunggakan lebih dahulu; sisa pembayaran masuk saldo prabayar. Pembayaran ADM hanya mengurangi ADM terutang.
-- NextPay hanya bergerak sesuai kewajiban yang benar-benar ditutup. Pembayaran parsial tunggakan mengurangi tunggakan dan menggeser `unpaid_from` sesuai hari yang dilunasi; contoh tunggakan 5K dari tanggal 02, bayar 3K → sisa 2K dan tanggal bergeser ke 05.
-- Saldo lama tidak boleh dihitung dua kali. Proses harian harus idempoten per anggota/tanggal, mencatat ledger, memeriksa celah histori, dan berhenti jika data NextPay/saldo tidak konsisten.
-- Tanggal rekap mengikuti WIB. Perubahan tanggal maju harus memproses hari yang tertinggal sampai sehari sebelum tanggal rekap baru. Tanggal tidak boleh mundur otomatis.
-- Total tunggakan KAS harus ditampilkan; anggota dengan tunggakan minimal 7K diprioritaskan di bagian atas. Bagian ADM Belum Lunas tetap ada; ADM lunas tidak ditampilkan sebagai belum lunas.
+- Ledger transaksi adalah sumber kebenaran. Saldo UIC dan tunggakan iuran adalah konsep utama; ADM dan NextPay tidak dipakai dalam alur kas baru.
+- Tarif harian awal 1.000 UIC per hari. Semua nominal disimpan sebagai angka UIC dan ditampilkan dengan pemisah ribuan Indonesia, misalnya 1.000 UIC.
+- Tanggal pendaftaran anggota (tanggal `created_at` dalam Asia/Jakarta) adalah tanggal awal tunggakan, termasuk jika persetujuan admin terlambat.
+- Pembayaran KAS yang disetujui melunasi tunggakan terlebih dahulu; sisa nominal masuk saldo UIC. Pembayaran harus berupa bilangan bulat UIC positif dan tidak harus kelipatan tarif harian.
+- Pada setiap tanggal iuran, sistem memotong saldo yang tersedia sampai tarif harian; kekurangan menjadi tunggakan, termasuk ketika saldo nol.
+- Proses harian idempoten per anggota/tanggal, mencatat ledger, memeriksa celah histori, dan memakai penguncian agar proses bersamaan tidak membuat potongan ganda.
+- Perubahan tarif berlaku mulai hari berikutnya; tarif historis tidak dihitung ulang. Tanggal rekap mengikuti WIB dan tidak boleh mundur otomatis.
+- Total tunggakan ditampilkan; anggota dengan tunggakan minimal 7.000 UIC diprioritaskan di bagian atas.
 - Jangan tampilkan “Rekap Penerimaan Hari Ini” atau “Belum Ada Transaksi”.
 - Nama yang tidak ditampilkan pada rekap: `Een_Style`, `Meppoodeajax_Style`, `Son_Style`, `Boyz_Friendshipszone`, `Memetgangster_Newyork`, `Ambon_Dosq`, `Test`.
 - Ganti `Nyonya_Kayyin` menjadi `Queen_Style` sambil menjaga riwayat. `Alex_Dominator` ADM 10K sudah lunas dalam aturan data lama. Perubahan data lama ini belum diimpor ke V2.
-- Perubahan tarif tidak boleh menghitung ulang kewajiban lama. V2 memakai histori tarif efektif dan menolak perubahan tarif saat anggota aktif masih punya saldo prabayar, tunggakan, atau NextPay masa depan.
+- Perubahan tarif tidak boleh menghitung ulang kewajiban lama. V2 menyimpan tarif efektif mulai hari berikutnya, tanpa bergantung pada NextPay.
 
 ## 3. Status aplikasi yang sudah diimplementasikan
 
@@ -37,8 +38,8 @@ Zona waktu bisnis: Asia/Jakarta (WIB)
 - Login username/kata sandi; email Auth internal memakai pola `username@login.webkas-fam-sos.invalid`.
 - Pendaftaran anggota lewat Edge Function `member-register`; akun baru selalu role `member`, status `pending`, dan harus disetujui admin.
 - Halaman status pendaftaran pending/ditolak dan dashboard anggota.
-- Dashboard menampilkan saldo prabayar, tunggakan, ADM, NextPay, serta riwayat pengajuan.
-- Pengajuan pembayaran KAS/ADM dan unggah bukti privat JPG/PNG/WEBP maksimal 5 MB sudah dibuat di UI, tetapi submit masih terkunci oleh safety lock.
+- Dashboard menampilkan saldo UIC, tunggakan, tarif harian, dan riwayat pengajuan; tampilan ADM dan NextPay dihapus.
+- Pengajuan pembayaran KAS menggunakan nominal UIC langsung dan bukti privat JPG/PNG/WEBP maksimal 5 MB; pengajuan tetap terkunci sampai release gate lulus.
 - Bukti dibaca lewat signed URL sementara; tidak ada bucket bukti publik.
 
 ### Admin
@@ -46,42 +47,41 @@ Zona waktu bisnis: Asia/Jakarta (WIB)
 - Antrean pendaftaran anggota: setujui/tolak melalui RPC admin.
 - Antrean pembayaran: buka bukti, setujui/tolak melalui RPC settlement atomik. Persetujuan kas terkunci sampai regresi lulus; penolakan tetap tersedia.
 - Manajemen anggota: edit nama tampilan dan pengecualian KAS, dengan audit log.
-- Pengaturan tarif KAS dan ADM default.
-- Ringkasan total tunggakan, prioritas tunggakan 7K ke atas, ADM belum lunas, NextPay, dan tanggal “Belum bayar dari”.
-- Laporan 100 transaksi terbaru dan audit aktivitas admin.
-- Ekspor CSV anggota, transaksi, dan audit.
-- Tanggal rekap bisa dimajukan melalui RPC yang menjalankan catch-up, tetapi kontrol UI tetap disabled saat safety lock aktif.
-- Koreksi saldo/ledger manual dan pembuatan akun langsung oleh admin belum tersedia; jangan mengubah saldo lewat SQL/browser tanpa ledger dan audit.
+- Pengaturan tarif harian UIC; perubahan tarif berlaku mulai hari berikutnya.
+- Ringkasan total tunggakan, prioritas tunggakan 7.000 UIC ke atas, dan tanggal “Belum bayar dari”.
+- Laporan 100 transaksi terbaru, audit aktivitas admin, dan ekspor CSV anggota/transaksi/audit.
+- Tanggal rekap bisa dimajukan melalui RPC catch-up, tetapi kontrol UI tetap disabled saat safety lock aktif.
+- Koreksi saldo manual tersedia dan dicatat ke ledger serta audit.
 
 ### Keamanan backend
 - RLS aktif untuk tabel aplikasi di schema public; bucket `payment-proofs` privat.
 - Akses lintas anggota dibatasi. Role/status tidak dapat dinaikkan lewat metadata pendaftaran atau direct table update.
 - Approval pembayaran mengunci submission dan wallet serta menulis status, saldo, ledger, dan audit dalam satu transaksi.
 - Fungsi pemrosesan harian hanya tersedia untuk service role atau scheduler database tepercaya; anon/authenticated tidak dapat menjalankannya.
-- Security Advisor terbaru mengembalikan `lints: []`.
+- Security Advisor terakhir tidak menunjukkan temuan kritis dari perubahan kas ini; masih ada peringatan konfigurasi Auth tentang perlindungan kata sandi bocor yang dinonaktifkan.
 
 ## 4. Status mesin tagihan harian
 
-Mesin harian telah dibuat di database, tetapi **belum dijadwalkan dan belum boleh dianggap tervalidasi untuk uang nyata**.
+Mesin harian sudah diperbarui dan dijadwalkan, tetapi **operasi kas tetap terkunci sampai seluruh release gate selesai**.
 
 - `member_profiles.dues_start_date` diinisialisasi saat anggota diaktifkan.
 - `dues_rate_history` menyimpan tarif berdasarkan tanggal efektif.
 - `daily_dues_log` memiliki batas unik per `(member_id, due_date)`.
-- Fungsi catch-up memproses tanggal secara berurutan, mengurangi saldo prabayar untuk kewajiban yang tercakup, mencatat kekurangan sebagai tunggakan, menulis `wallet_transactions`, dan berhenti jika menemukan celah histori atau saldo/NextPay yang tidak konsisten.
-- Jika tanggal sudah tercakup oleh NextPay, saldo prabayar dikonsumsi tanpa memajukan NextPay kedua kalinya.
+- Fungsi catch-up memproses tanggal secara berurutan, memotong saldo yang tersedia, mencatat kekurangan sebagai tunggakan, menulis `wallet_transactions`, dan berhenti jika menemukan celah histori.
+- Pemroses tidak lagi menggunakan `next_pay` untuk menentukan apakah iuran harian sudah dibayar.
 - Pemroses default dirancang memproses sampai kemarin menurut WIB dan memajukan `report_date` ke hari ini secara atomik, dengan audit log.
 - Perubahan report date tidak boleh mundur dan tidak boleh maju ke masa depan.
-- Rate change ditolak jika masih ada saldo prabayar, tunggakan, NextPay masa depan, atau tanggal rekap belum catch-up.
+- Rate change dicatat mulai tanggal berikutnya dan tidak menghitung ulang tanggal sebelumnya; perubahan ditolak jika tanggal rekap belum catch-up.
 - Fungsi harian menolak bekerja ketika `dues_settings.cash_operations_enabled=false`. Approval pembayaran juga diblokir oleh trigger database saat flag false.
-- **Belum ada cron job**. Pemeriksaan extension menunjukkan `pg_cron` dan `pg_net` belum terpasang. Jangan memasang/menjadwalkan job atau membuka flag sampai tes simulasi lulus.
+- `pg_cron` terpasang dan job `webkas-daily-dues-wib` dijadwalkan pukul 00.01 WIB. Job menjadi no-op saat `cash_operations_enabled=false`; jangan membuka flag sebelum seluruh release gate lulus.
 
 ## 5. Status database saat pemeriksaan terakhir
 
 - `dues_settings.report_date = 2026-10-21` (nilai saat pemeriksaan 21 Oktober 2026)
 - `daily_amount = 1000`
-- `adm_default = 15000` (nilai aktual database saat pemeriksaan 21 Oktober 2026)
-- `cash_operations_enabled = false`
-- Auth users: 1; member profiles: 1 (admin utama aktif `vergil_style`); payment submissions: 0; ledger entries: 0.
+- `adm_default = 0`
+- `cash_operations_enabled = false` (tetap terkunci untuk melindungi saldo hingga QA selesai)
+- Auth users: 2; member profiles: 2 (admin utama aktif `vergil_style` dan satu anggota aktif); payment submissions: 0; daily dues logs: 0; wallet transactions: 1.
 - Histori tarif awal memiliki satu baris efektif mulai 2026-10-21.
 - Tidak ada data kas nyata atau anggota lama yang diimpor.
 - Pemeriksaan processor sebelum safety guard terakhir dilakukan saat database kosong dan menghasilkan 0 baris; setelah guard dipasang, pemanggilan service-role saat flag false menghasilkan error yang diharapkan. Ini bukan pengganti tes regresi end-to-end.
@@ -132,13 +132,13 @@ Migration history langsung diperiksa. File dengan versi yang sama harus tetap ad
 Rencana lengkap: `docs/qa/kas-regression-test-plan.md` (kasus 1–56). Kasus smoke test 49–54 dan 56 telah dijalankan secara transaksional; kasus 55 memverifikasi publikasi realtime dan RLS pada schema; **seluruh acceptance suite belum dijalankan end-to-end** karena tidak tersedia test project terisolasi di sesi ini.
 
 Wajib lulus sebelum operasi kas dibuka:
-1. Partial arrears, pelunasan penuh, saldo prabayar, NextPay dan `unpaid_from`.
+1. Partial arrears, pelunasan penuh, saldo UIC dan `unpaid_from`.
 2. Proses harian tanggal sama berulang, catch-up multi-hari, celah histori, anggota baru/pengecualian.
 3. Rate history dan perubahan tarif; report date WIB, catch-up dan larangan tanggal mundur/masa depan.
 4. Dua approval bersamaan, approval berulang, penolakan tanpa mutasi ledger.
 5. RLS, akses bukti privat, role admin, bootstrap token satu kali, upload/orphan cleanup.
 6. Build frontend dan verifikasi deployment Netlify.
-7. Jadwalkan cron setelah extension/scheduler tersedia dan tes lulus; job harus memakai WIB 00:01 dan memproses hari sebelumnya.
+7. Verifikasi cron WIB 00:01, catch-up, dan no-op saat safety lock masih aktif.
 
 ## 9. Satu langkah pemilik yang tetap diperlukan
 
