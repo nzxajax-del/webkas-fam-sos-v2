@@ -93,3 +93,5 @@ Do not apply a production schema or enable live payment approval until the sourc
 These are transactional smoke tests against the current V2 schema, not the complete concurrent/RLS/storage/UI acceptance suite. Synthetic Auth users, wallets, payment submissions, logs, and transactions were rolled back; they were not retained as project data.
 
 54. Payment approval must fail without mutating submission or wallet if `report_date` is behind the current Asia/Jakarta date. **PASS** (transactional fixture rolled back).
+
+55. Core realtime-published tables all retain RLS, and the frontend refreshes data on subscribed changes. **Schema publication/RLS verified; browser end-to-end realtime behavior still needs a live two-session test.**
