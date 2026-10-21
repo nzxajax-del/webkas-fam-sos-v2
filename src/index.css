@@ -54,6 +54,7 @@ input[type=color]{height:48px;padding:5px;cursor:pointer}
 .dashboard-shell[data-view="admin-payments"] #admin-payments,
 .dashboard-shell[data-view="admin-members"] #admin-members,
 .dashboard-shell[data-view="admin-settings"] #admin-settings,
+.dashboard-shell[data-view="admin-profile-settings"] #admin-profile-settings,
 .dashboard-shell[data-view="admin-transactions"] #admin-transactions,
 .dashboard-shell[data-view="admin-audit"] #admin-audit{display:block}
 .dashboard-shell[data-view^="member-"]:not([data-view="member-home"]) .welcome-panel{display:none}
