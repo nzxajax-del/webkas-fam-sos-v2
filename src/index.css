@@ -392,3 +392,14 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .chat-profile-details a{color:var(--lime);font-weight:700;text-decoration:none}
 .chat-profile-details a:hover{text-decoration:underline}
 @media(max-width:420px){.chat-profile-modal{padding:20px}.chat-profile-details{grid-template-columns:1fr}.chat-profile-summary .profile-avatar-wrap{flex:0 0 auto}}
+
+
+/* Admin Assistant role badge and Admin Master role-management panel */
+.rank-admin-assistant { color: #d7dbe2; border-color: rgba(215,219,226,.65); background: rgba(215,219,226,.08); }
+.rank-admin-assistant svg { color: #d7dbe2; }
+.assistant-management-panel { margin: 1rem 0 1.25rem; padding: 1rem; border: 1px solid rgba(215,219,226,.35); border-radius: 1rem; background: rgba(215,219,226,.035); }
+.assistant-account-list { display: grid; gap: .65rem; }
+.assistant-account-row { display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: .75rem; border: 1px solid var(--border, rgba(255,255,255,.12)); border-radius: .75rem; }
+.assistant-account-row > div { display: grid; gap: .2rem; min-width: 0; }
+.assistant-account-row small { color: var(--muted, #a6aaa6); overflow-wrap: anywhere; }
+@media (max-width: 560px) { .assistant-account-row { align-items: stretch; flex-direction: column; } .assistant-account-row button { width: 100%; } }
