@@ -81,7 +81,7 @@ export default function App() {
         setAdminMembers((allMemberRes.data || []).map((m) => ({ ...m, ...(walletByMember.get(m.id) || {}) }))
           .sort((a, b) => Number(Number(b.arrears || 0) >= 7000) - Number(Number(a.arrears || 0) >= 7000) ||
             Number(b.arrears || 0) - Number(a.arrears || 0) ||
-            String(a.display_name || "").localeCompare(String(b.display_name || "")));
+            String(a.display_name || "").localeCompare(String(b.display_name || ""))));
         setAdminTransactions(transactionRes.data || []);
         setAdminAudit(auditRes.data || []);
         pendingRows = pendingRes.data || [];
