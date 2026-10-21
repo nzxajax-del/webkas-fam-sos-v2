@@ -94,7 +94,7 @@ export default function App() {
     (async () => {
       const [profileRes, walletRes, settingsRes, paymentsRes] = await Promise.all([
         supabase.from("member_profiles").select("id,display_name,login_username,role,status,rank_code").eq("id", session.user.id).maybeSingle(),
-        supabase.from("member_wallets").select("balance,arrears,next_pay,unpaid_from,adm_due,exempt_kas").eq("member_id", session.user.id).maybeSingle(),
+        supabase.from("member_wallets").select("balance,arrears,unpaid_from,exempt_kas").eq("member_id", session.user.id).maybeSingle(),
         supabase.from("dues_settings").select("report_date,daily_amount,adm_default,cash_operations_enabled,proof_retention_days").eq("id", 1).maybeSingle(),
         supabase.from("payment_submissions").select("id,amount,payment_type,status,created_at,review_note").eq("member_id", session.user.id).order("created_at", { ascending: false }).limit(10),
       ]);
@@ -108,7 +108,7 @@ export default function App() {
           supabase.from("payment_submissions").select("id,member_id,amount,payment_type,proof_path,status,created_at,member_profiles(display_name,login_username)").eq("status", "pending").order("created_at", { ascending: true }).limit(100),
           supabase.from("member_profiles").select("id,display_name,login_username,created_at,rank_code,registration_proof_path,registration_note").eq("role", "member").eq("status", "pending").order("created_at", { ascending: true }).limit(100),
           supabase.from("member_profiles").select("id,display_name,login_username,status,created_at,rank_code").eq("role", "member").order("display_name", { ascending: true }).limit(500),
-          supabase.from("member_wallets").select("member_id,balance,arrears,next_pay,unpaid_from,adm_due,exempt_kas"),
+          supabase.from("member_wallets").select("member_id,balance,arrears,unpaid_from,exempt_kas"),
           supabase.from("wallet_transactions").select("id,member_id,transaction_type,amount,description,created_at,member_profiles(display_name,login_username)").order("created_at", { ascending: false }).limit(100),
           supabase.from("admin_audit_log").select("id,action,target_type,target_id,details,created_at").order("created_at", { ascending: false }).limit(100),
         ]);
@@ -226,7 +226,7 @@ export default function App() {
       setBusy(false); return;
     }
     const [walletRes, settingsRes] = await Promise.all([
-      supabase.from("member_wallets").select("balance,arrears,next_pay,unpaid_from,adm_due,exempt_kas").eq("member_id", session.user.id).maybeSingle(),
+      supabase.from("member_wallets").select("balance,arrears,unpaid_from,exempt_kas").eq("member_id", session.user.id).maybeSingle(),
       supabase.from("dues_settings").select("report_date,daily_amount,adm_default,cash_operations_enabled,proof_retention_days").eq("id", 1).maybeSingle(),
     ]);
     if (walletRes.error || !walletRes.data || settingsRes.error || !settingsRes.data) {
@@ -455,7 +455,7 @@ export default function App() {
   async function refreshAdminSnapshot() {
     const [allMemberRes, walletListRes, transactionRes, auditRes] = await Promise.all([
       supabase.from("member_profiles").select("id,display_name,login_username,status,created_at,rank_code").eq("role", "member").order("display_name", { ascending: true }).limit(500),
-      supabase.from("member_wallets").select("member_id,balance,arrears,next_pay,unpaid_from,adm_due,exempt_kas"),
+      supabase.from("member_wallets").select("member_id,balance,arrears,unpaid_from,exempt_kas"),
       supabase.from("wallet_transactions").select("id,member_id,transaction_type,amount,description,created_at,member_profiles(display_name,login_username)").order("created_at", { ascending: false }).limit(100),
       supabase.from("admin_audit_log").select("id,action,target_type,target_id,details,created_at").order("created_at", { ascending: false }).limit(100),
     ]);
