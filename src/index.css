@@ -474,3 +474,11 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .rank-p2 .emblem-symbol{fill:#d8894b;stroke:#d8894b}
 .rank-p2 .emblem-detail{stroke:#d8894b}
 .rank-p2 .emblem-detail-fill{fill:#d8894b;stroke:#d8894b}
+
+
+/* Admin role emblems: hooded angel on black, gold for Super Admin and bright white for Admin. */
+.rank-admin{color:#ffd75e;background:#050505;border:1px solid #171717;box-shadow:0 0 2px #000,0 0 5px #000}
+.rank-admin .admin-skull-icon{color:#ffd34d;filter:drop-shadow(0 0 2px #ffcf32) drop-shadow(0 0 5px #ffb900)}
+.rank-admin-assistant{color:#fff;background:#050505;border:1px solid #f7faff;box-shadow:0 0 3px #fff,0 0 7px #fff}
+.rank-admin-assistant .admin-skull-icon{color:#fff;filter:drop-shadow(0 0 2px #fff) drop-shadow(0 0 5px #eaf3ff)}
+.rank-admin .admin-skull-icon,.rank-admin-assistant .admin-skull-icon{width:28px;height:28px;flex:0 0 28px}
