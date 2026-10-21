@@ -144,3 +144,6 @@ Versi: 1.8 (21 Oktober 2026)
 - Supabase V2: `lzciyzibqbujshoizlbu`, database baru terpisah dari proyek lama.
 - Netlify URL target: `https://webkas-fam-sos-v2.netlify.app`; update terbaru belum dikonfirmasi live.
 - Rencana tes: `docs/qa/kas-regression-test-plan.md`.
+
+- **Reproducibility fix:** migration filenames in GitHub have been aligned with the exact versions already recorded by Supabase (20261021004747 through 20261021010345), including the initial rls_auto_enable hardening file. This avoids duplicate local migration versions when comparing repository history with the live V2 database.
+- GitHub Actions run 39525588015 for commit 89965a907a3b22bbe3d667da44f3769c06f17576 was still in progress during the last check; dependency installation had started and the Vite build step was pending. Do not mark it successful until the workflow reports completion.
