@@ -57,7 +57,7 @@ Deno.serve(async (req: Request) => {
   const { data: profile, error: profileError } = await admin
     .from("member_profiles").select("role,status").eq("id", userData.user.id).maybeSingle();
   if (profileError) return json({ error: "Verifikasi admin gagal." }, 500, origin);
-  if (profile?.role !== "admin" || profile?.status !== "active") {
+  if (!["admin", "admin_assistant"].includes(profile?.role) || profile?.status !== "active") {
     return json({ error: "Hanya admin aktif yang dapat memproses pembayaran." }, 403, origin);
   }
 
