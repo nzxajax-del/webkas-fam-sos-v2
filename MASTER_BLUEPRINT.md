@@ -164,3 +164,5 @@ Admin pertama belum dibuat dan database belum memiliki Auth user. Pemilik harus 
 - Migration `20261021015007_enable_realtime_for_core_kas_tables` adds the core dashboard tables to the `supabase_realtime` publication: member profiles, wallets, payment submissions, wallet transactions, KAS settings, and admin audit log.
 - Database inspection confirmed RLS is enabled on all six published tables. The React app now subscribes to authorized Postgres changes and refreshes the dashboard when relevant records change. Admin approval/edit actions also refresh wallet summaries, transaction history, and audit log after success.
 - Frontend build for the realtime React change is pending at the time of this note; do not claim it passed until its GitHub Actions run completes.
+
+- Additional transactional smoke test passed for the scheduled processor: when report_date is one day behind, it processed yesterday once, advanced report_date to today WIB, and wrote the audit event. The test fixture was rolled back.
