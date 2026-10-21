@@ -503,3 +503,21 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .member-rank-group-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#11160f}
 .member-rank-group-heading>div{display:flex;align-items:center;gap:9px;min-width:0}
 .member-rank-group-heading>div>strong{font-size:13px;letter-spacing:.02em}
+
+
+/* Chat sender layout: keep the name and rank in separate stable columns. */
+.chat-sender-identity{display:block;min-width:0;flex:1}
+.chat-sender-columns{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;min-width:0}
+.chat-sender-name-line{display:block;min-width:0;max-width:100%;white-space:nowrap;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;flex-wrap:nowrap}
+.chat-sender-name-line::-webkit-scrollbar{display:none}
+.chat-sender-name-line .chat-profile-trigger{display:block;width:max-content;max-width:none;white-space:nowrap;overflow-wrap:normal}
+.chat-sender-rank-column{display:flex;align-items:center;justify-content:flex-end;gap:5px;min-width:max-content;white-space:nowrap;color:var(--muted,#a6af9a);font-size:10px}
+.chat-sender-rank-column .rank-badge{display:inline-flex;align-items:center;flex:0 0 auto;padding:1px 3px;border-radius:5px}
+.chat-sender-rank-column .rank-badge .rank-emblem,.chat-sender-rank-column .rank-badge .admin-skull-icon{width:19px;height:20px;flex:0 0 19px}
+.chat-message-sender time{font-size:9px}
+@media(max-width:520px){
+  .chat-sender-columns{gap:5px}
+  .chat-sender-rank-column{gap:3px;font-size:9px}
+  .chat-sender-rank-column .rank-badge .rank-emblem,.chat-sender-rank-column .rank-badge .admin-skull-icon{width:17px;height:18px;flex-basis:17px}
+  .chat-message-sender time{font-size:8px}
+}
