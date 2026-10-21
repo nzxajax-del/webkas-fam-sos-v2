@@ -1,6 +1,6 @@
 # MASTER BLUEPRINT — WEBKAS FAM SOS V2
 
-Versi: 1.6 (21 Oktober 2026)
+Versi: 1.7 (21 Oktober 2026)
 
 ## Keputusan hosting
 - Hosting statis: Netlify (menggantikan rencana Vercel).
@@ -64,7 +64,7 @@ Versi: 1.6 (21 Oktober 2026)
 
 ## Status lanjutan 21 Oktober 2026
 - Audit Supabase V2 diulang: nol tabel `public`, nol migrasi; peringatan fungsi keamanan tetap ada.
-- Repository V2 sudah memiliki dependensi Supabase JS, namun belum memiliki koneksi aktif atau autentikasi.
+- Repository V2 sudah memiliki dependensi Supabase JS dan modul `src/lib/supabase.js` yang hanya membaca `VITE_SUPABASE_URL` dan `VITE_SUPABASE_ANON_KEY` untuk browser; belum ada koneksi aktif karena environment variables belum dikonfigurasi di Netlify, dan autentikasi belum diimplementasikan.
 - Repository lama dapat dibaca sebagian lewat GitHub, tetapi akses ke proyek Supabase lama belum tersedia. Kode frontend saja tidak cukup untuk memastikan perilaku backend, trigger, RPC, dan RLS.
 - Keputusan aman: belum membuat tabel aplikasi, belum mengaktifkan login, dan belum mengubah fungsi `rls_auto_enable`; langkah tersebut ditahan sampai skema lama/definisi fungsi dapat diaudit agar tidak merusak logika kas atau keamanan.
 
