@@ -109,3 +109,38 @@ Versi: 1.8 (21 Oktober 2026)
 
 - Supabase browser client kini memakai URL proyek dan **publishable key publik** sebagai fallback aman di `src/lib/supabase.js`; environment Netlify tidak wajib untuk konfigurasi dasar. Nilai `VITE_*` tetap dapat dipakai sebagai override. Publishable key memang dirancang untuk frontend; service-role key tetap hanya di server.
 - Commit frontend terbaru: `3e329639e5f0003a125ee68ae38d427e207c576c`. Pemeriksaan status commit GitHub belum menampilkan status CI; build tetap belum terverifikasi.
+
+
+## Status pekerjaan terbaru — versi 2.0 (21 Oktober 2026)
+
+### Implementasi frontend terbaru
+- UI login dan pendaftaran anggota tetap menggunakan username/password melalui Supabase Auth. Pendaftaran dilakukan oleh Edge Function `member-register` versi 2 yang aktif; akun baru berstatus pending.
+- Dashboard anggota sekarang menampilkan saldo dibayar ke depan, tunggakan, ADM, NextPay, dan riwayat pengajuan. Format tampilan uang dibagi 1.000 agar 1.000 unit database tampil sebagai 1K.
+- Anggota dapat mengajukan pembayaran KAS atau ADM dan mengunggah bukti privat JPG/PNG/WEBP maksimal 5 MB ke bucket `payment-proofs`. Nama objek diawali UUID pemilik.
+- Panel admin memuat antrean pendaftaran dan antrean pembayaran, membuka bukti lewat signed URL 5 menit, serta memanggil RPC server-side untuk menyetujui/menolak.
+- Aksi persetujuan pendaftaran hanya dapat mengubah status pending menjadi active/rejected melalui `private.review_member_registration` dan wrapper `public.review_member_registration`; role tidak dapat diubah lewat operasi browser. Direct UPDATE ke `member_profiles` dicabut.
+- Aksi pembayaran menggunakan `private.review_payment` dan wrapper `public.review_payment`. Direct UPDATE ke `payment_submissions` dicabut. Fungsi mengunci pengajuan dan wallet, menulis status, wallet, ledger, dan audit log dalam satu transaksi.
+- KAS: alokasi persetujuan menutup tunggakan dahulu, sisa masuk ke balance. Fungsi mensyaratkan nominal KAS kelipatan tarif harian, menggeser `unpaid_from` sesuai hari tunggakan yang dilunasi, dan memajukan `next_pay` sesuai saldo ke depan bila tunggakan tertutup.
+- ADM: nominal tidak boleh melebihi ADM tersisa; persetujuan mengurangi `adm_due` tanpa mengubah wallet KAS.
+- Migrasi terbaru:
+  - `20261021015000_lock_payment_status_until_atomic_review.sql`
+  - `20261021016000_atomic_payment_review.sql`
+  - `20261021017000_expose_guarded_review_rpc.sql`
+  - `20261021018000_secure_member_registration_review.sql`
+- Database migration history saat audit terakhir menunjukkan `lock_payment_status_until_atomic_review`, `atomic_payment_review`, `expose_guarded_review_rpc`, dan `secure_member_registration_review` berhasil diterapkan.
+- Security Advisor: `lints: []`. Performance Advisor hanya memberi informasi unused index karena tabel masih kosong; itu bukan error keamanan.
+- Audit database memastikan bucket privat dan batas 5 MB, serta belum ada akun Auth (count = 0). Karena itu, admin pertama belum dapat masuk dan harus diprovision melalui jalur pemilik/server tepercaya; jangan menambah password default atau backdoor di repository.
+- Build lokal belum dapat dijalankan karena lingkungan pemeriksaan tidak dapat mengakses GitHub/npm network. GitHub status-check endpoint belum menunjukkan hasil CI. Netlify deployment terbaru belum diverifikasi.
+- Daily dues processor dan cron **belum diaktifkan**. Jangan mengaktifkannya sebelum tanggal efektif tarif, arti report_date, catch-up, dan aturan NextPay diuji terhadap seluruh kasus regresi.
+
+### Keputusan keamanan penting
+- Public browser key disetel sebagai fallback di `src/lib/supabase.js`; publishable key aman untuk publik karena akses data tetap dikontrol grants/RLS. Service-role key hanya dibaca oleh Edge Function server-side.
+- Endpoint pendaftaran publik memakai `verify_jwt=false` karena pengguna belum login; validasi input dan pemeriksaan duplikasi berjalan di server. CORS dibatasi pada domain Netlify V2 dan localhost development.
+- Tidak ada data lama atau transaksi nyata yang diimpor. Jangan menyatakan V2 siap produksi.
+- Jangan aktifkan pembayaran nyata sampai test cases 21–34 di `docs/qa/kas-regression-test-plan.md` lulus, terutama alokasi pembayaran, NextPay, partial arrears, race condition, akses bukti privat, dan build/deploy.
+
+### Status operasional
+- GitHub repository: `nzxajax-del/webkas-fam-sos-v2`, branch `main`.
+- Supabase V2: `lzciyzibqbujshoizlbu`, database baru terpisah dari proyek lama.
+- Netlify URL target: `https://webkas-fam-sos-v2.netlify.app`; update terbaru belum dikonfirmasi live.
+- Rencana tes: `docs/qa/kas-regression-test-plan.md`.
