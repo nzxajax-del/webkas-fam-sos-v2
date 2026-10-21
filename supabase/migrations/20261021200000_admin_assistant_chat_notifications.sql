@@ -42,9 +42,15 @@ on public.chat_messages for insert to authenticated
 with check (
   sender_id = auth.uid()
   and private.is_admin_assistant()
+  and char_length(btrim(body)) between 1 and 2000
 );
 
-grant select, insert on public.chat_messages to authenticated;
+drop policy if exists chat_messages_delete_admin_assistant on public.chat_messages;
+create policy chat_messages_delete_admin_assistant
+on public.chat_messages for delete to authenticated
+using (private.is_admin_assistant());
+
+grant select, insert, delete on public.chat_messages to authenticated;
 
 -- The chat identity RPC must include active Admin Assistant profiles so their
 -- role emblem and profile image can be resolved for other chat participants.
