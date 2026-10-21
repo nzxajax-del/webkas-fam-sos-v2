@@ -56,7 +56,7 @@ Do not apply a production schema or enable live payment approval until the sourc
 34. Netlify production build must pass and the deployed URL must serve the latest commit before the release is declared ready.
 
 ## Current execution status
-- Tests 21–48 are **specified, not yet executed end-to-end**. Supabase Security Advisor returns no security lints, and the current database has zero Auth users. GitHub Actions build passed for commit `409398e9b271bf23e70e887fb79c1ffbfffd2d87`; Netlify live deployment remains unverified.
+- Tests 21–48 remain **not fully executed end-to-end**. Additional isolated SQL smoke tests are recorded in `docs/qa/2026-10-21-database-smoke-tests.md`. Supabase Security Advisor returns no security lints, and the current database has zero Auth users. GitHub Actions build passed for commit `409398e9b271bf23e70e887fb79c1ffbfffd2d87`; Netlify live deployment remains unverified.
 - Payment review RPCs and UI are implemented, but **do not use them for real cash until tests 21–34 pass**, especially concurrent review, NextPay, and partial-arrears date advancement.
 - Daily dues processor is implemented in V2 but **no cron is scheduled** and cash operations remain locked. Do not schedule it until the daily rate/effective-date and report-date semantics are fully tested.
 
@@ -79,3 +79,14 @@ Do not apply a production schema or enable live payment approval until the sourc
 
 47. When invoked by a trusted database scheduler as `session_user=postgres`, the daily processor is authorized; a browser/anon caller cannot invoke it.
 48. If report_date is behind today's Asia/Jakarta date, a default scheduled run catches up through yesterday, advances report_date to today, and writes one audit event atomically; a future report_date must stop processing.
+
+
+## Isolated SQL smoke tests executed on 21 October 2026
+
+49. Prepaid balance across three due dates deducts exactly 3K, preserves the already-advanced NextPay, creates three daily ledger rows, and same-date rerun creates zero new rows. **PASS** (fixture rolled back).
+50. Partial balance shortfall creates daily arrears and preserves the first unpaid date; exempt member gets exempt logs without deductions; all are idempotent on rerun. **PASS** (fixture rolled back).
+51. Payment approval for 500 units of fractional arrears with a 1K payment clears arrears, leaves 500 units prepaid, advances NextPay by one day, and clears unpaid_from; 1K paid against 1.5K arrears leaves 500 arrears and advances unpaid_from/NextPay one day. **PASS** after fixing fractional-day NextPay logic (fixture rolled back).
+52. A missing earlier daily log while a later log exists is detected and prevents wallet mutation. **PASS** (fixture rolled back).
+53. Daily processor refuses to run while `cash_operations_enabled=false`. **PASS**.
+
+These are transactional smoke tests against the current V2 schema, not the complete concurrent/RLS/storage/UI acceptance suite. Synthetic Auth users, wallets, payment submissions, logs, and transactions were rolled back; they were not retained as project data.
