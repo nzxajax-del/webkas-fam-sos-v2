@@ -64,3 +64,13 @@ input[type=color]{height:48px;padding:5px;cursor:pointer}
 .dashboard-shell[data-view="member-history"] #member-history,
 .dashboard-shell[data-view="member-payments"] #member-payments{display:block}
 @media(max-width:560px){.dashboard-header{gap:9px}.hamburger-button{flex-basis:38px;width:38px;height:38px;padding:8px}.dashboard-header .brand-mark small{letter-spacing:.06em;font-size:8px}.dashboard-header .review-actions{gap:5px}.dashboard-header .review-actions .secondary{padding:8px 9px;font-size:11px}}
+
+
+.registration-proof-notice{margin:4px 0 0}
+.balance-correction-form{display:grid;gap:12px;margin:18px 0;padding:16px;border:1px solid #465b32;border-radius:14px;background:#171e13}
+.balance-correction-form h3{margin:4px 0;font-size:16px;overflow-wrap:anywhere}
+.balance-correction-form .section-head{margin:0;align-items:flex-start}
+.balance-correction-form label{display:grid;gap:6px;color:var(--muted,#a9b49e);font-size:13px;font-weight:700}
+.balance-correction-form input{width:100%;min-width:0}
+.balance-correction-form .primary{width:100%}
+@media(max-width:560px){.balance-correction-form{padding:12px}.registration-proof-notice p{margin-bottom:0}}
