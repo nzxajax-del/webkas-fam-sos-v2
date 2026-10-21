@@ -83,3 +83,22 @@ Versi: 1.8 (21 Oktober 2026)
 - Perbaikan ACL `rls_auto_enable()` berhasil diterapkan dan diverifikasi; Security Advisor kini bersih.
 - Workflow build sudah diperbaiki untuk menghindari ketergantungan cache pada lockfile yang belum ada; hasil run CI masih belum diverifikasi.
 - Belum ada schema aplikasi, auth, bucket bukti, atau transaksi aktif. Belum ada klaim bahwa build/deploy sudah lolos.
+
+
+## Status pekerjaan terbaru — 21 Oktober 2026 (versi 1.9)
+- **Supabase schema berhasil diterapkan** melalui migrasi yang tercatat di database:
+  - `restrict_rls_auto_enable_execution`
+  - `v2_secure_foundation`
+  - `harden_private_admin_predicate`
+  - `optimize_rls_auth_checks`
+  - `add_member_login_username`
+- Tabel aktif: `member_profiles`, `dues_settings`, `member_wallets`, `wallet_transactions`, `daily_dues_log`, `payment_submissions`, `admin_audit_log`. Semua tabel tersebut sudah diverifikasi dengan RLS aktif. Belum ada data anggota/transaksi lama yang diimpor.
+- Bucket `payment-proofs` telah dibuat privat, batas 5 MB, hanya JPG/PNG/WEBP. Policy upload mensyaratkan folder UUID milik pengguna dan status anggota aktif; pembacaan dibatasi ke pemilik/admin.
+- Fungsi admin dipindah ke schema `private`, tidak lagi menjadi RPC di schema API `public`. Fungsi hanya dapat dieksekusi role authenticated untuk kebutuhan policy. `rls_auto_enable` hanya dapat dieksekusi pemilik database. Security Advisor terbaru mengembalikan `lints: []`.
+- Performance Advisor tidak lagi memberi warning RLS initplan; tersisa hanya informasi indeks belum dipakai karena database masih kosong dan belum ada beban aplikasi.
+- Username login ditambahkan ke profil dengan indeks unik case-insensitive. Trigger pendaftaran membuat profil member berstatus `pending` dan wallet awal ADM sesuai pengaturan. Pengguna tidak dapat memilih role admin melalui metadata pendaftaran.
+- Edge Function `member-register` aktif versi 2, JWT tidak diwajibkan karena endpoint pendaftaran publik; fungsi memvalidasi nama, username, panjang password, memeriksa duplikasi, dan membuat akun lewat Auth Admin API di server. Service-role key hanya dibaca dari environment Edge Function, tidak ditanam di frontend. CORS dibatasi ke domain Netlify V2 dan localhost development.
+- UI React sekarang mencakup login username/kata sandi, pendaftaran anggota, layar status pending/ditolak, dan dashboard baca-saja untuk saldo, tunggakan, ADM, NextPay, serta riwayat pengajuan. UI footer sudah sesuai.
+- **Belum diaktifkan:** pengajuan pembayaran dari UI, approval/rejection admin, perubahan ledger, kalkulasi otomatis harian, dan pemajuan NextPay. Ini sengaja ditahan sampai settlement dapat dibuat atomik dan tes regresi membuktikan aturan kas lama; jangan menyatakan sistem kas sudah beroperasi.
+- **Belum diverifikasi:** build GitHub Actions, URL deployment Netlify setelah commit UI, konfigurasi environment Netlify, dan pembuatan akun admin pertama. Environment frontend memerlukan `VITE_SUPABASE_URL=https://lzciyzibqbujshoizlbu.supabase.co` serta `VITE_SUPABASE_ANON_KEY` yang bersifat publik. Konektor Netlify belum tersedia untuk mengatur environment variables secara otomatis.
+- Akun admin pertama belum dibuat. Jangan menyisipkan password admin default atau membuka hak admin lewat frontend. Provisioning admin harus dilakukan melalui jalur server tepercaya setelah akses pemilik yang sah tersedia.
