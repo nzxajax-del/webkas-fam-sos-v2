@@ -110,7 +110,7 @@ export default function App() {
         const [pendingRes, memberRes, allMemberRes, walletListRes, transactionRes, auditRes] = await Promise.all([
           supabase.from("payment_submissions").select("id,member_id,amount,payment_type,proof_path,status,created_at,member_profiles(display_name,login_username)").eq("status", "pending").order("created_at", { ascending: true }).limit(100),
           supabase.from("member_profiles").select("id,display_name,login_username,created_at,rank_code,registration_proof_path,registration_note").eq("role", "member").eq("status", "pending").order("created_at", { ascending: true }).limit(100),
-          supabase.from("member_profiles").select("id,display_name,login_username,status,created_at,rank_code,profile_photo_path").eq("role", "member").order("display_name", { ascending: true }).limit(500),
+          supabase.from("member_profiles").select("id,display_name,login_username,status,created_at,rank_code,profile_photo_path,registration_proof_path").eq("role", "member").order("display_name", { ascending: true }).limit(500),
           supabase.from("member_wallets").select("member_id,balance,arrears,unpaid_from,exempt_kas"),
           supabase.from("wallet_transactions").select("id,member_id,transaction_type,amount,description,created_at,member_profiles(display_name,login_username)").order("created_at", { ascending: false }).limit(100),
           supabase.from("admin_audit_log").select("id,action,target_type,target_id,details,created_at").order("created_at", { ascending: false }).limit(100),
@@ -428,10 +428,16 @@ export default function App() {
       setError("Akun tidak dihapus: " + deleteError.message + ". Jika anggota memiliki riwayat kas, nonaktifkan akun agar catatan keuangan tetap terjaga.");
       setBusy(false); return;
     }
+    const cleanupErrors = [];
     if (member.profile_photo_path) {
       const { error: photoError } = await supabase.storage.from("profile-photos").remove([member.profile_photo_path]);
-      if (photoError) setError("Akun sudah dihapus, tetapi foto profil lama belum berhasil dibersihkan: " + photoError.message);
+      if (photoError) cleanupErrors.push("foto profil: " + photoError.message);
     }
+    if (member.registration_proof_path) {
+      const { error: registrationError } = await supabase.storage.from("registration-proofs").remove([member.registration_proof_path]);
+      if (registrationError) cleanupErrors.push("bukti pendaftaran: " + registrationError.message);
+    }
+    if (cleanupErrors.length) setError("Akun sudah dihapus, tetapi berkas berikut perlu dibersihkan manual: " + cleanupErrors.join("; "));
     setOpenMemberActions(null);
     await refreshAdminSnapshot();
     setMessage("Akun anggota @" + member.login_username + " berhasil dihapus permanen karena tidak memiliki riwayat keuangan.");
@@ -525,7 +531,7 @@ export default function App() {
 
   async function refreshAdminSnapshot() {
     const [allMemberRes, walletListRes, transactionRes, auditRes] = await Promise.all([
-      supabase.from("member_profiles").select("id,display_name,login_username,status,created_at,rank_code,profile_photo_path").eq("role", "member").order("display_name", { ascending: true }).limit(500),
+      supabase.from("member_profiles").select("id,display_name,login_username,status,created_at,rank_code,profile_photo_path,registration_proof_path").eq("role", "member").order("display_name", { ascending: true }).limit(500),
       supabase.from("member_wallets").select("member_id,balance,arrears,unpaid_from,exempt_kas"),
       supabase.from("wallet_transactions").select("id,member_id,transaction_type,amount,description,created_at,member_profiles(display_name,login_username)").order("created_at", { ascending: false }).limit(100),
       supabase.from("admin_audit_log").select("id,action,target_type,target_id,details,created_at").order("created_at", { ascending: false }).limit(100),
