@@ -366,3 +366,9 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 /* Compact activity counters in the navigation drawer. */
 .drawer-item{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .notification-badge{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:#ff6262;color:#fff;font-size:11px;font-weight:900;line-height:1;box-shadow:0 0 0 2px var(--panel,#141912);flex-shrink:0}
+
+
+/* Minimal icon-only actions for the chat view. */
+.chat-icon-actions{display:flex;align-items:center;justify-content:flex-end;gap:6px;margin:0 0 8px auto}
+.chat-icon-button{display:inline-flex!important;align-items:center;justify-content:center;width:32px!important;min-width:32px;height:30px!important;min-height:30px;padding:5px!important;border-radius:8px!important;line-height:1!important}
+.chat-icon-button svg{display:block;width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
