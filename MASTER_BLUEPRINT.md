@@ -184,3 +184,8 @@ Tindak lanjut:
 2. Lengkapi tes regresi di database terisolasi; jangan menggunakan transaksi nyata.
 3. Verifikasi workflow terakhir dan deploy Netlify melalui hasil status yang nyata.
 4. Pertahankan pemisahan database lama dan V2; jangan mengimpor data lama sebelum mapping skema dan aturan bisnis tervalidasi.
+
+
+### Hasil audit ACL bootstrap (lanjutan)
+Audit privilege langsung mengonfirmasi: `anon` dan `service_role` tidak memiliki USAGE pada schema `private`; `authenticated` memiliki USAGE untuk memanggil jalur bootstrap yang dibatasi. Ketiga role (`anon`, `authenticated`, `service_role`) tidak memiliki SELECT langsung pada `private.admin_bootstrap_tokens`. Wrapper `public.bootstrap_first_admin(text)` dapat dieksekusi `authenticated` saja; `anon` tidak dapat mengeksekusinya. Fungsi privat juga tidak dapat dieksekusi langsung oleh `anon`. Karena itu, RLS nonaktif pada tabel token adalah temuan hardening yang perlu ditinjau, tetapi pemeriksaan ACL ini tidak menunjukkan akses SELECT langsung bagi role client. Jangan mengubah kebijakan sebelum jalur SECURITY DEFINER dan hak pemilik fungsi diperiksa menyeluruh.
+CI build run `39525983224` telah diperiksa melalui detail job: semua langkah selesai dan kesimpulannya `success`. Ini membuktikan build commit kode `428ee9e3f83354d7613da889f064d6b0f765d187`, bukan membuktikan deployment Netlify terbaru sudah aktif.
