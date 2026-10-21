@@ -189,3 +189,46 @@ input[type=color]{height:48px;padding:5px;cursor:pointer}
   .member-finance-row>div{padding:6px}
   .member-finance-row strong{font-size:11px}
 }
+
+
+/* Member landing page stays informational; profile edits live in settings */
+.welcome-profile-row{display:flex;align-items:center;gap:14px;margin:12px 0}
+.welcome-profile-details{display:grid;justify-items:start;gap:9px}
+.welcome-status{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--muted)}
+.dashboard-shell[data-view^="member-"] #member-settings{display:none}
+.dashboard-shell[data-view="member-settings"] #member-settings{display:block}
+.dashboard-shell[data-view^="member-"] #member-settings .profile-photo-settings{max-width:620px}
+
+/* Extra-compact member cards for faster scanning */
+.member-card-grid{gap:5px;padding-right:3px}
+.member-card{padding:6px 8px;border-radius:9px}
+.member-card-top{grid-template-columns:50px minmax(0,1fr);gap:8px}
+.member-avatar-frame{width:50px;height:50px;max-height:50px;border-radius:7px}
+.member-card-details{gap:3px}
+.member-rank-line{padding-bottom:2px}
+.member-rank-line .rank-badge{padding:2px 5px;font-size:9px}
+.member-rank-line .rank-badge span{font-size:11px}
+.member-rank-name,.member-card-details>small{font-size:9px}
+.member-character-name{font-size:12px;line-height:1.2}
+.member-finance-row{gap:5px;margin:5px 0}
+.member-finance-row>div{padding:4px 6px;gap:4px}
+.member-finance-row span{font-size:9px}
+.member-finance-row strong{font-size:10px}
+.member-menu-toggle{padding:5px 7px;font-size:10px}
+.member-menu-lines{font-size:12px}
+.member-menu-chevron{font-size:13px}
+.member-actions-panel{gap:6px;padding:7px 1px 0}
+@media(min-width:761px){
+ .member-card-grid{max-height:min(74vh,820px)}
+ .member-card{column-gap:9px}
+ .member-card-top{grid-template-columns:50px minmax(0,1fr)}
+}
+@media(max-width:420px){
+ .member-card{padding:6px}
+ .member-card-top{grid-template-columns:44px minmax(0,1fr);gap:7px}
+ .member-avatar-frame{width:44px;height:44px;max-height:44px}
+ .member-character-name{font-size:11px}
+ .member-finance-row>div{padding:4px}
+ .member-finance-row span{font-size:8px}
+ .member-finance-row strong{font-size:9px}
+}
