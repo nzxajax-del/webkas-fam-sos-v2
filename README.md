@@ -5,13 +5,18 @@ Fondasi website kas baru untuk Fam SOS.
 ## Hosting Netlify
 - Build command: `npm run build`
 - Publish directory: `dist`
-- Build/SPA settings are defined in `netlify.toml`.
-- Connect this GitHub repository to Netlify to enable automatic deploys from `main`.
+- Konfigurasi ada di `netlify.toml`.
+- Hubungkan repository GitHub ini ke Netlify agar deployment otomatis mengikuti branch `main`.
 
-## Status
-Saat ini repository berisi scaffold UI dan konfigurasi hosting. Fitur login, database, pembayaran, dan kalkulasi kas belum siap produksi. Jangan gunakan untuk transaksi nyata.
+## Environment variables
+Set di Netlify Site configuration → Environment variables:
+- `VITE_SUPABASE_URL=https://lzciyzibqbujshoizlbu.supabase.co`
+- `VITE_SUPABASE_ANON_KEY` = publishable/anon key dari proyek Supabase V2.
 
-## Environment
-Copy `.env.example` to `.env.local` for local development once Supabase public key is approved for frontend use. Never use a service-role key in the browser.
+Gunakan hanya key publishable/anon di frontend. Jangan pernah memasukkan service-role key, secret, password, atau token administratif ke repository atau variabel `VITE_*`.
 
-Blueprint and safety constraints: [MASTER_BLUEPRINT.md](./MASTER_BLUEPRINT.md).
+## Status aplikasi
+Saat ini UI masih mode persiapan. Client Supabase baru disiapkan; login, skema database, RLS, transaksi, pembayaran, upload bukti, dan kalkulasi kas belum aktif. Jangan gunakan untuk transaksi nyata sebelum keamanan backend dan tes regresi selesai.
+
+## Referensi
+Lihat [MASTER_BLUEPRINT.md](./MASTER_BLUEPRINT.md) untuk batasan keamanan, aturan bisnis kas, dan urutan implementasi.
