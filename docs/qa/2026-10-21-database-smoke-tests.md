@@ -16,10 +16,13 @@ Test method: transactional SQL with synthetic fixtures and explicit `ROLLBACK`.
 | Partial arrears settlement | 1,500 arrears + 1,000 payment => arrears 500, NextPay +1 day, unpaid_from +1 day | PASS |
 | Gap detection | If the later date has a log while the earlier date is missing, processor throws a reconciliation error and does not mutate wallet balance | PASS |
 | Cash operations interlock | Daily processor rejects execution while `cash_operations_enabled=false` | PASS |
+| Stale report date guard | Payment approval rejects a stale report date and leaves the submission pending and wallet unchanged | PASS |
 
 ## Defect fixed
 
 Before migration `20261021014000_fix_fractional_arrears_payment_nextpay`, NextPay advanced using `floor(arrears_paid/daily_rate) + floor(balance_credit/daily_rate)`. For 500 arrears and a 1,000 payment, both terms rounded to zero despite the full payment representing one daily rate. The fix advances NextPay by the full payment's day-equivalent when arrears are being paid, while `unpaid_from` continues to advance according to whole days settled against arrears.
+
+A second hardening migration, `20261021014711_require_current_report_date_for_payment_approval`, rejects payment approval if the report date is not today's Asia/Jakarta date. This prevents approval from using a stale catch-up horizon if a scheduled run has been missed.
 
 ## Safety and limitations
 
