@@ -324,3 +324,7 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 @media(max-width:520px){.chat-message{width:94%;padding:10px}.chat-message-list{padding:8px;max-height:55vh}.chat-compose-footer{align-items:stretch}.chat-compose-footer button{width:100%}}
 
 .dashboard-shell[data-view="chat"] #member-rate-panel{display:none}
+
+
+.chat-header-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+@media(max-width:560px){.chat-header-actions{width:100%;justify-content:stretch}.chat-header-actions button{flex:1;min-width:0}}
