@@ -166,3 +166,21 @@ Versi: 1.8 (21 Oktober 2026)
 - Do not enable cash operations until the full regression test plan passes and the daily-dues/NextPay design is complete.
 
 - **Latest UI build verification:** GitHub Actions run 39525983224 completed `success` for code commit 428ee9e3f83354d7613da889f064d6b0f765d187, including the database-enforced safety-lock UI. Documentation-only commits after that are triggering new runs; Netlify live deployment remains unverified.
+
+
+## Audit lanjutan otonom — 21 Oktober 2026
+
+Pemeriksaan langsung pada Supabase V2 menghasilkan status berikut:
+- Proyek yang diperiksa tetap `lzciyzibqbujshoizlbu`; tanggal database dan tanggal rekap sama-sama 2026-10-21.
+- `dues_settings`: tarif KAS 1000 unit/hari, ADM default 10000 unit, dan `cash_operations_enabled=false`.
+- Belum ada pengguna Auth maupun profil admin; satu token bootstrap tersimpan dan belum digunakan.
+- Tabel aplikasi pada schema `public` memiliki RLS aktif. Security Advisor mengembalikan `lints: []`.
+- Pemeriksaan struktur tabel menemukan `private.admin_bootstrap_tokens` memiliki RLS nonaktif. Tabel ini berada di schema privat dan semua grant tabel telah dicabut dari PUBLIC/anon/authenticated/service_role, sehingga temuan ini harus dievaluasi bersama privilege schema dan fungsi SECURITY DEFINER; jangan menyimpulkan tabel terekspos ke browser hanya dari flag RLS. Jangan mengaktifkan RLS secara membabi buta tanpa merancang akses fungsi yang diperlukan.
+- Migration history langsung cocok dengan versi keamanan, bootstrap admin satu kali, dan safety lock kas sampai `20261021011213`.
+- Tes regresi tetap belum dijalankan secara lengkap; settlement, NextPay, tanggal tunggakan, concurrency, dan daily dues belum boleh dianggap tervalidasi. Jangan mengaktifkan cron atau operasi kas.
+
+Tindak lanjut:
+1. Audit privilege schema `private`, ACL fungsi bootstrap, dan jalur akses wrapper sebelum mengubah status RLS token.
+2. Lengkapi tes regresi di database terisolasi; jangan menggunakan transaksi nyata.
+3. Verifikasi workflow terakhir dan deploy Netlify melalui hasil status yang nyata.
+4. Pertahankan pemisahan database lama dan V2; jangan mengimpor data lama sebelum mapping skema dan aturan bisnis tervalidasi.
