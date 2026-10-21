@@ -20,9 +20,9 @@ const RankSymbol = ({ rank }) => {
   if (rank === "P7") return <svg {...common}>{frame}<path className="emblem-symbol" d="m11 20 7 5 6-13 6 13 7-5-3 17H14Z" /><path className="emblem-detail" d="M15 40h18M18 16l-2-5M30 16l2-5M22 8h4" /><circle className="emblem-detail-fill" cx="24" cy="8" r="2" /></svg>;
   return <svg {...common}>{frame}<path className="emblem-symbol" d="M14 20h20v14H14zM18 16h12v4M18 34v4M30 34v4" /></svg>;
 };
-const AdminSkull = ({ isAssistant = false }) => <svg viewBox="0 0 32 32" aria-hidden="true" className="admin-skull-icon"><g fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 4 26 28M26 4 6 28"/><path d="m3.5 2.5 5 1.2L7.2 8.5ZM28.5 2.5l-5 1.2 1.3 4.8ZM3.5 29.5l5-1.2-1.3-4.8ZM28.5 29.5l-5-1.2 1.3-4.8Z"/><path d="M12 12 9 9M20 20l3 3M20 12l3-3M12 20l-3 3"/></g></svg>;
+const AdminSkull = ({ isAssistant = false }) => <svg viewBox="0 0 32 32" aria-hidden="true" className="admin-skull-icon"><path d="m16 2 3.9 8 8.8 1.3-6.4 6.2 1.5 8.8-7.8-4.2-7.8 4.2 1.5-8.8-6.4-6.2 8.8-1.3Z" fill="currentColor" stroke="currentColor" strokeWidth="1" strokeLinejoin="round"/></svg>;
 const RankBadge = ({ rank, isAdmin = false, isAssistant = false }) => {
-  if (isAdmin || isAssistant) return <span className={"rank-badge rank-admin" + (isAssistant ? " rank-admin-assistant" : "")} title={isAssistant ? "Pangkat Admin" : "Pangkat Super Admin"}><AdminSkull isAssistant={isAssistant} /> {isAssistant ? "ADMIN" : "SUPER ADMIN"}</span>;
+  if (isAdmin || isAssistant) return <span className={"rank-badge rank-admin" + (isAssistant ? " rank-admin-assistant" : "")} title={isAssistant ? "Pangkat Admin" : "Pangkat Super Admin"}><AdminSkull isAssistant={isAssistant} /></span>;
   const item = rankInfo(rank);
   return <span className={"rank-badge rank-" + item.label.toLowerCase()} title={rankNames[rank] || item.label} aria-label={(rankNames[rank] || item.label) + " (" + item.label + ")"}><RankSymbol rank={rank} /></span>;
 };
