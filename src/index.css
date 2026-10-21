@@ -343,3 +343,5 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .db-usage-meter-track{height:8px;overflow:hidden;border-radius:99px;background:#30372b}
 .db-usage-meter-track span{display:block;height:100%;border-radius:99px;background:var(--accent,#c1f45a)}
 @media(max-width:440px){.db-usage-grid{gap:7px}.db-usage-card{padding:10px}.db-usage-card strong{font-size:16px}.db-usage-card small{font-size:10px}}
+
+.db-usage-quota-note{padding:11px 12px;border:1px solid #66552b;border-radius:10px;background:#211d11}.db-usage-quota-note strong{font-size:12px;color:#f0d68c}.db-usage-quota-note p{margin:6px 0 0;font-size:11px;line-height:1.5}
