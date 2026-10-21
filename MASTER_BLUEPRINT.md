@@ -113,6 +113,7 @@ Migration history langsung diperiksa. File dengan versi yang sama harus tetap ad
 - `20261021013635_allow_trusted_db_scheduler_for_daily_dues`
 - `20261021013828_index_rate_history_created_by`
 - `20261021014246_fix_fractional_arrears_payment_nextpay`
+- `20261021014711_require_current_report_date_for_payment_approval`
 
 ## 7. Build dan deployment
 
@@ -151,3 +152,8 @@ Admin pertama belum dibuat dan database belum memiliki Auth user. Pemilik harus 
 - Transactional SQL smoke tests passed for prepaid daily deduction, arrears accrual, exempt members, same-date idempotency, fractional arrears payment settlement, gap detection without wallet mutation, and the disabled cash-operations interlock. Test fixtures were rolled back; database remains free of test members/transactions.
 - The tests exposed a NextPay edge case when the arrears amount was fractional (for example 500 units) and the submitted payment was one full daily rate. The prior logic floored arrears-paid days and prepaid days separately, resulting in zero NextPay advancement. Migration `20261021014000_fix_fractional_arrears_payment_nextpay` fixes this by advancing NextPay based on full days represented by the entire KAS payment while retaining the arrears-day count for unpaid_from.
 - These smoke tests do not cover concurrency, full RLS/storage, the whole UI, or Netlify deployment. Cash operations remain disabled; cron remains unscheduled.
+
+
+## Payment approval catch-up guard — 21 October 2026
+- Migration `20261021014711_require_current_report_date_for_payment_approval` blocks approval if `dues_settings.report_date` differs from the current Asia/Jakarta date. This prevents a stale report-date horizon from allowing a payment settlement before missed daily dues are caught up.
+- A transactional smoke test set a stale report date and attempted approval. The RPC rejected it with the expected reconciliation error; the payment remained pending and wallet stayed unchanged. Fixture rolled back.
