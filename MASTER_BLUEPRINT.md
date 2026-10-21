@@ -112,7 +112,7 @@ Migration history langsung diperiksa. File dengan versi yang sama harus tetap ad
 - `20261021013619_guard_settings_and_report_date_wib`
 - `20261021013635_allow_trusted_db_scheduler_for_daily_dues`
 - `20261021013828_index_rate_history_created_by`
-- `20261021014000_fix_fractional_arrears_payment_nextpay`
+- `20261021014246_fix_fractional_arrears_payment_nextpay`
 
 ## 7. Build dan deployment
 
