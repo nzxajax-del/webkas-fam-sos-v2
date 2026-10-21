@@ -106,7 +106,6 @@ export default function App() {
       setSettings(settingsRes.data || null);
       if (settingsRes.data) {
         setDailyDraft(String(settingsRes.data.daily_amount ?? 1000));
-    setReportDateDraft(settingsRes.data.report_date || "");
         setReportDateDraft(settingsRes.data.report_date || "");
         setAdmDraft(String(settingsRes.data.adm_default ?? 10000));
       }
@@ -174,6 +173,7 @@ export default function App() {
     }
     setProfile(data); setWallet(walletRes.data); setSettings(settingsRes.data);
     setDailyDraft(String(settingsRes.data.daily_amount ?? 1000));
+    setReportDateDraft(settingsRes.data.report_date || "");
     setAdmDraft(String(settingsRes.data.adm_default ?? 10000));
     setBootstrapToken("");
     setMessage("Admin utama berhasil diaktifkan.");
