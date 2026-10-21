@@ -95,3 +95,5 @@ These are transactional smoke tests against the current V2 schema, not the compl
 54. Payment approval must fail without mutating submission or wallet if `report_date` is behind the current Asia/Jakarta date. **PASS** (transactional fixture rolled back).
 
 55. Core realtime-published tables all retain RLS, and the frontend refreshes data on subscribed changes. **Schema publication/RLS verified; browser end-to-end realtime behavior still needs a live two-session test.**
+
+56. Default scheduled processor catches up through yesterday when report_date is stale, advances it to today's Asia/Jakarta date, and writes an audit event atomically. **PASS** (transactional fixture rolled back).
