@@ -164,3 +164,5 @@ Versi: 1.8 (21 Oktober 2026)
 - Member payment submission controls and admin approval buttons are disabled while this flag is false. Admin rejection remains available so a pending request can be declined without changing the ledger.
 - Migration applied as version 20261021011213 and repository filename matches the database history. Security Advisor remained `lints: []` after the change.
 - Do not enable cash operations until the full regression test plan passes and the daily-dues/NextPay design is complete.
+
+- **Latest UI build verification:** GitHub Actions run 39525983224 completed `success` for code commit 428ee9e3f83354d7613da889f064d6b0f765d187, including the database-enforced safety-lock UI. Documentation-only commits after that are triggering new runs; Netlify live deployment remains unverified.
