@@ -118,7 +118,7 @@ Migration history langsung diperiksa. File dengan versi yang sama harus tetap ad
 
 ## 7. Build dan deployment
 
-- GitHub Actions build untuk pembaruan frontend terbaru telah lulus pada commit `6f4353c7a52287192b29fd70bbfc95da705ee184`, run https://github.com/nzxajax-del/webkas-fam-sos-v2/actions/runs/39529484964. Perubahan dokumentasi/database sesudahnya juga memicu workflow build; periksa run terbaru sebelum menyatakan commit dokumentasi paling akhir lulus.
+- GitHub Actions build untuk pembaruan frontend terbaru telah lulus pada commit `7c41d12e67a50d96e53ca9d1839de9ff6daec715`, run https://github.com/nzxajax-del/webkas-fam-sos-v2/actions/runs/39529635439. Perubahan dokumentasi/database sesudahnya juga memicu workflow build; periksa run terbaru sebelum menyatakan commit dokumentasi paling akhir lulus.
 - Dokumentasi/test-plan commits berikutnya memicu build workflow baru; status run harus dilihat sebelum menyatakan commit terbaru lulus.
 - Netlify URL target: https://webkas-fam-sos-v2.netlify.app. Konektor Netlify tidak tersedia dan URL tidak dapat diverifikasi dari alat pemeriksaan ini; jangan klaim deployment terbaru sudah live tanpa bukti.
 - `src/lib/supabase.js` berisi URL V2 dan publishable key publik sebagai fallback. `VITE_SUPABASE_URL` dan `VITE_SUPABASE_ANON_KEY` boleh menjadi override. Jangan pernah memakai service-role key pada browser.
