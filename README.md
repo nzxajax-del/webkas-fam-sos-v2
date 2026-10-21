@@ -30,7 +30,7 @@ Website kas baru Fam SOS dengan hosting Netlify, frontend React/Vite, dan backen
 - Pengguna tidak dapat mengubah status pembayaran, status pendaftaran, role, ledger, atau daily dues log secara langsung lewat tabel.
 
 ## Batasan yang masih harus dituntaskan
-- Belum ada akun admin pertama; database saat ini belum memiliki pengguna Auth. Provisioning admin harus dilakukan melalui jalur pemilik/server yang tepercaya, bukan tombol publik.
+- Belum ada akun admin pertama; database saat ini belum memiliki pengguna Auth. Pemilik harus mendaftar dengan username/kata sandi pilihannya, login, lalu memasukkan kode bootstrap satu kali yang diberikan terpisah. Kode tidak disimpan di repository dan hanya dapat digunakan sekali.
 - Kalkulasi kas harian otomatis dan cron belum diaktifkan. NextPay/tunggakan harus melewati regression tests sebelum dijalankan harian.
 - GitHub Actions build berhasil untuk commit kode `89965a907a3b22bbe3d667da44f3769c06f17576`; pemeriksaan untuk commit dokumentasi sesudahnya masih berjalan. Deployment Netlify terbaru tetap belum diverifikasi. Jangan menyatakan aplikasi lolos build atau live sudah diperbarui tanpa hasil nyata.
 - Settlement RPC telah diterapkan, tetapi perlu uji terisolasi terhadap skenario tunggakan, pembayaran parsial, ADM, dan pengajuan ganda sebelum digunakan untuk kas nyata.
