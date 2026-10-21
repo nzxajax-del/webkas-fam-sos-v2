@@ -49,7 +49,7 @@ export default function App() {
         supabase.from("member_profiles").select("id,display_name,login_username,role,status").eq("id", session.user.id).maybeSingle(),
         supabase.from("member_wallets").select("balance,arrears,next_pay,unpaid_from,adm_due,exempt_kas").eq("member_id", session.user.id).maybeSingle(),
         supabase.from("dues_settings").select("report_date,daily_amount,adm_default").eq("id", 1).maybeSingle(),
-        supabase.from("payment_submissions").select("id,amount,status,created_at,review_note").eq("member_id", session.user.id).order("created_at", { ascending: false }).limit(10),
+        supabase.from("payment_submissions").select("id,amount,payment_type,status,created_at,review_note").eq("member_id", session.user.id).order("created_at", { ascending: false }).limit(10),
       ]);
       if (!alive) return;
       const firstError = [profileRes, walletRes, settingsRes, paymentsRes].find((r) => r.error);
