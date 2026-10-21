@@ -189,3 +189,14 @@ Tindak lanjut:
 ### Hasil audit ACL bootstrap (lanjutan)
 Audit privilege langsung mengonfirmasi: `anon` dan `service_role` tidak memiliki USAGE pada schema `private`; `authenticated` memiliki USAGE untuk memanggil jalur bootstrap yang dibatasi. Ketiga role (`anon`, `authenticated`, `service_role`) tidak memiliki SELECT langsung pada `private.admin_bootstrap_tokens`. Wrapper `public.bootstrap_first_admin(text)` dapat dieksekusi `authenticated` saja; `anon` tidak dapat mengeksekusinya. Fungsi privat juga tidak dapat dieksekusi langsung oleh `anon`. Karena itu, RLS nonaktif pada tabel token adalah temuan hardening yang perlu ditinjau, tetapi pemeriksaan ACL ini tidak menunjukkan akses SELECT langsung bagi role client. Jangan mengubah kebijakan sebelum jalur SECURITY DEFINER dan hak pemilik fungsi diperiksa menyeluruh.
 CI build run `39525983224` telah diperiksa melalui detail job: semua langkah selesai dan kesimpulannya `success`. Ini membuktikan build commit kode `428ee9e3f83354d7613da889f064d6b0f765d187`, bukan membuktikan deployment Netlify terbaru sudah aktif.
+
+
+## Status implementasi admin terbaru — 21 Oktober 2026
+- Supabase V2 sudah memiliki schema aplikasi dengan RLS aktif, private payment-proof bucket, approval RPC atomik, bootstrap admin sekali pakai, serta safety lock kas yang default-nya OFF.
+- Migrasi `20261021012233_admin_console_settings_and_member_management` sudah diterapkan ke project V2 dan dicatat dalam repository.
+- Admin UI kini memuat antrean pendaftaran, antrean pembayaran, manajemen nama anggota dan pengecualian KAS, pengaturan tarif KAS/ADM, laporan 100 transaksi terbaru, audit aktivitas admin, total tunggakan, dan prioritas anggota dengan tunggakan minimal 7K.
+- RPC pengaturan dan edit profil anggota membatasi akses ke admin aktif dan menulis perubahan ke `admin_audit_log`. Perubahan nama tidak menghapus riwayat transaksi.
+- Build GitHub Actions sukses untuk commit `161e8a9e68d7008fd5f4d573aca6e0e407fcbe43` dan `6711d8d5326a1d10eb1c6a46d1ca0a83cdb98748`; setelah tambahan rekap tunggakan commit terbaru perlu diverifikasi ulang.
+- Security Advisor terbaru: tidak ada temuan keamanan (`lints: []`). Performance Advisor hanya memberi catatan indeks yang belum terpakai pada database yang masih kosong; indeks tersebut dipertahankan karena memang dipakai untuk pola query aplikasi.
+- Belum selesai: mesin pemrosesan harian dan rekonsiliasi NextPay/tunggakan, perubahan tanggal rekap yang menjalankan catch-up aman, tes regresi transaksi end-to-end, pembersihan bukti otomatis, verifikasi konfigurasi environment dan deployment Netlify terbaru, serta pembuatan akun admin pertama oleh pemilik.
+- Jangan membuka `cash_operations_enabled` atau mengaktifkan cron sampai semua tes transaksi dan aturan NextPay lulus. Jangan menyatakan website selesai produksi sebelum deployment live dan alur bootstrap diverifikasi.
