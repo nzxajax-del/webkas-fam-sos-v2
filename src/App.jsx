@@ -11,8 +11,8 @@ const rankInfo = (rank) => ({ P1: { label: "P1", color: "#d6a34d" }, P2: { label
 const RankSymbol = ({ rank }) => {
   const common = { viewBox: "0 0 48 54", "aria-hidden": "true", className: "rank-symbol rank-emblem rank-emblem-" + String(rank).toLowerCase() };
   const frame = <path className="emblem-frame" d="M24 2 43 10v17c0 11-8 19-19 25C13 46 5 38 5 27V10Z" />;
-  if (rank === "P1") return <svg {...common}>{frame}<circle className="emblem-detail" cx="24" cy="27" r="10" /><path className="emblem-symbol" d="m13 18 22 19M35 18 13 37M10 18l5-5 4 4-5 5ZM29 37l5-5 4 4-5 5Z" /></svg>;
-  if (rank === "P2") return <svg {...common}>{frame}<path className="emblem-symbol" d="M11 25h21l5 3v4H11zM17 25v-5h12l3 5M14 32v4h7v-4M31 20l4-3 3 4-5 4" /><path className="emblem-detail" d="M12 13h24M12 41h24" /></svg>;
+  if (rank === "P1") return <svg {...common}>{frame}<path className="emblem-symbol" d="M24 44V25M24 29C16 29 12 23 12 16c8 0 13 4 12 13ZM24 25c0-9 5-14 14-14 0 9-5 14-14 14Z" /><path className="emblem-detail" d="M24 32c-5-5-10-6-15-4 2 6 7 9 15 9M24 32c5-5 10-6 15-4-2 6-7 9-15 9M19 48h10" /><circle className="emblem-detail-fill" cx="24" cy="24" r="3" /></svg>;
+  if (rank === "P2") return <svg {...common}>{frame}<path className="emblem-symbol" d="M24 43V12M15 21 24 12l9 9M18 25 24 19l6 6" /><path className="emblem-detail" d="M10 45h28M18 35l6 6 6-6" /></svg>;
   if (rank === "P3") return <svg {...common}>{frame}<path className="emblem-detail" d="M24 10 27.5 18 36 19 29.5 25 31 34 24 30 17 34 18.5 25 12 19 20.5 18Z" /><path className="emblem-symbol" d="m13 29 22 12M35 29 13 41M11 28l4-4 4 4-4 4ZM29 41l4-4 4 4-4 4Z" /></svg>;
   if (rank === "P4") return <svg {...common}>{frame}<path className="emblem-symbol" d="M24 14v22M15 19h18M18 19 12 31h12ZM30 19l-6 12h12ZM16 38h16M20 42h8" /><path className="emblem-detail" d="M24 10v4M12 31q6 6 12 0M24 31q6 6 12 0" /></svg>;
   if (rank === "P5") return <svg {...common}>{frame}<path className="emblem-symbol" d="M24 7 20 27h-7l11 19 11-19h-7Z" /><path className="emblem-detail" d="M24 7v39M17 27h14M20 33h8M21 37h6M20 27l4-20 4 20" /></svg>;
