@@ -111,7 +111,6 @@ export default function App() {
         setDailyDraft(String(settingsRes.data.daily_amount ?? 1000));
         setReportDateDraft(settingsRes.data.report_date || "");
         setAdmDraft(String(settingsRes.data.adm_default ?? 10000));
-    setRetentionDraft(String(settingsRes.data.proof_retention_days ?? 7));
         setRetentionDraft(String(settingsRes.data.proof_retention_days ?? 7));
       }
       setPayments(paymentsRes.data || []);
@@ -189,7 +188,7 @@ export default function App() {
     }
     const [walletRes, settingsRes] = await Promise.all([
       supabase.from("member_wallets").select("balance,arrears,next_pay,unpaid_from,adm_due,exempt_kas").eq("member_id", session.user.id).maybeSingle(),
-      supabase.from("dues_settings").select("report_date,daily_amount,adm_default,cash_operations_enabled").eq("id", 1).maybeSingle(),
+      supabase.from("dues_settings").select("report_date,daily_amount,adm_default,cash_operations_enabled,proof_retention_days").eq("id", 1).maybeSingle(),
     ]);
     if (walletRes.error || !walletRes.data || settingsRes.error || !settingsRes.data) {
       setError("Admin aktif, tetapi data dashboard belum termuat. Keluar lalu masuk kembali untuk memuat ulang.");
@@ -200,6 +199,7 @@ export default function App() {
     setDailyDraft(String(settingsRes.data.daily_amount ?? 1000));
     setReportDateDraft(settingsRes.data.report_date || "");
     setAdmDraft(String(settingsRes.data.adm_default ?? 10000));
+    setRetentionDraft(String(settingsRes.data.proof_retention_days ?? 7));
     setBootstrapToken("");
     setMessage("Admin utama berhasil diaktifkan.");
     setBusy(false);
