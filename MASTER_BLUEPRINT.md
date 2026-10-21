@@ -147,3 +147,5 @@ Versi: 1.8 (21 Oktober 2026)
 
 - **Reproducibility fix:** migration filenames in GitHub have been aligned with the exact versions already recorded by Supabase (20261021004747 through 20261021010345), including the initial rls_auto_enable hardening file. This avoids duplicate local migration versions when comparing repository history with the live V2 database.
 - GitHub Actions run 39525588015 for commit 89965a907a3b22bbe3d667da44f3769c06f17576 was still in progress during the last check; dependency installation had started and the Vite build step was pending. Do not mark it successful until the workflow reports completion.
+
+- **Build check verified:** GitHub Actions run 39525588015 completed with `success` for code commit 89965a907a3b22bbe3d667da44f3769c06f17576 (React/Vite build). A documentation-only commit after it triggered run 39525632815, which was still in progress at last check. Netlify deployment is not verified by the available connector.
