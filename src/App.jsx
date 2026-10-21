@@ -865,17 +865,26 @@ export default function App() {
   }, [profile?.id, profile?.role, profile?.status, activeSection]);
 
   async function clearChatHistory() {
-    if (!isAdmin) return;
+    // This action is restricted to the active Super Admin only.
+    if (profile?.role !== "admin" || profile?.status !== "active" || !supabase) {
+      setError("Hanya Super Admin aktif yang dapat mengosongkan riwayat chat.");
+      return;
+    }
     if (!window.confirm("Kosongkan SELURUH riwayat ruang chat sekarang? Semua pesan anggota akan dihapus permanen. Data anggota, saldo, kas, dan pembayaran tidak terpengaruh.")) return;
     setBusy(true); setError(""); setMessage("");
-    const { data, error: clearError } = await supabase.rpc("admin_clear_chat_messages");
-    if (clearError || data?.success !== true) {
-      setError("Riwayat chat gagal dikosongkan: " + (clearError?.message || "Operasi tidak berhasil."));
-    } else {
-      setMessage("Riwayat chat berhasil dikosongkan. " + Number(data.deleted_count || 0) + " pesan dihapus.");
-      await loadChatMessages();
+    try {
+      const { data, error: clearError } = await supabase.rpc("admin_clear_chat_messages");
+      if (clearError || data?.success !== true) {
+        setError("Riwayat chat gagal dikosongkan: " + (clearError?.message || "Operasi tidak berhasil."));
+      } else {
+        setMessage("Riwayat chat berhasil dikosongkan. " + Number(data.deleted_count || 0) + " pesan dihapus.");
+        await loadChatMessages();
+      }
+    } catch (clearException) {
+      setError("Riwayat chat gagal dikosongkan: " + (clearException?.message || "Terjadi kesalahan koneksi."));
+    } finally {
+      setBusy(false);
     }
-    setBusy(false);
   }
 
   async function deleteChatMessage(messageId) {
