@@ -12,6 +12,7 @@ export default function App() {
   const [settings, setSettings] = useState(null);
   const [payments, setPayments] = useState([]);
   const [pendingPayments, setPendingPayments] = useState([]);
+  const [pendingMembers, setPendingMembers] = useState([]);
   const [paymentType, setPaymentType] = useState("kas");
   const [paymentAmount, setPaymentAmount] = useState("");
   const [proofFile, setProofFile] = useState(null);
@@ -34,7 +35,7 @@ export default function App() {
     const { data: listener } = supabase.auth.onAuthStateChange((_event, nextSession) => {
       setSession(nextSession);
       if (!nextSession) {
-        setProfile(null); setWallet(null); setSettings(null); setPayments([]); setPendingPayments([]);
+        setProfile(null); setWallet(null); setSettings(null); setPayments([]); setPendingPayments([]); setPendingMembers([]);
       }
     });
     return () => { alive = false; listener.subscription.unsubscribe(); };
@@ -55,12 +56,19 @@ export default function App() {
       const firstError = [profileRes, walletRes, settingsRes, paymentsRes].find((r) => r.error);
       if (firstError) setError("Data akun belum dapat dimuat. " + firstError.error.message);
       let pendingRows = [];
+      let pendingMemberRows = [];
       if (profileRes.data?.role === "admin" && profileRes.data?.status === "active") {
-        const pendingRes = await supabase.from("payment_submissions")
-          .select("id,member_id,amount,payment_type,proof_path,status,created_at,member_profiles(display_name,login_username)")
-          .eq("status", "pending").order("created_at", { ascending: true }).limit(100);
+        const [pendingRes, memberRes] = await Promise.all([
+          supabase.from("payment_submissions")
+            .select("id,member_id,amount,payment_type,proof_path,status,created_at,member_profiles(display_name,login_username)")
+            .eq("status", "pending").order("created_at", { ascending: true }).limit(100),
+          supabase.from("member_profiles").select("id,display_name,login_username,created_at")
+            .eq("role", "member").eq("status", "pending").order("created_at", { ascending: true }).limit(100),
+        ]);
         if (pendingRes.error) setError("Antrean pembayaran tidak dapat dimuat. " + pendingRes.error.message);
+        if (memberRes.error) setError("Antrean pendaftaran tidak dapat dimuat. " + memberRes.error.message);
         pendingRows = pendingRes.data || [];
+        pendingMemberRows = memberRes.data || [];
       }
       if (!alive) return;
       setProfile(profileRes.data || null);
@@ -68,6 +76,7 @@ export default function App() {
       setSettings(settingsRes.data || null);
       setPayments(paymentsRes.data || []);
       setPendingPayments(pendingRows);
+      setPendingMembers(pendingMemberRows);
       setLoading(false);
     })();
     return () => { alive = false; };
@@ -146,6 +155,21 @@ export default function App() {
     } catch (err) {
       setError(err.message || "Pengajuan pembayaran gagal.");
     } finally { setBusy(false); }
+  }
+
+  async function reviewMember(id, decision) {
+    setBusy(true); setError(""); setMessage("");
+    const { error: reviewError } = await supabase.rpc("review_member_registration", {
+      p_member_id: id, p_decision: decision, p_note: reviewNote,
+    });
+    if (reviewError) {
+      setError("Pendaftaran belum diproses: " + reviewError.message);
+      setBusy(false); return;
+    }
+    setPendingMembers((rows) => rows.filter((row) => row.id !== id));
+    setReviewNote("");
+    setMessage(decision === "active" ? "Anggota disetujui. Akun sekarang aktif." : "Pendaftaran anggota ditolak.");
+    setBusy(false);
   }
 
   async function openProof(path) {
