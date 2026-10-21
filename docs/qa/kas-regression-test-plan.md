@@ -56,10 +56,10 @@ Do not apply a production schema or enable live payment approval until the sourc
 34. Netlify production build must pass and the deployed URL must serve the latest commit before the release is declared ready.
 
 ## Current execution status
-- Tests 21–34 are **specified, not yet executed**. Supabase Security Advisor returns no security lints, and the current database has zero Auth users. Build/CI status has not been verified.
+- Tests 21–38 are **specified, not yet executed end-to-end**. Supabase Security Advisor returns no security lints, and the current database has zero Auth users. GitHub Actions build passed for commit `409398e9b271bf23e70e887fb79c1ffbfffd2d87`; Netlify live deployment remains unverified.
 - Payment review RPCs and UI are implemented, but **do not use them for real cash until tests 21–34 pass**, especially concurrent review, NextPay, and partial-arrears date advancement.
 - Daily dues automation remains disabled; do not schedule it until the daily rate/effective-date and report-date semantics are fully tested.
 
 35. First-admin bootstrap fails for anon, missing token, incorrect token, or after an admin role exists.
 36. Valid bootstrap token can promote only the currently authenticated pending member, once; it cannot be reused and is not readable from API schemas.
-37. Bootstrap sets admin active, sets admin KAS exemption/ADM due to zero, and writes one audit log entry. Normal member registration still cannot set role=admin.
+37. Bootstrap sets admin active, sets admin KAS exemption/ADM due to zero, and writes one audit log entry. Normal member registration still cannot set role=admin.\n38. With arrears 5K, NextPay 1 October, unpaid_from 1 October, and payment 3K, approval must produce arrears 2K, NextPay 4 October, unpaid_from 4 October, unchanged balance, and exactly one ledger entry.
