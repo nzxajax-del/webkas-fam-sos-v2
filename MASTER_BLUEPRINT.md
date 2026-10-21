@@ -1,6 +1,6 @@
 # MASTER BLUEPRINT — WEBKAS FAM SOS V2
 
-Versi: 1.2 (21 Oktober 2026)
+Versi: 1.3 (21 Oktober 2026)
 
 ## Keputusan hosting
 - Hosting statis: Netlify (menggantikan rencana Vercel).
@@ -14,6 +14,7 @@ Versi: 1.2 (21 Oktober 2026)
 ## Status repository per 21 Oktober 2026
 - File fondasi berhasil ditulis ke branch `main`: `netlify.toml`, `package.json`, `index.html`, `vite.config.js`, `.gitignore`, `.env.example`, `src/main.jsx`, `src/App.jsx`, `src/index.css`, dan dokumen blueprint ini.
 - Aplikasi saat ini hanya berupa halaman persiapan UI. Login, autentikasi, data anggota, transaksi, pembayaran, upload bukti, serta kalkulasi kas belum diimplementasikan.
+- Dependensi `@supabase/supabase-js` telah ditambahkan ke `package.json` sebagai persiapan integrasi; belum ada koneksi frontend ke database dan belum ada key yang disimpan.
 - Build lokal belum berhasil dijalankan dari lingkungan pemeriksaan karena akses jaringan ke github.com gagal (DNS tidak dapat menyelesaikan host); ini bukan hasil build gagal dan bukan bukti build berhasil. Deploy Netlify juga belum diverifikasi. Jangan menyebut website sudah live sampai build/deploy dan URL benar-benar diperiksa.
 - Repo sebelumnya terdeteksi public saat audit. Jangan commit informasi rahasia; pertimbangkan menjadikan repo private jika sesuai kebutuhan.
 
@@ -65,6 +66,11 @@ Versi: 1.2 (21 Oktober 2026)
 6. Implementasikan alur pembayaran dan sambungkan ke ledger hanya setelah uji.
 7. Hubungkan GitHub repo ini ke Netlify, build dan deploy, lalu verifikasi URL live.
 8. Catat setiap keputusan, perintah, perubahan, error, perbaikan, dan hasil uji di blueprint ini.
+
+## Catatan audit lanjutan
+- Repository lama `vergilwebkas-eng/webkas-fam-sos` berhasil dibaca secara read-only melalui GitHub connector; aksesnya hanya baca (tidak ada izin push). Kode `src/App.jsx` menunjukkan nama tabel yang pernah dipakai aplikasi, termasuk `member_profiles`, `dues_settings`, `payment_submissions`, `cash_ledger`, dan `member_wallets`. Ini hanya petunjuk awal, bukan bukti skema database aktual atau aturan kas lengkap.
+- File `src/lib/supabase.js` pada repository lama menggunakan `@supabase/supabase-js` dengan variabel `VITE_SUPABASE_URL` dan `VITE_SUPABASE_ANON_KEY`.
+- Upaya mengambil beberapa jalur migration SQL yang ditebak gagal karena file tidak ditemukan. Jangan mengarang skema dari nama tabel saja.
 
 ## Catatan koneksi
 - Akses ke proyek Supabase lama `jjnmaylxjzgixnrqopro` pernah ditolak oleh konektor; jangan menyimpulkan skema lama dari ingatan saja.
