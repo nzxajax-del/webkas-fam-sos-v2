@@ -489,3 +489,12 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .chat-sender-name-line .rank-badge .admin-skull-icon,.profile-name-with-rank .rank-badge .admin-skull-icon,.welcome-name-with-rank .rank-badge .admin-skull-icon{width:22px;height:22px;flex:0 0 22px}
 .profile-name-with-rank,.welcome-name-with-rank{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
 .profile-name-with-rank .rank-badge,.welcome-name-with-rank .rank-badge{flex:0 0 auto}
+
+
+/* Read-only member directory: same rank order for every account, without admin controls. */
+#member-directory{display:none}
+.dashboard-shell[data-view="member-directory"] #member-directory{display:block}
+.dashboard-shell[data-view="member-directory"] .admin-layout{display:none}
+.dashboard-shell[data-view="member-directory"] .welcome-panel{display:none}
+.member-directory-card .member-name-bar{justify-content:flex-start}
+.member-directory-card .member-card-top{align-items:center}
