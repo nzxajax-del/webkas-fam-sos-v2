@@ -209,3 +209,12 @@ CI build run `39525983224` telah diperiksa melalui detail job: semua langkah sel
 - Keadaan database saat ini tetap aman: report_date 2026-10-21, daily_amount 1000, adm_default 10000, cash_operations_enabled=false; tidak ada Auth user, anggota, submission pembayaran, atau ledger entry.
 - Security Advisor kembali `lints: []`. Uji end-to-end belum dijalankan karena tidak tersedia lingkungan tes terisolasi yang terhubung pada sesi ini; jangan menjalankan tes mutasi ke data produksi. Netlify live deployment juga belum bisa dikonfirmasi oleh konektor yang tersedia.
 - Mesin harian, catch-up perubahan tanggal, cron, dan retensi bukti belum aktif. Pertahankan safety lock sampai perilaku NextPay, tanggal efektif, saldo dibayar ke depan, tunggakan, serta pencegahan tagihan ganda diuji lengkap.
+
+
+## Addendum — mesin tagihan harian V2 (21 Oktober 2026)
+- Migration `20261021013142_idempotent_daily_dues_processor` menambahkan `dues_start_date`, histori tarif efektif (`dues_rate_history`), inisialisasi tanggal mulai saat anggota diaktifkan, dan fungsi catch-up idempoten yang memakai `daily_dues_log` unik per anggota/tanggal.
+- Pemroses harian hanya bisa dipanggil role `service_role`, memeriksa celah histori dan ketidaksesuaian balance/NextPay, menulis log serta ledger dalam transaksi yang sama, dan kini menolak bekerja selama `cash_operations_enabled=false` (migration `20261021013445_guard_daily_processor_until_enabled`). Belum ada cron yang dijadwalkan.
+- Perubahan tanggal rekap memakai RPC admin yang menolak tanggal mundur, menjalankan catch-up sampai hari sebelum tanggal rekap baru, dan mencatat audit; RPC ini menolak bekerja selama safety lock aktif. UI tanggal rekap terkunci saat flag false.
+- Perubahan tarif harian direkam berdasarkan tanggal efektif dan ditolak jika anggota aktif masih memiliki saldo prabayar, tunggakan, atau NextPay di masa depan; ini mencegah tarif baru menghitung ulang kewajiban lama.
+- Tes runtime pemroses dilakukan hanya pada database kosong: panggilan service-role sebelum safety interlock diperketat menghasilkan 0 baris karena belum ada anggota aktif. Tidak ada anggota atau transaksi yang dibuat. Tes regresi dengan data simulasi terisolasi belum dapat dijalankan pada sesi ini; cash lock tetap OFF.
+- Security Advisor setelah policy histori tarif kembali `lints: []`. Keadaan database: `report_date=2026-10-21`, `daily_amount=1000`, `adm_default=10000`, `cash_operations_enabled=false`, 0 Auth user dan 0 ledger entries.
