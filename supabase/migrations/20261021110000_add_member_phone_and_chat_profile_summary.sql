@@ -26,7 +26,8 @@ begin
   return v_phone;
 end;
 $$;
-revoke all on function private.set_my_phone_number(text) from public, anon, authenticated;
+revoke all on function private.set_my_phone_number(text) from public, anon;
+grant execute on function private.set_my_phone_number(text) to authenticated;
 
 create or replace function public.set_my_phone_number(p_phone_number text)
 returns text language sql security invoker set search_path = pg_catalog
@@ -61,7 +62,8 @@ begin
   );
 end;
 $$;
-revoke all on function private.get_member_public_profile(uuid) from public, anon, authenticated;
+revoke all on function private.get_member_public_profile(uuid) from public, anon;
+grant execute on function private.get_member_public_profile(uuid) to authenticated;
 
 create or replace function public.get_member_public_profile(p_member_id uuid)
 returns jsonb language sql security invoker set search_path = pg_catalog
