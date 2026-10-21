@@ -256,3 +256,5 @@ input[type=color]{height:48px;padding:5px;cursor:pointer}
 .member-menu-icon-only{flex:0 0 30px;width:30px;height:30px;min-height:30px;padding:0;margin:0;display:inline-flex;align-items:center;justify-content:center;border:1px solid #46543a;border-radius:8px;background:#20271b;color:#f1f4e9}
 .member-menu-icon-only .member-menu-lines{font-size:16px;line-height:1}
 .member-menu-icon-only .member-menu-chevron{display:none}
+
+.account-security-settings{margin-top:24px;padding-top:22px;border-top:1px solid var(--line);display:grid;gap:10px}.account-security-settings h3{margin:8px 0 0;font-size:17px;letter-spacing:-.02em}.account-security-settings .auth-form{margin-top:8px;gap:13px}.account-security-settings .secondary{justify-self:start;min-width:190px}.profile-photo-settings{align-items:flex-start}
