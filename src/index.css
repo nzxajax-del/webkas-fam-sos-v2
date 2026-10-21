@@ -297,7 +297,14 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 
 /* Real-time member group chat */
 .chat-panel{display:none}
-.dashboard-shell[data-view="chat"]{width:min(calc(100% - 20px),1400px);padding-top:10px}
+.dashboard-shell[data-view="chat"]{width:min(calc(100% - 20px),1400px);padding-top:8px}
+.dashboard-shell[data-view="chat"] .welcome-panel,
+.dashboard-shell[data-view="chat"] .db-usage-panel,
+.dashboard-shell[data-view="chat"] .admin-safe-notice{display:none!important}
+.dashboard-shell[data-view="chat"] .dashboard-header{margin-bottom:8px}
+.dashboard-shell[data-view="chat"] .dashboard-header>.brand-mark,
+.dashboard-shell[data-view="chat"] .dashboard-header .review-actions button:first-child{display:none}
+.dashboard-shell[data-view="chat"] .dashboard-header .review-actions{margin-left:auto}
 .dashboard-shell[data-view="chat"] .chat-panel{display:block;padding:clamp(12px,2vw,24px);margin-top:0;min-height:calc(100dvh - 80px);border-radius:18px}
 .dashboard-shell[data-view="chat"] .admin-layout{display:none}
 .dashboard-shell[data-view="chat"] .admin-safe-notice{display:none}
