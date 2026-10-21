@@ -1,6 +1,6 @@
 # MASTER BLUEPRINT — WEBKAS FAM SOS V2
 
-Versi: 1.3 (21 Oktober 2026)
+Versi: 1.4 (21 Oktober 2026)
 
 ## Keputusan hosting
 - Hosting statis: Netlify (menggantikan rencana Vercel).
@@ -70,6 +70,7 @@ Versi: 1.3 (21 Oktober 2026)
 ## Catatan audit lanjutan
 - Repository lama `vergilwebkas-eng/webkas-fam-sos` berhasil dibaca secara read-only melalui GitHub connector; aksesnya hanya baca (tidak ada izin push). Kode `src/App.jsx` menunjukkan nama tabel yang pernah dipakai aplikasi, termasuk `member_profiles`, `dues_settings`, `payment_submissions`, `cash_ledger`, dan `member_wallets`. Ini hanya petunjuk awal, bukan bukti skema database aktual atau aturan kas lengkap.
 - File `src/lib/supabase.js` pada repository lama menggunakan `@supabase/supabase-js` dengan variabel `VITE_SUPABASE_URL` dan `VITE_SUPABASE_ANON_KEY`.
+- Pemindaian read-only pada `src/App.jsx` lama menemukan pola penggunaan tabel `member_profiles`, `dues_settings`, `payment_submissions`, `cash_ledger`, dan `member_wallets`; saldo dan tunggakan lama ditampilkan sebagai kolom terpisah. Namun, source scan saja belum mengungkap seluruh trigger, RPC, RLS, dan rumus harian server-side, sehingga belum cukup untuk menyalin database atau mengaktifkan transaksi.
 - Upaya mengambil beberapa jalur migration SQL yang ditebak gagal karena file tidak ditemukan. Jangan mengarang skema dari nama tabel saja.
 
 ## Catatan koneksi
