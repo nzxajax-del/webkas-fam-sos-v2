@@ -218,3 +218,10 @@ CI build run `39525983224` telah diperiksa melalui detail job: semua langkah sel
 - Perubahan tarif harian direkam berdasarkan tanggal efektif dan ditolak jika anggota aktif masih memiliki saldo prabayar, tunggakan, atau NextPay di masa depan; ini mencegah tarif baru menghitung ulang kewajiban lama.
 - Tes runtime pemroses dilakukan hanya pada database kosong: panggilan service-role sebelum safety interlock diperketat menghasilkan 0 baris karena belum ada anggota aktif. Tidak ada anggota atau transaksi yang dibuat. Tes regresi dengan data simulasi terisolasi belum dapat dijalankan pada sesi ini; cash lock tetap OFF.
 - Security Advisor setelah policy histori tarif kembali `lints: []`. Keadaan database: `report_date=2026-10-21`, `daily_amount=1000`, `adm_default=10000`, `cash_operations_enabled=false`, 0 Auth user dan 0 ledger entries.
+
+
+## Addendum — scheduled-date semantics hardening (21 Oktober 2026)
+- Migration `20261021013603_auto_advance_report_date_in_daily_processor` membuat pemanggilan default pemroses harian menangani tanggal WIB: catch-up sampai kemarin, memajukan `report_date` ke hari ini secara atomik, dan mencatat audit ketika tanggal berubah.
+- Migration `20261021013619_guard_settings_and_report_date_wib` menolak perubahan tarif jika tanggal rekap tertinggal dari tanggal WIB hari ini dan menolak tanggal rekap masa depan. Migration `20261021013635_allow_trusted_db_scheduler_for_daily_dues` mengizinkan pemanggil service-role atau scheduler database tepercaya (`session_user=postgres`) saja.
+- Belum ada cron job yang dibuat/dijalankan. Safety lock `cash_operations_enabled=false` menyebabkan pemroses harian menolak berjalan, dan report-date UI tetap disabled. Ini sengaja dipertahankan sampai tes kasus #21–48 lulus di lingkungan simulasi.
+- Pemroses dipanggil satu kali pada database V2 yang masih kosong sebelum safety gate terbaru dipasang dan mengembalikan 0 baris; setelah gate terbaru, panggilan service-role saat flag false menghasilkan error yang diharapkan dan tidak melakukan pemrosesan. Tidak ada akun, anggota, atau transaksi dibuat.
