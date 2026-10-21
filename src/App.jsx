@@ -10,7 +10,7 @@ const rankInfo = (rank) => ({ P1: { label: "P1", color: "#d6a34d" }, P2: { label
 const RankSymbol = ({ rank }) => {
   if (rank === "P1" || rank === "P2") return <svg viewBox="0 0 24 24" aria-hidden="true" className={"rank-symbol rank-symbol-" + rank.toLowerCase()}>{(rank === "P2" ? [0, 1] : [0]).map((n) => <path key={n} d={`M4 ${5 + n * 9} L12 ${12 + n * 9} L20 ${5 + n * 9}`} transform={rank === "P2" ? "translate(0,-2)" : undefined} />)}</svg>;
   if (rank === "P4") return <svg viewBox="0 0 24 24" aria-hidden="true" className="rank-symbol rank-symbol-p4"><path d="M12 2 L16.7 8.5 L22 9 L17 14 L18.5 22 L12 18 L5.5 22 L7 14 L2 9 L7.3 8.5 Z" /><path d="M12 2 L7 14 L22 9 L5.5 22 L16.7 8.5 L18.5 22 L2 9 L17 14 Z" /></svg>;
-  return <span aria-hidden="true" className="rank-symbol rank-symbol-" + rank.toLowerCase()>{rank === "P3" ? "◆" : "★"}</span>;
+  return <span aria-hidden="true" className={"rank-symbol rank-symbol-" + rank.toLowerCase()}>{rank === "P3" ? "◆" : "★"}</span>;
 };
 const AdminSkull = () => <svg viewBox="0 0 32 32" aria-hidden="true" className="admin-skull-icon"><path d="M16 2.5C8.4 2.5 3.5 8 3.5 15c0 4.1 1.8 7.2 4.8 9.2V29h5v-3h5.4v3h5v-4.8c3-2 4.8-5.1 4.8-9.2C28.5 8 23.6 2.5 16 2.5Z" fill="currentColor" /><path d="M9.2 14.2a3.7 3.7 0 1 0 7.4 0a3.7 3.7 0 1 0-7.4 0ZM17.4 14.2a3.7 3.7 0 1 0 7.4 0a3.7 3.7 0 1 0-7.4 0Z" fill="#101010"/><path d="M16 17.7 13.6 22h4.8Z" fill="#101010"/><path d="M11 26v3m5-3v3m5-3v3" stroke="#101010" strokeWidth="1.3"/></svg>;
 const RankBadge = ({ rank, isAdmin = false }) => {
