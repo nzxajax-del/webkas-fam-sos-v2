@@ -62,7 +62,8 @@ Do not apply a production schema or enable live payment approval until the sourc
 
 35. First-admin bootstrap fails for anon, missing token, incorrect token, or after an admin role exists.
 36. Valid bootstrap token can promote only the currently authenticated pending member, once; it cannot be reused and is not readable from API schemas.
-37. Bootstrap sets admin active, sets admin KAS exemption/ADM due to zero, and writes one audit log entry. Normal member registration still cannot set role=admin.\n38. With arrears 5K, NextPay 1 October, unpaid_from 1 October, and payment 3K, approval must produce arrears 2K, NextPay 4 October, unpaid_from 4 October, unchanged balance, and exactly one ledger entry.
+37. Bootstrap sets admin active, sets admin KAS exemption/ADM due to zero, and writes one audit log entry. Normal member registration still cannot set role=admin.
+38. With arrears 5K, NextPay 1 October, unpaid_from 1 October, and payment 3K, approval must produce arrears 2K, NextPay 4 October, unpaid_from 4 October, unchanged balance, and exactly one ledger entry.
 
 
 ## Daily dues engine tests (processor added 21 October 2026)
