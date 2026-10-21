@@ -20,7 +20,7 @@ Zona waktu bisnis: Asia/Jakarta (WIB)
 ## 2. Aturan bisnis kas yang wajib dipertahankan
 
 - Ledger transaksi adalah sumber kebenaran. Kas Lebih/saldo prabayar, NextPay, tunggakan, dan ADM adalah konsep terpisah.
-- Tarif default KAS: 1.000 unit = 1K per hari. ADM default anggota baru: 10.000 unit = 10K.
+- Tarif default KAS: 1.000 unit = 1K per hari. ADM default anggota baru: 15.000 unit = 15K (tarif terbaru yang dipilih pengguna).
 - Pembayaran KAS menutup tunggakan lebih dahulu; sisa pembayaran masuk saldo prabayar. Pembayaran ADM hanya mengurangi ADM terutang.
 - NextPay hanya bergerak sesuai kewajiban yang benar-benar ditutup. Pembayaran parsial tunggakan mengurangi tunggakan dan menggeser `unpaid_from` sesuai hari yang dilunasi; contoh tunggakan 5K dari tanggal 02, bayar 3K → sisa 2K dan tanggal bergeser ke 05.
 - Saldo lama tidak boleh dihitung dua kali. Proses harian harus idempoten per anggota/tanggal, mencatat ledger, memeriksa celah histori, dan berhenti jika data NextPay/saldo tidak konsisten.
@@ -42,7 +42,7 @@ Zona waktu bisnis: Asia/Jakarta (WIB)
 - Bukti dibaca lewat signed URL sementara; tidak ada bucket bukti publik.
 
 ### Admin
-- Bootstrap admin pertama satu kali melalui token hash di schema privat; akun admin pertama belum dibuat. Token plaintext tidak disimpan di repo.
+- Bootstrap admin pertama satu kali melalui token hash di schema privat; admin utama `vergil_style` berstatus aktif. Token plaintext tidak disimpan di repo.
 - Antrean pendaftaran anggota: setujui/tolak melalui RPC admin.
 - Antrean pembayaran: buka bukti, setujui/tolak melalui RPC settlement atomik. Persetujuan kas terkunci sampai regresi lulus; penolakan tetap tersedia.
 - Manajemen anggota: edit nama tampilan dan pengecualian KAS, dengan audit log.
@@ -77,11 +77,11 @@ Mesin harian telah dibuat di database, tetapi **belum dijadwalkan dan belum bole
 
 ## 5. Status database saat pemeriksaan terakhir
 
-- `dues_settings.report_date = 2026-10-21`
+- `dues_settings.report_date = 2026-10-21` (nilai saat pemeriksaan 21 Oktober 2026)
 - `daily_amount = 1000`
-- `adm_default = 10000`
+- `adm_default = 15000` (nilai aktual database saat pemeriksaan 21 Oktober 2026)
 - `cash_operations_enabled = false`
-- Auth users: 0; member profiles: 0; payment submissions: 0; ledger entries: 0.
+- Auth users: 1; member profiles: 1 (admin utama aktif `vergil_style`); payment submissions: 0; ledger entries: 0.
 - Histori tarif awal memiliki satu baris efektif mulai 2026-10-21.
 - Tidak ada data kas nyata atau anggota lama yang diimpor.
 - Pemeriksaan processor sebelum safety guard terakhir dilakukan saat database kosong dan menghasilkan 0 baris; setelah guard dipasang, pemanggilan service-role saat flag false menghasilkan error yang diharapkan. Ini bukan pengganti tes regresi end-to-end.
