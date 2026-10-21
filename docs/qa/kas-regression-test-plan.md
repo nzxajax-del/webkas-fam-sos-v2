@@ -56,10 +56,21 @@ Do not apply a production schema or enable live payment approval until the sourc
 34. Netlify production build must pass and the deployed URL must serve the latest commit before the release is declared ready.
 
 ## Current execution status
-- Tests 21–38 are **specified, not yet executed end-to-end**. Supabase Security Advisor returns no security lints, and the current database has zero Auth users. GitHub Actions build passed for commit `409398e9b271bf23e70e887fb79c1ffbfffd2d87`; Netlify live deployment remains unverified.
+- Tests 21–45 are **specified, not yet executed end-to-end**. Supabase Security Advisor returns no security lints, and the current database has zero Auth users. GitHub Actions build passed for commit `409398e9b271bf23e70e887fb79c1ffbfffd2d87`; Netlify live deployment remains unverified.
 - Payment review RPCs and UI are implemented, but **do not use them for real cash until tests 21–34 pass**, especially concurrent review, NextPay, and partial-arrears date advancement.
-- Daily dues automation remains disabled; do not schedule it until the daily rate/effective-date and report-date semantics are fully tested.
+- Daily dues processor is implemented in V2 but **no cron is scheduled** and cash operations remain locked. Do not schedule it until the daily rate/effective-date and report-date semantics are fully tested.
 
 35. First-admin bootstrap fails for anon, missing token, incorrect token, or after an admin role exists.
 36. Valid bootstrap token can promote only the currently authenticated pending member, once; it cannot be reused and is not readable from API schemas.
 37. Bootstrap sets admin active, sets admin KAS exemption/ADM due to zero, and writes one audit log entry. Normal member registration still cannot set role=admin.\n38. With arrears 5K, NextPay 1 October, unpaid_from 1 October, and payment 3K, approval must produce arrears 2K, NextPay 4 October, unpaid_from 4 October, unchanged balance, and exactly one ledger entry.
+
+
+## Daily dues engine tests (processor added 21 October 2026)
+
+39. Re-running the processor for the same due date creates no duplicate daily_dues_log or wallet_transactions.
+40. Catch-up across three missing dates creates exactly three daily logs per active, non-exempt member in date order.
+41. If a later daily log exists but an earlier date is missing, processing aborts without silently mutating wallet state.
+42. A date already covered by prepaid NextPay consumes the matching balance unit but does not advance NextPay a second time.
+43. An uncovered due date consumes available balance first; any shortfall becomes arrears, sets unpaid_from only once, and leaves NextPay at the oldest unpaid obligation.
+44. Daily rate change is rejected while an active member has prepaid balance, arrears, or a future NextPay; rate history preserves the effective rate for earlier dates.
+45. Report date cannot move backwards; advancing it runs catch-up through the day before the new report date and writes an audit record. The date change remains blocked while cash_operations_enabled=false.
