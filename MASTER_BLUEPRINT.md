@@ -11,11 +11,11 @@ Versi: 1.8 (21 Oktober 2026)
 - Continuous deployment harus diverifikasi di akun Netlify. Konektor Netlify tidak tersedia saat blueprint diperbarui; otorisasi pemilik akun mungkin diperlukan.
 
 ## Status repository per 21 Oktober 2026
-- Fondasi Vite/React dan modul Supabase client telah disiapkan.
-- Aplikasi masih halaman persiapan UI; login, autentikasi, data anggota, transaksi, pembayaran, upload bukti, dan kalkulasi kas belum diimplementasikan.
-- Build lokal belum berhasil diverifikasi dari lingkungan pemeriksaan; jangan menyebut build atau deploy berhasil sampai ada hasil nyata.
-- Repo terdeteksi public pada audit sebelumnya. Jangan commit rahasia; pertimbangkan visibilitas private jika sesuai.
-- Workflow GitHub Actions `.github/workflows/build.yml` diperbaiki pada commit `e55cf84553cf6d37324f98826b7205105d83a91b`: cache npm dihapus karena belum ada lockfile. Workflow memakai Node 22, `npm install`, dan `npm run build`. Hasil run CI belum diverifikasi.
+- Aplikasi React/Vite telah memiliki login username/kata sandi, pendaftaran anggota, status pending/rejected, dashboard anggota, unggah bukti pembayaran privat, antrean persetujuan admin, RPC settlement atomik, manajemen anggota, pengaturan tarif KAS/ADM, laporan transaksi, dan audit aktivitas admin.
+- Supabase V2 schema dan migrasi keamanan/administrasi telah diterapkan. Security Advisor terakhir tidak menemukan lints. Transaksi kas tetap dikunci sampai mesin harian/NextPay diuji.
+- Build GitHub Actions sukses untuk commit UI terbaru `a749d33fd3556fe7f14a2e9962bbf5b80bcf6614`; deployment Netlify live terbaru belum terverifikasi.
+- Repo terdeteksi public pada audit sebelumnya. Jangan commit rahasia; kode bootstrap dan service-role key tidak boleh masuk ke repository.
+- Workflow GitHub Actions `.github/workflows/build.yml` memakai Node 22, `npm install`, dan `npm run build`.
 
 ## Backend Supabase V2
 - Proyek terpisah: `https://lzciyzibqbujshoizlbu.supabase.co`; status proyek ACTIVE_HEALTHY, PostgreSQL 17, region Singapore.
