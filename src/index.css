@@ -248,3 +248,11 @@ input[type=color]{height:48px;padding:5px;cursor:pointer}
 .member-modal .balance-correction-form input{width:100%;min-width:0}
 .member-modal .balance-correction-form .primary{width:100%;padding:11px;font-size:12px}
 @media(max-width:420px){.member-modal-backdrop{padding:10px}.member-modal{padding:13px;border-radius:13px;max-height:90vh}}
+
+
+/* Put the member menu icon at the right edge of the character-name bar */
+.member-name-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0;width:100%}
+.member-name-bar .member-character-name{min-width:0;overflow-wrap:anywhere}
+.member-menu-icon-only{flex:0 0 30px;width:30px;height:30px;min-height:30px;padding:0;margin:0;display:inline-flex;align-items:center;justify-content:center;border:1px solid #46543a;border-radius:8px;background:#20271b;color:#f1f4e9}
+.member-menu-icon-only .member-menu-lines{font-size:16px;line-height:1}
+.member-menu-icon-only .member-menu-chevron{display:none}
