@@ -117,7 +117,7 @@ Migration history langsung diperiksa. File dengan versi yang sama harus tetap ad
 
 ## 7. Build dan deployment
 
-- GitHub Actions build untuk source frontend terbaru telah lulus pada commit `5b70dcf3f19171fd83c6c1c33b4fdda1b2aa0672`, run https://github.com/nzxajax-del/webkas-fam-sos-v2/actions/runs/39528100594.
+- GitHub Actions build untuk pembaruan frontend terbaru telah lulus pada commit `6f4353c7a52287192b29fd70bbfc95da705ee184`, run https://github.com/nzxajax-del/webkas-fam-sos-v2/actions/runs/39529484964. Perubahan dokumentasi/database sesudahnya juga memicu workflow build; periksa run terbaru sebelum menyatakan commit dokumentasi paling akhir lulus.
 - Dokumentasi/test-plan commits berikutnya memicu build workflow baru; status run harus dilihat sebelum menyatakan commit terbaru lulus.
 - Netlify URL target: https://webkas-fam-sos-v2.netlify.app. Konektor Netlify tidak tersedia dan URL tidak dapat diverifikasi dari alat pemeriksaan ini; jangan klaim deployment terbaru sudah live tanpa bukti.
 - `src/lib/supabase.js` berisi URL V2 dan publishable key publik sebagai fallback. `VITE_SUPABASE_URL` dan `VITE_SUPABASE_ANON_KEY` boleh menjadi override. Jangan pernah memakai service-role key pada browser.
@@ -125,7 +125,7 @@ Migration history langsung diperiksa. File dengan versi yang sama harus tetap ad
 
 ## 8. Pengujian dan release gate
 
-Rencana lengkap: `docs/qa/kas-regression-test-plan.md` (kasus 1–48). **Belum dijalankan end-to-end pada lingkungan simulasi** karena tidak tersedia test project terisolasi di sesi ini.
+Rencana lengkap: `docs/qa/kas-regression-test-plan.md` (kasus 1–54). Kasus smoke test 49–54 telah dijalankan secara transaksional; **seluruh acceptance suite belum dijalankan end-to-end** karena tidak tersedia test project terisolasi di sesi ini.
 
 Wajib lulus sebelum operasi kas dibuka:
 1. Partial arrears, pelunasan penuh, saldo prabayar, NextPay dan `unpaid_from`.
