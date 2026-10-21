@@ -115,6 +115,8 @@ Migration history langsung diperiksa. File dengan versi yang sama harus tetap ad
 - `20261021014246_fix_fractional_arrears_payment_nextpay`
 - `20261021014711_require_current_report_date_for_payment_approval`
 - `20261021015007_enable_realtime_for_core_kas_tables`
+- `20261021015504_revoke_direct_wallet_mutations`
+- `20261021015531_bind_payment_proof_path_to_submitter`
 
 ## 7. Build dan deployment
 
@@ -168,3 +170,8 @@ Admin pertama belum dibuat dan database belum memiliki Auth user. Pemilik harus 
 - Additional transactional smoke test passed for the scheduled processor: when report_date is one day behind, it processed yesterday once, advanced report_date to today WIB, and wrote the audit event. The test fixture was rolled back.
 
 - Admin UI menampilkan banner MODE UJI AMAN saat operasi kas terkunci dan tombol Segarkan untuk memuat ulang dashboard bila realtime belum tersambung.
+
+
+## Wallet/proof-path integrity hardening — 21 October 2026
+- ACL audit found that authenticated users still had direct INSERT/UPDATE/DELETE grants on `member_wallets`, despite RLS policies. Migration `20261021015504_revoke_direct_wallet_mutations` revokes those grants; verified: authenticated retains SELECT, has no direct wallet INSERT/UPDATE/DELETE, and can still call the audited `admin_update_member` RPC.
+- Migration `20261021015531_bind_payment_proof_path_to_submitter` strengthens the payment-submission insert policy so `proof_path` must be under the submitting member's own UUID folder. Storage read/upload policies continue to restrict proof objects to the owner and active admin.
