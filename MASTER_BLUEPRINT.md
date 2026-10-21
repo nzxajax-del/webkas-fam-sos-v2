@@ -200,3 +200,12 @@ CI build run `39525983224` telah diperiksa melalui detail job: semua langkah sel
 - Security Advisor terbaru: tidak ada temuan keamanan (`lints: []`). Performance Advisor hanya memberi catatan indeks yang belum terpakai pada database yang masih kosong; indeks tersebut dipertahankan karena memang dipakai untuk pola query aplikasi.
 - Belum selesai: mesin pemrosesan harian dan rekonsiliasi NextPay/tunggakan, perubahan tanggal rekap yang menjalankan catch-up aman, tes regresi transaksi end-to-end, pembersihan bukti otomatis, verifikasi konfigurasi environment dan deployment Netlify terbaru, serta pembuatan akun admin pertama oleh pemilik.
 - Jangan membuka `cash_operations_enabled` atau mengaktifkan cron sampai semua tes transaksi dan aturan NextPay lulus. Jangan menyatakan website selesai produksi sebelum deployment live dan alur bootstrap diverifikasi.
+
+
+## Addendum akhir — 21 Oktober 2026, admin console & settlement
+- UI admin tambahan sudah mencakup ekspor CSV anggota/transaksi/audit, total tunggakan, prioritas tunggakan >=7K, daftar ADM belum lunas, serta kolom NextPay dan Belum bayar dari.
+- Migration `20261021012756_advance_next_pay_when_arrears_are_settled` mengubah settlement KAS agar NextPay ikut maju untuk hari tunggakan yang benar-benar dibayar; test #38 pada regression plan menargetkan kasus tunggakan 5K, pembayaran 3K, dan pergeseran NextPay/unpaid_from sebanyak tiga hari.
+- Build GitHub Actions untuk fitur admin dan ekspor lulus; run terakhir yang telah diverifikasi untuk panel admin adalah [39527636421](https://github.com/nzxajax-del/webkas-fam-sos-v2/actions/runs/39527636421). Build setelah commit CSV UTF-8 juga lulus pada run [39527589648](https://github.com/nzxajax-del/webkas-fam-sos-v2/actions/runs/39527589648).
+- Keadaan database saat ini tetap aman: report_date 2026-10-21, daily_amount 1000, adm_default 10000, cash_operations_enabled=false; tidak ada Auth user, anggota, submission pembayaran, atau ledger entry.
+- Security Advisor kembali `lints: []`. Uji end-to-end belum dijalankan karena tidak tersedia lingkungan tes terisolasi yang terhubung pada sesi ini; jangan menjalankan tes mutasi ke data produksi. Netlify live deployment juga belum bisa dikonfirmasi oleh konektor yang tersedia.
+- Mesin harian, catch-up perubahan tanggal, cron, dan retensi bukti belum aktif. Pertahankan safety lock sampai perilaku NextPay, tanggal efektif, saldo dibayar ke depan, tunggakan, serta pencegahan tagihan ganda diuji lengkap.
