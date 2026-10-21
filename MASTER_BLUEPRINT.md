@@ -1,6 +1,6 @@
 # MASTER BLUEPRINT — WEBKAS FAM SOS V2
 
-Versi: 1.1 (21 Oktober 2026)
+Versi: 1.2 (21 Oktober 2026)
 
 ## Keputusan hosting
 - Hosting statis: Netlify (menggantikan rencana Vercel).
@@ -8,7 +8,14 @@ Versi: 1.1 (21 Oktober 2026)
 - Build command: `npm run build`.
 - Publish directory: `dist`.
 - `netlify.toml` menyediakan fallback SPA `/*` ke `/index.html`.
-- Continuous deployment diaktifkan dengan menghubungkan repository GitHub dari akun Netlify. Koneksi akun Netlify belum dapat dilakukan dari konektor yang tersedia; otorisasi pemilik akun mungkin diperlukan.
+- `package.json` menetapkan Node.js minimal 22.12.0, React 19, dan Vite 7.
+- Continuous deployment perlu diaktifkan dengan menghubungkan repository GitHub dari akun Netlify. Koneksi akun Netlify belum dapat dilakukan melalui konektor yang tersedia; otorisasi pemilik akun mungkin diperlukan.
+
+## Status repository per 21 Oktober 2026
+- File fondasi berhasil ditulis ke branch `main`: `netlify.toml`, `package.json`, `index.html`, `vite.config.js`, `.gitignore`, `.env.example`, `src/main.jsx`, `src/App.jsx`, `src/index.css`, dan dokumen blueprint ini.
+- Aplikasi saat ini hanya berupa halaman persiapan UI. Login, autentikasi, data anggota, transaksi, pembayaran, upload bukti, serta kalkulasi kas belum diimplementasikan.
+- Build lokal dan deploy Netlify belum diverifikasi. Jangan menyebut website sudah live sampai deploy dan URL benar-benar diperiksa.
+- Repo sebelumnya terdeteksi public saat audit. Jangan commit informasi rahasia; pertimbangkan menjadikan repo private jika sesuai kebutuhan.
 
 ## Backend
 - Proyek Supabase V2: `https://lzciyzibqbujshoizlbu.supabase.co`.
@@ -18,39 +25,47 @@ Versi: 1.1 (21 Oktober 2026)
 
 ## Batasan keamanan dan perubahan
 - Jangan memasukkan service-role key, password, token, atau secret ke frontend, commit, atau file publik.
-- `VITE_*` variables terpapar ke browser; hanya nilai publik yang boleh ditempatkan di sana.
+- Variabel `VITE_*` terpapar ke browser; hanya nilai publik yang boleh ditempatkan di sana.
 - Sebelum membuat skema, mulai dari inspeksi read-only, desain RLS, ownership, validasi unggahan bukti pembayaran, serta kebijakan storage.
-- Jangan mengaktifkan login/transaksi nyata sebelum auth, RLS, dan kebijakan database diuji.
-- Jangan mengubah logika kas, saldo, ledger, NextPay, tunggakan, atau ADM sebelum audit implementasi lama dan regression tests.
+- Jangan mengaktifkan login/transaksi nyata sebelum autentikasi, RLS, validasi server-side, dan pengujian keamanan selesai.
+- Jangan mengubah kalkulasi kas, saldo, ledger, NextPay, tunggakan, atau ADM sebelum mengaudit implementasi lama dan menjalankan tes regresi.
 
-## Aturan KAS yang wajib dipertahankan setelah audit kode lama
+## Aturan bisnis kas yang wajib dipertahankan
 - Transaksi adalah sumber kebenaran.
 - Pisahkan Kas Lebih, NextPay, dan Tunggakan.
-- Pembayaran menyelesaikan tunggakan terlebih dahulu lalu kewajiban ke depan mengikuti logika lama.
-- NextPay hanya maju saat kewajiban benar-benar tertutup pembayaran.
-- Hindari penghitungan saldo lama dua kali.
-- Patokan yang diminta: 1K = 1 hari; tanggal laporan memicu perhitungan anggota jatuh tempo tanpa double-charge.
-- Pembayaran sebagian mengurangi tunggakan dan memajukan tanggal “Belum bayar dari” sesuai hari yang terbayar.
-- Tampilkan Total Tunggakan Kas dan prioritaskan tunggakan 7K ke atas.
+- Pembayaran menutup tunggakan terlebih dahulu, lalu kewajiban ke depan sesuai logika lama yang sudah diaudit.
+- NextPay hanya maju berdasarkan kewajiban yang benar-benar tertutup oleh pembayaran.
+- Saldo lama tidak boleh dihitung dua kali.
+- Aturan kerja terbaru: 1K = 1 hari; konfirmasi perilaku terhadap kode lama sebelum migrasi.
+- Perubahan tanggal harus menghitung anggota jatuh tempo sebelum rekap ditampilkan, tanpa tagihan ganda.
+- Jika NextPay sudah lewat tanpa pembayaran, tunggakan bertambah sesuai mekanisme lama yang diverifikasi.
+- Pembayaran sebagian mengurangi tunggakan dan menggeser tanggal “Belum bayar dari” sesuai hari yang dilunasi.
+- Tampilkan Total Tunggakan Kas; dahulukan tunggakan 7K ke atas.
 - Jangan tampilkan “Rekap Penerimaan Hari Ini” atau “Belum Ada Transaksi”.
-- Bagian ADM Belum Lunas tetap ada; ADM yang lunas tidak ditampilkan lagi kecuali ada transaksi baru yang relevan.
+- Pertahankan bagian ADM Belum Lunas; ADM yang lunas tidak tampil lagi kecuali ada transaksi baru yang relevan.
 - Jangan tampilkan anggota berikut dalam rekap: `Een_Style`, `Meppoodeajax_Style`, `Son_Style`, `Boyz_Friendshipszone`, `Memetgangster_Newyork`, `Ambon_Dosq`, `Test`.
-- Ubah `Nyonya_Kayyin` menjadi `Queen_Style` dengan riwayat tetap terjaga.
+- Ganti `Nyonya_Kayyin` menjadi `Queen_Style` dengan menjaga riwayat.
 - `Alex_Dominator` ADM 10K ditandai lunas.
-- Data historis contoh bukan data live; verifikasi sumber sebelum migrasi.
 
-## Fitur tujuan
-- Login anggota dan admin menggunakan auth yang aman; anggota hanya dapat melihat datanya sendiri.
-- Anggota dapat mengirim permintaan pembayaran beserta bukti gambar dan melihat status pending/diterima/ditolak.
-- Admin dapat meninjau bukti, menerima/menolak, dan setiap perubahan ledger mengikuti aturan kas lama yang sudah diaudit.
-- Admin utama dapat membuat/menghapus akun anggota serta menyetujui/menolak registrasi. Pengguna tidak boleh menetapkan role atau status aktif sendiri.
-- UI bahasa Indonesia, responsif untuk Android, login sederhana tanpa slogan.
+## Fitur target
+- Admin utama: buat/hapus akun anggota; setujui/tolak pendaftaran; audit aksi administratif.
+- Anggota: login/logout, lihat status dan kewajiban sendiri, kirim permohonan pembayaran dengan bukti gambar, lihat status pending/diterima/ditolak.
+- Admin: tinjau permohonan dan bukti, setujui/tolak secara manual; perubahan ledger hanya mengikuti alur kas lama yang telah diuji.
+- Tidak boleh ada akses lintas anggota; pengguna tidak boleh menetapkan role atau status aktifnya sendiri.
+- UI Bahasa Indonesia, responsif untuk Android, sederhana, tanpa slogan login.
+- Footer: `©Designed by Vergil D Ajax`; hilangkan `STREET OF STYLE FAMILY · 2026`.
 - Hapus placeholder akun `ADM_SOS`.
-- Footer: `©Designed by Vergil D Ajax`; hapus `STREET OF STYLE FAMILY · 2026`.
-- Nama/link yang diinginkan: `WebsiteKasVergilDAjax` (ketersediaan domain belum diverifikasi).
 
-## Status saat blueprint ini ditulis
-- Repository sebelumnya hanya berisi README; scaffold Vite/React dan konfigurasi Netlify sedang ditambahkan.
-- Ini masih layar persiapan, bukan aplikasi kas yang siap dipakai.
-- Build dan deployment harus diverifikasi sebelum menyatakan sukses.
-- Langkah deployment yang masih memerlukan pemilik akun: login ke Netlify, otorisasi GitHub, pilih repository `nzxajax-del/webkas-fam-sos-v2`, branch `main`. Setelah terhubung, konfigurasi build berasal dari `netlify.toml`.
+## Urutan implementasi aman
+1. Verifikasi repository, struktur, branch, dan build.
+2. Dapatkan akses baca yang sah ke database lama untuk audit skema, fungsi, kebijakan, dan rumus kas tanpa mutasi.
+3. Dokumentasikan perilaku existing dan siapkan tes regresi.
+4. Buat migrasi baru untuk Supabase V2; mulai read-only lalu review sebelum mengeksekusi DDL.
+5. Implementasikan Auth, role/ownership, RLS, storage, dan validasi.
+6. Implementasikan alur pembayaran dan sambungkan ke ledger hanya setelah uji.
+7. Hubungkan GitHub repo ini ke Netlify, build dan deploy, lalu verifikasi URL live.
+8. Catat setiap keputusan, perintah, perubahan, error, perbaikan, dan hasil uji di blueprint ini.
+
+## Catatan koneksi
+- Akses ke proyek Supabase lama `jjnmaylxjzgixnrqopro` pernah ditolak oleh konektor; jangan menyimpulkan skema lama dari ingatan saja.
+- Konektor Netlify belum tersedia dalam tools yang terhubung pada saat blueprint ini diperbarui. Langkah otorisasi/tautan akun kemungkinan masih memerlukan tindakan pengguna.
