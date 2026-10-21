@@ -56,7 +56,7 @@ Do not apply a production schema or enable live payment approval until the sourc
 34. Netlify production build must pass and the deployed URL must serve the latest commit before the release is declared ready.
 
 ## Current execution status
-- Tests 21–45 are **specified, not yet executed end-to-end**. Supabase Security Advisor returns no security lints, and the current database has zero Auth users. GitHub Actions build passed for commit `409398e9b271bf23e70e887fb79c1ffbfffd2d87`; Netlify live deployment remains unverified.
+- Tests 21–46 are **specified, not yet executed end-to-end**. Supabase Security Advisor returns no security lints, and the current database has zero Auth users. GitHub Actions build passed for commit `409398e9b271bf23e70e887fb79c1ffbfffd2d87`; Netlify live deployment remains unverified.
 - Payment review RPCs and UI are implemented, but **do not use them for real cash until tests 21–34 pass**, especially concurrent review, NextPay, and partial-arrears date advancement.
 - Daily dues processor is implemented in V2 but **no cron is scheduled** and cash operations remain locked. Do not schedule it until the daily rate/effective-date and report-date semantics are fully tested.
 
@@ -74,3 +74,5 @@ Do not apply a production schema or enable live payment approval until the sourc
 43. An uncovered due date consumes available balance first; any shortfall becomes arrears, sets unpaid_from only once, and leaves NextPay at the oldest unpaid obligation.
 44. Daily rate change is rejected while an active member has prepaid balance, arrears, or a future NextPay; rate history preserves the effective rate for earlier dates.
 45. Report date cannot move backwards; advancing it runs catch-up through the day before the new report date and writes an audit record. The date change remains blocked while cash_operations_enabled=false.
+
+46. The service-role daily processor must refuse to mutate wallet/logs while `cash_operations_enabled=false`; it is not scheduled in cron until release gates pass.
