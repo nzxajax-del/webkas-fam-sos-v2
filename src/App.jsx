@@ -105,6 +105,71 @@ export default function App() {
     } finally { setBusy(false); }
   }
 
+  async function submitPayment(event) {
+    event.preventDefault();
+    setError(""); setMessage("");
+    const amountK = Number(paymentAmount);
+    if (!Number.isFinite(amountK) || amountK <= 0) {
+      setError("Masukkan nominal pembayaran dalam satuan K, misalnya 5 untuk 5K.");
+      return;
+    }
+    if (!proofFile) { setError("Pilih foto bukti pembayaran terlebih dahulu."); return; }
+    if (!["image/jpeg", "image/png", "image/webp"].includes(proofFile.type)) {
+      setError("Bukti harus berupa JPG, PNG, atau WEBP.");
+      return;
+    }
+    if (proofFile.size > 5 * 1024 * 1024) { setError("Ukuran bukti maksimal 5 MB."); return; }
+    const amount = Math.round(amountK * 1000 * 100) / 100;
+    if (paymentType === "kas" && Number(settings?.daily_amount) > 0 &&
+        Math.abs(amount / Number(settings.daily_amount) - Math.round(amount / Number(settings.daily_amount))) > 0.000001) {
+      setError("Nominal KAS harus kelipatan tarif harian " + money(settings.daily_amount) + ".");
+      return;
+    }
+    setBusy(true);
+    try {
+      const ext = proofFile.type === "image/jpeg" ? "jpg" : proofFile.type === "image/png" ? "png" : "webp";
+      const path = session.user.id + "/" + crypto.randomUUID() + "." + ext;
+      const { error: uploadError } = await supabase.storage.from("payment-proofs").upload(path, proofFile, {
+        upsert: false, contentType: proofFile.type, cacheControl: "3600",
+      });
+      if (uploadError) throw new Error("Unggah bukti gagal: " + uploadError.message);
+      const { error: insertError } = await supabase.from("payment_submissions").insert({
+        member_id: session.user.id, amount, payment_type: paymentType, proof_path: path,
+      });
+      if (insertError) throw new Error("Bukti terunggah, tetapi pengajuan belum tersimpan. Hubungi admin agar berkas yang tidak terpakai dapat dibersihkan.");
+      setPaymentAmount(""); setProofFile(null);
+      const refreshed = await supabase.from("payment_submissions")
+        .select("id,amount,payment_type,status,created_at,review_note")
+        .eq("member_id", session.user.id).order("created_at", { ascending: false }).limit(10);
+      setPayments(refreshed.data || []);
+      setMessage("Pengajuan pembayaran terkirim dan menunggu pemeriksaan admin.");
+    } catch (err) {
+      setError(err.message || "Pengajuan pembayaran gagal.");
+    } finally { setBusy(false); }
+  }
+
+  async function openProof(path) {
+    setError("");
+    const { data, error: proofError } = await supabase.storage.from("payment-proofs").createSignedUrl(path, 300);
+    if (proofError || !data?.signedUrl) { setError("Bukti tidak dapat dibuka. " + (proofError?.message || "")); return; }
+    window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+  }
+
+  async function reviewPayment(id, decision) {
+    setBusy(true); setError(""); setMessage("");
+    const { error: reviewError } = await supabase.rpc("review_payment", {
+      p_submission_id: id, p_decision: decision, p_note: reviewNote,
+    });
+    if (reviewError) {
+      setError("Pembayaran belum diproses: " + reviewError.message);
+      setBusy(false); return;
+    }
+    setPendingPayments((rows) => rows.filter((row) => row.id !== id));
+    setReviewNote("");
+    setMessage(decision === "approved" ? "Pembayaran disetujui dan pembukuan kas diperbarui dalam satu transaksi." : "Pengajuan pembayaran ditolak.");
+    setBusy(false);
+  }
+
   async function signOut() {
     if (!supabase) return;
     setBusy(true);
