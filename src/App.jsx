@@ -919,7 +919,7 @@ export default function App() {
         return;
       }
       const membersWithPhotos = await withPhotoUrls(data || []);
-      if (alive) setMemberDirectory(membersWithPhotos);
+      if (alive) setMemberDirectory(membersWithPhotos.sort(compareMemberRank));
     })();
     return () => { alive = false; };
   }, [profile?.id, profile?.status, refreshVersion]);
