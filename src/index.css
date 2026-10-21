@@ -406,3 +406,22 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .assistant-account-row > div { display: grid; gap: .2rem; min-width: 0; }
 .assistant-account-row small { color: var(--muted, #a6aaa6); overflow-wrap: anywhere; }
 @media (max-width: 560px) { .assistant-account-row { align-items: stretch; flex-direction: column; } .assistant-account-row button { width: 100%; } }
+
+
+/* Distinct mafia-inspired metallic rank emblems; rank codes, labels and permissions remain unchanged */
+.rank-badge{border-radius:10px;padding:4px 8px;background:linear-gradient(145deg,#202321,#080909 72%);box-shadow:inset 0 1px 0 #ffffff1c,inset 0 -2px 0 #0008,0 3px 8px #0007}
+.rank-badge .rank-emblem{width:29px;height:32px;flex:0 0 29px;filter:drop-shadow(0 2px 2px #000b);overflow:visible}
+.rank-emblem .emblem-frame{fill:#151817;stroke:var(--rank-color,#aaa);stroke-width:2.2;stroke-linejoin:round}
+.rank-emblem .emblem-symbol{fill:none;stroke:var(--rank-color,#aaa);stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round}
+.rank-emblem .emblem-detail{fill:none;stroke:var(--rank-color,#aaa);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.rank-emblem .emblem-cutout{fill:#080909;stroke:#080909;stroke-width:1}
+.rank-emblem .emblem-detail-fill{fill:var(--rank-color,#aaa)}
+.rank-p1,.rank-p2,.rank-p3,.rank-p4,.rank-p5,.rank-p6,.rank-vip{background:linear-gradient(145deg,#252827,#090a0a 76%);border-color:color-mix(in srgb,var(--rank-color) 70%,#111);box-shadow:inset 0 1px 0 #ffffff20,inset 0 -2px 0 #0009,0 3px 8px #0007}
+.rank-p1{--rank-color:#a87948}
+.rank-p2{--rank-color:#d7dce1}
+.rank-p3{--rank-color:#c78b52}
+.rank-p4{--rank-color:#65d68b}
+.rank-p5{--rank-color:#b48aff}
+.rank-p6,.rank-vip{--rank-color:#f0c75e}
+.rank-symbol-p7{font-size:11px}
+@media(max-width:420px){.rank-badge{gap:5px;padding:3px 6px}.rank-badge .rank-emblem{width:25px;height:28px;flex-basis:25px}}
