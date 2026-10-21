@@ -238,6 +238,7 @@ export default function App() {
     }
     setPendingMembers((rows) => rows.filter((row) => row.id !== id));
     setReviewNote("");
+    await refreshAdminSnapshot();
     setMessage(decision === "active" ? "Anggota disetujui. Akun sekarang aktif." : "Pendaftaran anggota ditolak.");
     setBusy(false);
   }
@@ -260,6 +261,7 @@ export default function App() {
     }
     setPendingPayments((rows) => rows.filter((row) => row.id !== id));
     setReviewNote("");
+    await refreshAdminSnapshot();
     setMessage(decision === "approved" ? "Pembayaran disetujui dan pembukuan kas diperbarui dalam satu transaksi." : "Pengajuan pembayaran ditolak.");
     setBusy(false);
   }
@@ -299,8 +301,30 @@ export default function App() {
       p_member_id: member.id, p_display_name: member.display_name, p_exempt_kas: Boolean(member.exempt_kas),
     });
     if (saveError) setError("Perubahan anggota gagal disimpan: " + saveError.message);
-    else setMessage("Profil anggota disimpan. Perubahan tercatat di audit admin.");
+    else { await refreshAdminSnapshot(); setMessage("Profil anggota disimpan. Perubahan tercatat di audit admin."); }
     setBusy(false);
+  }
+
+  async function refreshAdminSnapshot() {
+    const [allMemberRes, walletListRes, transactionRes, auditRes] = await Promise.all([
+      supabase.from("member_profiles").select("id,display_name,login_username,status,created_at").eq("role", "member").order("display_name", { ascending: true }).limit(500),
+      supabase.from("member_wallets").select("member_id,balance,arrears,next_pay,unpaid_from,adm_due,exempt_kas"),
+      supabase.from("wallet_transactions").select("id,member_id,transaction_type,amount,description,created_at,member_profiles(display_name,login_username)").order("created_at", { ascending: false }).limit(100),
+      supabase.from("admin_audit_log").select("id,action,target_type,target_id,details,created_at").order("created_at", { ascending: false }).limit(100),
+    ]);
+    const failed = [allMemberRes, walletListRes, transactionRes, auditRes].find((r) => r.error);
+    if (failed) {
+      setError("Data panel admin belum berhasil diperbarui: " + failed.error.message);
+      return false;
+    }
+    const walletByMember = new Map((walletListRes.data || []).map((w) => [w.member_id, w]));
+    setAdminMembers((allMemberRes.data || []).map((m) => ({ ...m, ...(walletByMember.get(m.id) || {}) }))
+      .sort((a, b) => Number(Number(b.arrears || 0) >= 7000) - Number(Number(a.arrears || 0) >= 7000) ||
+        Number(b.arrears || 0) - Number(a.arrears || 0) ||
+        String(a.display_name || "").localeCompare(String(b.display_name || ""))));
+    setAdminTransactions(transactionRes.data || []);
+    setAdminAudit(auditRes.data || []);
+    return true;
   }
 
   async function signOut() {
