@@ -126,7 +126,7 @@ Migration history langsung diperiksa. File dengan versi yang sama harus tetap ad
 
 ## 8. Pengujian dan release gate
 
-Rencana lengkap: `docs/qa/kas-regression-test-plan.md` (kasus 1–54). Kasus smoke test 49–54 telah dijalankan secara transaksional; **seluruh acceptance suite belum dijalankan end-to-end** karena tidak tersedia test project terisolasi di sesi ini.
+Rencana lengkap: `docs/qa/kas-regression-test-plan.md` (kasus 1–56). Kasus smoke test 49–54 dan 56 telah dijalankan secara transaksional; kasus 55 memverifikasi publikasi realtime dan RLS pada schema; **seluruh acceptance suite belum dijalankan end-to-end** karena tidak tersedia test project terisolasi di sesi ini.
 
 Wajib lulus sebelum operasi kas dibuka:
 1. Partial arrears, pelunasan penuh, saldo prabayar, NextPay dan `unpaid_from`.
