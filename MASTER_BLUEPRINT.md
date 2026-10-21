@@ -106,3 +106,6 @@ Versi: 1.8 (21 Oktober 2026)
 - **Pemeriksaan grant tambahan:** audit menemukan default grants database terlalu luas untuk role `anon` dan `authenticated`. Migrasi `restrict_table_grants` sudah diterapkan. Verifikasi ulang membuktikan `anon` tidak memiliki SELECT pada tabel aplikasi; authenticated hanya memperoleh operasi yang dibutuhkan dan tetap dibatasi RLS. Tidak ada INSERT/UPDATE/DELETE untuk pengguna pada ledger dan daily dues log.
 - Migrasi `restrict_table_grants` tercatat sebagai versi database `20261021005411`. Security Advisor tetap `lints: []` setelah perubahan.
 - Source Edge Function `supabase/functions/member-register/index.ts` sudah masuk repository dan fungsi aktif versi 2. Pencarian username memakai exact match (bukan pola wildcard).
+
+- Supabase browser client kini memakai URL proyek dan **publishable key publik** sebagai fallback aman di `src/lib/supabase.js`; environment Netlify tidak wajib untuk konfigurasi dasar. Nilai `VITE_*` tetap dapat dipakai sebagai override. Publishable key memang dirancang untuk frontend; service-role key tetap hanya di server.
+- Commit frontend terbaru: `3e329639e5f0003a125ee68ae38d427e207c576c`. Pemeriksaan status commit GitHub belum menampilkan status CI; build tetap belum terverifikasi.
