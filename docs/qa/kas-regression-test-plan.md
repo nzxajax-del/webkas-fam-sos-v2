@@ -97,3 +97,6 @@ These are transactional smoke tests against the current V2 schema, not the compl
 55. Core realtime-published tables all retain RLS, and the frontend refreshes data on subscribed changes. **Schema publication/RLS verified; browser end-to-end realtime behavior still needs a live two-session test.**
 
 56. Default scheduled processor catches up through yesterday when report_date is stale, advances it to today's Asia/Jakarta date, and writes an audit event atomically. **PASS** (transactional fixture rolled back).
+
+57. Authenticated role can SELECT wallets but cannot directly INSERT/UPDATE/DELETE wallet rows; the audited admin RPC remains executable. **PASS** (database ACL checked).
+58. Payment submission insert policy requires the proof path to begin with the submitting member's UUID folder and an active member role. **Policy definition verified; live cross-member negative insert test still required.**
