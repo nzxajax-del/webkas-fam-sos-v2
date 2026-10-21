@@ -103,3 +103,17 @@ These are transactional smoke tests against the current V2 schema, not the compl
 
 59. Proof retention setting accepts only 3, 7, or 30 days and records an admin audit event. **Schema/RPC implementation verified; authenticated admin runtime test pending.**
 60. Proof cleanup function requires an active admin, paginates old storage objects, and preserves proof paths belonging to pending submissions. **Function deployed; live cleanup test pending because the project has no admin user or proof objects.** Automatic scheduler remains a release task.
+
+
+## UIC / registration-date rules implementation (21 October 2026)
+
+61. Registration approval initializes a missing `dues_start_date` from `created_at` in Asia/Jakarta, not the approval/report date. **Function definition verified; live pending-member approval browser test remains pending.**
+62. Daily processing ignores legacy `next_pay`, charges each missing date exactly once, deducts available balance first, and accrues the shortfall as arrears even at zero balance. **PASS in transactional rollback test.**
+63. Same-date processor rerun produces no second daily log or transaction. **PASS in transactional rollback test.**
+64. Payment of 2,000 UIC against 1,500 UIC arrears leaves 0 arrears and adds 500 UIC to balance. **PASS in transactional rollback test.**
+65. Payment of 500 UIC against 1,500 UIC arrears leaves 1,000 UIC arrears and does not add balance. **PASS in transactional rollback test.**
+66. Changing daily rate to 2,000 UIC on 21 October records 22 October as effective date; earlier test-day logs remain at 1,000 UIC. **PASS in transactional rollback test.**
+67. The daily scheduler is configured for 00:01 WIB and is a no-op while `cash_operations_enabled=false`; no cash processing is enabled by this migration. **Schedule verified; live scheduled execution pending.**
+68. UIC UI accepts integer UIC amounts directly and formats stored values as Indonesian thousands (e.g. 1,000 -> 1.000 UIC); ADM and NextPay displays are removed. **Build check passed; live browser verification pending.**
+
+These new SQL tests were run inside a transaction and rolled back. No test balance, payment, transaction, daily log, or test audit row was retained. Production cash operations remain locked until the remaining browser, permission, concurrency, and scheduled-run release checks pass.
