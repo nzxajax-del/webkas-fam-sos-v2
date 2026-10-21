@@ -14,7 +14,7 @@ Versi: 1.2 (21 Oktober 2026)
 ## Status repository per 21 Oktober 2026
 - File fondasi berhasil ditulis ke branch `main`: `netlify.toml`, `package.json`, `index.html`, `vite.config.js`, `.gitignore`, `.env.example`, `src/main.jsx`, `src/App.jsx`, `src/index.css`, dan dokumen blueprint ini.
 - Aplikasi saat ini hanya berupa halaman persiapan UI. Login, autentikasi, data anggota, transaksi, pembayaran, upload bukti, serta kalkulasi kas belum diimplementasikan.
-- Build lokal dan deploy Netlify belum diverifikasi. Jangan menyebut website sudah live sampai deploy dan URL benar-benar diperiksa.
+- Build lokal belum berhasil dijalankan dari lingkungan pemeriksaan karena akses jaringan ke github.com gagal (DNS tidak dapat menyelesaikan host); ini bukan hasil build gagal dan bukan bukti build berhasil. Deploy Netlify juga belum diverifikasi. Jangan menyebut website sudah live sampai build/deploy dan URL benar-benar diperiksa.
 - Repo sebelumnya terdeteksi public saat audit. Jangan commit informasi rahasia; pertimbangkan menjadikan repo private jika sesuai kebutuhan.
 
 ## Backend
