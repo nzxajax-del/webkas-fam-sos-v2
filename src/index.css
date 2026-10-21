@@ -74,3 +74,42 @@ input[type=color]{height:48px;padding:5px;cursor:pointer}
 .balance-correction-form input{width:100%;min-width:0}
 .balance-correction-form .primary{width:100%}
 @media(max-width:560px){.balance-correction-form{padding:12px}.registration-proof-notice p{margin-bottom:0}}
+
+
+/* Profile photos and compact, expandable member cards */
+.profile-photo-settings{display:flex;align-items:flex-start;gap:16px;margin:18px 0 10px;padding:14px;border:1px solid var(--line);border-radius:16px;background:#10150f}
+.profile-avatar-wrap{flex:0 0 94px;width:94px;height:94px;overflow:hidden;border:1px solid #46543a;border-radius:16px;background:#20271b}
+.profile-avatar,.member-avatar{display:block;width:100%;height:100%;object-fit:cover}
+.profile-avatar-fallback,.member-avatar-fallback{display:grid;place-items:center;width:100%;height:100%;color:var(--lime);background:linear-gradient(145deg,#29371e,#121710);font-weight:950;font-size:32px}
+.profile-photo-controls{display:grid;gap:10px;flex:1;min-width:0}
+.profile-photo-controls label{font-size:12px}
+.profile-photo-controls input[type=file]{max-width:100%}
+.profile-photo-controls .secondary{justify-self:start}
+.member-card-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.member-card{min-width:0;padding:14px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(145deg,#171d13,#10140f)}
+.member-card-top{display:grid;grid-template-columns:minmax(90px,42%) minmax(0,1fr);gap:12px;align-items:start}
+.member-avatar-frame{width:100%;aspect-ratio:1/1;max-height:190px;overflow:hidden;border:1px solid #46543a;border-radius:13px;background:#0d110c}
+.member-card-details{min-width:0;display:flex;flex-direction:column;gap:8px}
+.member-rank-line{display:flex;flex-direction:column;align-items:flex-start;gap:5px;min-height:58px;padding:2px 0 8px;border-bottom:1px solid #35402c}
+.member-rank-line .rank-badge{padding:5px 7px;font-size:11px}
+.member-rank-name{color:#d9e6ce;font-size:11px;font-weight:800;overflow-wrap:anywhere}
+.member-character-name{font-size:clamp(14px,2vw,18px);line-height:1.2;overflow-wrap:anywhere}
+.member-card-details>small{font-size:10px;overflow-wrap:anywhere}
+.member-finance-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:13px 0}
+.member-finance-row>div{display:grid;gap:6px;min-width:0;padding:10px;border:1px solid #303a29;border-radius:10px;background:#0e120d}
+.member-finance-row span{color:var(--muted);font-size:11px}
+.member-finance-row strong{font-size:clamp(12px,1.7vw,16px);overflow-wrap:anywhere}
+.member-menu-toggle{display:flex;align-items:center;gap:9px;width:100%;padding:11px 9px;border:0;border-top:1px solid #3a4630;border-bottom:1px solid #3a4630;border-radius:0;background:transparent;color:#e5eedb;text-align:left;font-size:12px;font-weight:850}
+.member-menu-toggle:hover,.member-menu-toggle[aria-expanded=true]{color:var(--lime);background:#1b2416}
+.member-menu-lines{font-size:17px;line-height:1}
+.member-menu-chevron{margin-left:auto;color:var(--lime);font-size:18px}
+.member-actions-panel{display:grid;gap:10px;padding:13px 2px 2px}
+.member-actions-panel label{gap:6px;font-size:12px}
+.member-actions-panel input:not([type=checkbox]),.member-actions-panel select{padding:10px 11px;font-size:12px}
+.member-actions-panel button{width:100%;padding:10px 11px;font-size:11px}
+.member-exempt-toggle{display:flex!important;grid-template-columns:18px minmax(0,1fr);align-items:center;gap:10px!important}
+.member-exempt-toggle input{width:17px;height:17px;accent-color:var(--lime)}
+.member-actions-buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.member-actions-panel>.muted{font-size:10px}
+@media(max-width:700px){.member-card-grid{grid-template-columns:minmax(0,1fr)}.member-card-top{grid-template-columns:minmax(95px,38%) minmax(0,1fr)}.member-avatar-frame{max-height:165px}.member-finance-row strong{font-size:14px}}
+@media(max-width:420px){.profile-photo-settings{gap:10px;padding:10px}.profile-avatar-wrap{flex-basis:74px;width:74px;height:74px}.profile-photo-controls input[type=file]{font-size:10px;padding:8px}.member-card{padding:11px}.member-card-top{grid-template-columns:minmax(86px,38%) minmax(0,1fr);gap:10px}.member-rank-line{min-height:52px}.member-actions-buttons{grid-template-columns:minmax(0,1fr)}}
