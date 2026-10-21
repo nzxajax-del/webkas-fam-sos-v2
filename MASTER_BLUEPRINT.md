@@ -156,3 +156,5 @@ Versi: 1.8 (21 Oktober 2026)
 - Setelah bootstrap berhasil, tidak ada cara kedua untuk memakai token. Jangan menyalin token ke README, kode frontend, atau commit publik.
 - Migrasi bootstrap sudah diterapkan dengan versi Supabase 20261021011042 dan file migrasi repository diselaraskan ke versi tersebut.
 - Admin bootstrap hanya menyelesaikan akses awal. Akun admin pertama masih belum dibuat dan tidak ada pengguna Auth saat pemeriksaan terakhir.
+
+- **Build check after admin bootstrap UI:** GitHub Actions run 39525799143 completed successfully for commit 798f2c3ce8177dc6e312a581c02bb54545bd00f1. Subsequent commits only changed migration naming/documentation/test-plan files; their workflows were queued/running at the last poll. The React/Vite source including the bootstrap screen has therefore passed the repository build workflow.
