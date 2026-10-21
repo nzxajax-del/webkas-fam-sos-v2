@@ -35,3 +35,8 @@ A second hardening migration, `20261021014711_require_current_report_date_for_pa
 - The six core tables used by the dashboard are in `supabase_realtime`; database inspection confirmed RLS is enabled on all six. The browser-level two-session event test has not yet been performed.
 
 | Scheduled catch-up | Stale report date is caught up through yesterday, report date advances to today WIB, and an audit event is written | PASS |
+
+
+## Wallet and proof-path integrity checks
+- ACL check confirmed `authenticated` retains wallet SELECT but direct wallet INSERT/UPDATE/DELETE are denied; the `admin_update_member` RPC remains executable.
+- Payment-submission insert policy now requires `proof_path` to start with the caller's UUID folder, preventing a member from pointing an application submission at another member's proof path. The policy definition was inspected; a live negative insert test remains outstanding.
