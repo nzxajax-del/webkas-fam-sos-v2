@@ -28,7 +28,7 @@ Deno.serve(async (req: Request) => {
   if (req.method !== "POST") return json({ error: "Metode tidak didukung." }, 405, origin);
   if (origin && !allowedOrigins.has(origin)) return json({ error: "Origin tidak diizinkan." }, 403, origin);
 
-  let body: { displayName?: unknown; username?: unknown; confirmUsername?: unknown; password?: unknown; confirmPassword?: unknown; phoneNumber?: unknown; registrationProofBase64?: unknown; registrationProofMime?: unknown; registrationNote?: unknown };
+  let body: { displayName?: unknown; username?: unknown; confirmUsername?: unknown; password?: unknown; confirmPassword?: unknown; phoneNumber?: unknown; phoneNumber?: unknown; registrationProofBase64?: unknown; registrationProofMime?: unknown; registrationNote?: unknown };
   try { body = await req.json(); }
   catch { return json({ error: "Format permintaan tidak valid." }, 400, origin); }
 
@@ -37,6 +37,7 @@ Deno.serve(async (req: Request) => {
   const confirmUsername = typeof body.confirmUsername === "string" ? body.confirmUsername.trim().toLowerCase() : "";
   const password = typeof body.password === "string" ? body.password : "";
   const phoneNumber = typeof body.phoneNumber === "string" ? body.phoneNumber.trim().replace(/[\\s().-]/g, "") : "";
+  const phoneNumber = typeof body.phoneNumber === "string" ? body.phoneNumber.trim().replace(/[\\s().-]/g, "") : "";
   const confirmPassword = typeof body.confirmPassword === "string" ? body.confirmPassword : "";
 
   if (displayName.length < 2 || displayName.length > 80) return json({ error: "Nama karakter harus 2–80 karakter." }, 400, origin);
@@ -44,6 +45,7 @@ Deno.serve(async (req: Request) => {
   if (username !== confirmUsername) return json({ error: "Konfirmasi username tidak sama." }, 400, origin);
   if (password.length < 8 || password.length > 72) return json({ error: "Kata sandi harus 8–72 karakter." }, 400, origin);
   if (password !== confirmPassword) return json({ error: "Konfirmasi kata sandi tidak sama." }, 400, origin);
+  if (!/^\\+?[0-9]{8,15}$/.test(phoneNumber)) return json({ error: "Nomor HP wajib diisi dengan 8–15 digit; boleh diawali tanda +." }, 400, origin);
   if (!/^\\+?[0-9]{8,15}$/.test(phoneNumber)) return json({ error: "Nomor HP wajib diisi dengan 8–15 digit; boleh diawali tanda +." }, 400, origin);
   const proofBase64 = typeof body.registrationProofBase64 === "string" ? body.registrationProofBase64 : "";
   const proofMime = typeof body.registrationProofMime === "string" ? body.registrationProofMime : "";
@@ -88,6 +90,7 @@ Deno.serve(async (req: Request) => {
   const { error: profileUpdateError } = await admin.from("member_profiles").update({
     registration_proof_path: proofPath,
     registration_note: registrationNote || null,
+    phone_number: phoneNumber,
     phone_number: phoneNumber,
   }).eq("id", data.user.id);
   if (profileUpdateError) {
