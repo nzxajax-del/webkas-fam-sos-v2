@@ -1,227 +1,145 @@
 # MASTER BLUEPRINT — WEBKAS FAM SOS V2
 
-Versi: 1.8 (21 Oktober 2026)
+Versi blueprint: 3.0  
+Tanggal status: 21 Oktober 2026  
+Bahasa aplikasi: Indonesia  
+Zona waktu bisnis: Asia/Jakarta (WIB)
 
-## Keputusan hosting
-- Hosting statis: Netlify (menggantikan rencana Vercel).
-- Repository: `nzxajax-del/webkas-fam-sos-v2`, branch `main`.
-- Build command: `npm run build`; publish directory: `dist`.
-- `netlify.toml` menyediakan fallback SPA `/*` ke `/index.html`.
-- `package.json` menetapkan Node.js minimal 22.12.0, React 19, dan Vite 7.
-- Continuous deployment harus diverifikasi di akun Netlify. Konektor Netlify tidak tersedia saat blueprint diperbarui; otorisasi pemilik akun mungkin diperlukan.
+## 1. Identitas proyek dan batasan
 
-## Status repository per 21 Oktober 2026
-- Aplikasi React/Vite telah memiliki login username/kata sandi, pendaftaran anggota, status pending/rejected, dashboard anggota, unggah bukti pembayaran privat, antrean persetujuan admin, RPC settlement atomik, manajemen anggota, pengaturan tarif KAS/ADM, laporan transaksi, dan audit aktivitas admin.
-- Supabase V2 schema dan migrasi keamanan/administrasi telah diterapkan. Security Advisor terakhir tidak menemukan lints. Transaksi kas tetap dikunci sampai mesin harian/NextPay diuji.
-- Build GitHub Actions sukses untuk commit UI terbaru `a749d33fd3556fe7f14a2e9962bbf5b80bcf6614`; deployment Netlify live terbaru belum terverifikasi.
-- Repo terdeteksi public pada audit sebelumnya. Jangan commit rahasia; kode bootstrap dan service-role key tidak boleh masuk ke repository.
-- Workflow GitHub Actions `.github/workflows/build.yml` memakai Node 22, `npm install`, dan `npm run build`.
+- Repository aktif: https://github.com/nzxajax-del/webkas-fam-sos-v2
+- Branch aktif: `main`
+- Hosting target: https://webkas-fam-sos-v2.netlify.app
+- Build: `npm run build`; output: `dist`; SPA fallback ada di `netlify.toml`.
+- Stack: React 19, Vite 7, Supabase Auth/Postgres/Storage/Edge Functions.
+- Supabase V2 aktif: project ref `lzciyzibqbujshoizlbu`; URL `https://lzciyzibqbujshoizlbu.supabase.co`; region Singapore; PostgreSQL 17.
+- Proyek lama Supabase ref `jjnmaylxjzgixnrqopro` dan repo `vergilwebkas-eng/webkas-fam-sos` hanya referensi read-only. Jangan ubah, hapus, atau deploy ke proyek lama.
+- Jangan impor data anggota/transaksi lama sampai skema live lama dan pemetaan aturan ke V2 benar-benar diverifikasi.
+- Repository public; jangan commit password, token bootstrap plaintext, service-role key, atau rahasia. Hanya publishable/anon key boleh masuk ke frontend.
 
-## Backend Supabase V2
-- Proyek terpisah: `https://lzciyzibqbujshoizlbu.supabase.co`; status proyek ACTIVE_HEALTHY, PostgreSQL 17, region Singapore.
-- Awal audit: belum ada tabel aplikasi atau migrasi.
-- Fungsi `public.rls_auto_enable()` didefinisikan sebagai event-trigger function SECURITY DEFINER dengan `search_path=pg_catalog`. Event trigger `ensure_rls` berjalan pada `ddl_command_end` untuk pembuatan tabel. Fungsinya mengaktifkan RLS pada tabel baru di schema public.
-- **Perbaikan keamanan telah diterapkan dan diverifikasi:** migrasi `restrict_rls_auto_enable_execution` mencabut EXECUTE dari PUBLIC, anon, authenticated, dan service_role; ACL yang tersisa hanya pemilik `postgres`. Event trigger tetap aktif sebagai mekanisme internal database. Security Advisor setelah perubahan mengembalikan `lints: []`.
-- Migrasi keamanan tercatat di Supabase dengan versi `20261021004747`. Belum ada tabel aplikasi.
-- Jangan memasang service-role key di frontend, GitHub, atau Netlify environment yang dibundel ke browser. Hanya publishable/anon key yang boleh digunakan di frontend.
-- Proyek/database lama tidak boleh diubah atau dihapus. Akses ke database lama belum tersedia; gunakan kode lama hanya sebagai referensi sampai backend lama dapat diaudit.
+## 2. Aturan bisnis kas yang wajib dipertahankan
 
-## Batasan keamanan dan perubahan
-- Jangan masukkan service-role key, password, token, atau secret ke frontend, commit, atau file publik.
-- Semua variabel `VITE_*` terpapar ke browser; hanya nilai publik boleh ditempatkan di sana.
-- Terapkan autentikasi, role/ownership, RLS, validasi server-side, storage privat, dan pengujian sebelum mengaktifkan transaksi nyata.
-- Jangan mengubah saldo, ledger, NextPay, tunggakan, atau ADM sebelum perilaku lama dipetakan dan tes regresi dijalankan.
-
-## Aturan bisnis kas wajib dipertahankan
-- Transaksi adalah sumber kebenaran.
-- Pisahkan Kas Lebih, NextPay, dan Tunggakan.
-- Pembayaran menutup tunggakan terlebih dahulu, lalu kewajiban ke depan sesuai logika lama yang telah diverifikasi.
-- NextPay hanya maju berdasarkan kewajiban yang benar-benar tertutup.
-- Saldo lama tidak boleh dihitung dua kali.
-- Aturan kerja terbaru: 1K = 1 hari; verifikasi terhadap kode lama sebelum migrasi.
-- Perubahan tanggal harus menghitung anggota jatuh tempo tanpa tagihan ganda.
-- Jika NextPay lewat tanpa pembayaran, tunggakan bertambah sesuai mekanisme yang diverifikasi.
-- Pembayaran sebagian mengurangi tunggakan dan menggeser “Belum bayar dari” sesuai hari yang dilunasi.
-- Tampilkan Total Tunggakan Kas; dahulukan tunggakan 7K ke atas.
+- Ledger transaksi adalah sumber kebenaran. Kas Lebih/saldo prabayar, NextPay, tunggakan, dan ADM adalah konsep terpisah.
+- Tarif default KAS: 1.000 unit = 1K per hari. ADM default anggota baru: 10.000 unit = 10K.
+- Pembayaran KAS menutup tunggakan lebih dahulu; sisa pembayaran masuk saldo prabayar. Pembayaran ADM hanya mengurangi ADM terutang.
+- NextPay hanya bergerak sesuai kewajiban yang benar-benar ditutup. Pembayaran parsial tunggakan mengurangi tunggakan dan menggeser `unpaid_from` sesuai hari yang dilunasi; contoh tunggakan 5K dari tanggal 02, bayar 3K → sisa 2K dan tanggal bergeser ke 05.
+- Saldo lama tidak boleh dihitung dua kali. Proses harian harus idempoten per anggota/tanggal, mencatat ledger, memeriksa celah histori, dan berhenti jika data NextPay/saldo tidak konsisten.
+- Tanggal rekap mengikuti WIB. Perubahan tanggal maju harus memproses hari yang tertinggal sampai sehari sebelum tanggal rekap baru. Tanggal tidak boleh mundur otomatis.
+- Total tunggakan KAS harus ditampilkan; anggota dengan tunggakan minimal 7K diprioritaskan di bagian atas. Bagian ADM Belum Lunas tetap ada; ADM lunas tidak ditampilkan sebagai belum lunas.
 - Jangan tampilkan “Rekap Penerimaan Hari Ini” atau “Belum Ada Transaksi”.
-- Pertahankan bagian ADM Belum Lunas; ADM yang lunas tidak tampil lagi kecuali ada transaksi baru yang relevan.
-- Jangan tampilkan anggota berikut di rekap: `Een_Style`, `Meppoodeajax_Style`, `Son_Style`, `Boyz_Friendshipszone`, `Memetgangster_Newyork`, `Ambon_Dosq`, `Test`.
-- Ganti `Nyonya_Kayyin` menjadi `Queen_Style` dengan menjaga riwayat.
-- `Alex_Dominator` ADM 10K ditandai lunas.
+- Nama yang tidak ditampilkan pada rekap: `Een_Style`, `Meppoodeajax_Style`, `Son_Style`, `Boyz_Friendshipszone`, `Memetgangster_Newyork`, `Ambon_Dosq`, `Test`.
+- Ganti `Nyonya_Kayyin` menjadi `Queen_Style` sambil menjaga riwayat. `Alex_Dominator` ADM 10K sudah lunas dalam aturan data lama. Perubahan data lama ini belum diimpor ke V2.
+- Perubahan tarif tidak boleh menghitung ulang kewajiban lama. V2 memakai histori tarif efektif dan menolak perubahan tarif saat anggota aktif masih punya saldo prabayar, tunggakan, atau NextPay masa depan.
 
-## Fitur target
-- Admin utama: buat/hapus akun anggota; setujui/tolak pendaftaran; audit aksi administratif.
-- Anggota: login/logout, lihat status sendiri, ajukan pembayaran dengan bukti, lihat status pending/diterima/ditolak.
-- Admin: tinjau bukti dan setujui/tolak; ledger hanya berubah lewat alur yang telah diuji.
-- Tidak ada akses lintas anggota; pengguna tidak boleh menetapkan role atau status aktif sendiri.
-- UI Bahasa Indonesia, responsif untuk Android, tanpa slogan login.
-- Footer: `©Designed by Vergil D Ajax`; hilangkan `STREET OF STYLE FAMILY · 2026`.
-- Hapus placeholder `ADM_SOS`.
+## 3. Status aplikasi yang sudah diimplementasikan
 
-## Ketentuan pemisahan proyek Supabase
-- Supabase V2 ref `lzciyzibqbujshoizlbu` adalah proyek baru terpisah.
-- Supabase lama ref `jjnmaylxjzgixnrqopro` hanya referensi; jangan ubah/hapus dan jangan jadikan target V2.
-- Jangan meminta pengguna mengulangi ref/URL lama yang sudah tercatat. Jika akses lama ditolak, tandai bagian yang belum diverifikasi dan lanjutkan dengan sumber kode yang dapat dibaca.
+### Anggota dan autentikasi
+- Login username/kata sandi; email Auth internal memakai pola `username@login.webkas-fam-sos.invalid`.
+- Pendaftaran anggota lewat Edge Function `member-register`; akun baru selalu role `member`, status `pending`, dan harus disetujui admin.
+- Halaman status pendaftaran pending/ditolak dan dashboard anggota.
+- Dashboard menampilkan saldo prabayar, tunggakan, ADM, NextPay, serta riwayat pengajuan.
+- Pengajuan pembayaran KAS/ADM dan unggah bukti privat JPG/PNG/WEBP maksimal 5 MB sudah dibuat di UI, tetapi submit masih terkunci oleh safety lock.
+- Bukti dibaca lewat signed URL sementara; tidak ada bucket bukti publik.
 
-## Audit kode lama — batas pengetahuan
-- Repository lama `vergilwebkas-eng/webkas-fam-sos` berhasil dibaca sebagian secara read-only. Source menyebut tabel `member_profiles`, `dues_settings`, `payment_submissions`, `cash_ledger`, dan `member_wallets`; ini petunjuk, bukan bukti skema aktual.
-- Migration lama yang dapat dibaca menunjukkan `member_wallets.balance` dan `arrears` terpisah; `wallet_transactions` menjadi jejak transaksi; `daily_dues_log` dengan unique `(member_id,due_date)` mencegah pemrosesan ganda; pembayaran dialokasikan ke tunggakan dahulu lalu saldo wallet; job harian ditujukan pada 00:01 WIB untuk memproses hari sebelumnya.
-- Kode/migrasi lama tidak cukup untuk membuktikan seluruh skema live, RLS, auth, trigger, dan semua jalur approval. Akses ke Supabase lama ditolak oleh konektor. Jangan menyalin schema atau mengarang rumus yang belum terbukti.
-- Ada regression plan di `docs/qa/kas-regression-test-plan.md`; wajib dijalankan sebelum perubahan kas dianggap selesai.
+### Admin
+- Bootstrap admin pertama satu kali melalui token hash di schema privat; akun admin pertama belum dibuat. Token plaintext tidak disimpan di repo.
+- Antrean pendaftaran anggota: setujui/tolak melalui RPC admin.
+- Antrean pembayaran: buka bukti, setujui/tolak melalui RPC settlement atomik. Persetujuan kas terkunci sampai regresi lulus; penolakan tetap tersedia.
+- Manajemen anggota: edit nama tampilan dan pengecualian KAS, dengan audit log.
+- Pengaturan tarif KAS dan ADM default.
+- Ringkasan total tunggakan, prioritas tunggakan 7K ke atas, ADM belum lunas, NextPay, dan tanggal “Belum bayar dari”.
+- Laporan 100 transaksi terbaru dan audit aktivitas admin.
+- Ekspor CSV anggota, transaksi, dan audit.
+- Tanggal rekap bisa dimajukan melalui RPC yang menjalankan catch-up, tetapi kontrol UI tetap disabled saat safety lock aktif.
+- Koreksi saldo/ledger manual dan pembuatan akun langsung oleh admin belum tersedia; jangan mengubah saldo lewat SQL/browser tanpa ledger dan audit.
 
-## Urutan implementasi
-1. Verifikasi repo, workflow, dan build.
-2. Audit source dan backend lama yang bisa diakses tanpa mutasi.
-3. Desain schema V2, ownership, RLS, auth, dan storage.
-4. Buat migrasi V2 dan validasi security advisor.
-5. Implementasikan Auth, role/ownership, storage, dan validasi.
-6. Implementasikan alur pembayaran dan ledger setelah pemetaan aturan serta tes.
-7. Verifikasi build, Netlify deployment, dan URL live.
-8. Catat semua keputusan, perubahan, error, perbaikan, dan hasil uji di blueprint.
+### Keamanan backend
+- RLS aktif untuk tabel aplikasi di schema public; bucket `payment-proofs` privat.
+- Akses lintas anggota dibatasi. Role/status tidak dapat dinaikkan lewat metadata pendaftaran atau direct table update.
+- Approval pembayaran mengunci submission dan wallet serta menulis status, saldo, ledger, dan audit dalam satu transaksi.
+- Fungsi pemrosesan harian hanya tersedia untuk service role atau scheduler database tepercaya; anon/authenticated tidak dapat menjalankannya.
+- Security Advisor terbaru mengembalikan `lints: []`.
 
-## Status paling baru
-- Perbaikan ACL `rls_auto_enable()` berhasil diterapkan dan diverifikasi; Security Advisor kini bersih.
-- Workflow build sudah diperbaiki untuk menghindari ketergantungan cache pada lockfile yang belum ada; hasil run CI masih belum diverifikasi.
-- Belum ada schema aplikasi, auth, bucket bukti, atau transaksi aktif. Belum ada klaim bahwa build/deploy sudah lolos.
+## 4. Status mesin tagihan harian
 
+Mesin harian telah dibuat di database, tetapi **belum dijadwalkan dan belum boleh dianggap tervalidasi untuk uang nyata**.
 
-## Status pekerjaan terbaru — 21 Oktober 2026 (versi 1.9)
-- **Supabase schema berhasil diterapkan** melalui migrasi yang tercatat di database:
-  - `restrict_rls_auto_enable_execution`
-  - `v2_secure_foundation`
-  - `harden_private_admin_predicate`
-  - `optimize_rls_auth_checks`
-  - `add_member_login_username`
-- Tabel aktif: `member_profiles`, `dues_settings`, `member_wallets`, `wallet_transactions`, `daily_dues_log`, `payment_submissions`, `admin_audit_log`. Semua tabel tersebut sudah diverifikasi dengan RLS aktif. Belum ada data anggota/transaksi lama yang diimpor.
-- Bucket `payment-proofs` telah dibuat privat, batas 5 MB, hanya JPG/PNG/WEBP. Policy upload mensyaratkan folder UUID milik pengguna dan status anggota aktif; pembacaan dibatasi ke pemilik/admin.
-- Fungsi admin dipindah ke schema `private`, tidak lagi menjadi RPC di schema API `public`. Fungsi hanya dapat dieksekusi role authenticated untuk kebutuhan policy. `rls_auto_enable` hanya dapat dieksekusi pemilik database. Security Advisor terbaru mengembalikan `lints: []`.
-- Performance Advisor tidak lagi memberi warning RLS initplan; tersisa hanya informasi indeks belum dipakai karena database masih kosong dan belum ada beban aplikasi.
-- Username login ditambahkan ke profil dengan indeks unik case-insensitive. Trigger pendaftaran membuat profil member berstatus `pending` dan wallet awal ADM sesuai pengaturan. Pengguna tidak dapat memilih role admin melalui metadata pendaftaran.
-- Edge Function `member-register` aktif versi 2, JWT tidak diwajibkan karena endpoint pendaftaran publik; fungsi memvalidasi nama, username, panjang password, memeriksa duplikasi, dan membuat akun lewat Auth Admin API di server. Service-role key hanya dibaca dari environment Edge Function, tidak ditanam di frontend. CORS dibatasi ke domain Netlify V2 dan localhost development.
-- UI React sekarang mencakup login username/kata sandi, pendaftaran anggota, layar status pending/ditolak, dan dashboard baca-saja untuk saldo, tunggakan, ADM, NextPay, serta riwayat pengajuan. UI footer sudah sesuai.
-- **Belum diaktifkan:** pengajuan pembayaran dari UI, approval/rejection admin, perubahan ledger, kalkulasi otomatis harian, dan pemajuan NextPay. Ini sengaja ditahan sampai settlement dapat dibuat atomik dan tes regresi membuktikan aturan kas lama; jangan menyatakan sistem kas sudah beroperasi.
-- **Belum diverifikasi:** build GitHub Actions, URL deployment Netlify setelah commit UI, konfigurasi environment Netlify, dan pembuatan akun admin pertama. Environment frontend memerlukan `VITE_SUPABASE_URL=https://lzciyzibqbujshoizlbu.supabase.co` serta `VITE_SUPABASE_ANON_KEY` yang bersifat publik. Konektor Netlify belum tersedia untuk mengatur environment variables secara otomatis.
-- Akun admin pertama belum dibuat. Jangan menyisipkan password admin default atau membuka hak admin lewat frontend. Provisioning admin harus dilakukan melalui jalur server tepercaya setelah akses pemilik yang sah tersedia.
+- `member_profiles.dues_start_date` diinisialisasi saat anggota diaktifkan.
+- `dues_rate_history` menyimpan tarif berdasarkan tanggal efektif.
+- `daily_dues_log` memiliki batas unik per `(member_id, due_date)`.
+- Fungsi catch-up memproses tanggal secara berurutan, mengurangi saldo prabayar untuk kewajiban yang tercakup, mencatat kekurangan sebagai tunggakan, menulis `wallet_transactions`, dan berhenti jika menemukan celah histori atau saldo/NextPay yang tidak konsisten.
+- Jika tanggal sudah tercakup oleh NextPay, saldo prabayar dikonsumsi tanpa memajukan NextPay kedua kalinya.
+- Pemroses default dirancang memproses sampai kemarin menurut WIB dan memajukan `report_date` ke hari ini secara atomik, dengan audit log.
+- Perubahan report date tidak boleh mundur dan tidak boleh maju ke masa depan.
+- Rate change ditolak jika masih ada saldo prabayar, tunggakan, NextPay masa depan, atau tanggal rekap belum catch-up.
+- Fungsi harian menolak bekerja ketika `dues_settings.cash_operations_enabled=false`. Approval pembayaran juga diblokir oleh trigger database saat flag false.
+- **Belum ada cron job**. Pemeriksaan extension menunjukkan `pg_cron` dan `pg_net` belum terpasang. Jangan memasang/menjadwalkan job atau membuka flag sampai tes simulasi lulus.
 
-- **Pemeriksaan grant tambahan:** audit menemukan default grants database terlalu luas untuk role `anon` dan `authenticated`. Migrasi `restrict_table_grants` sudah diterapkan. Verifikasi ulang membuktikan `anon` tidak memiliki SELECT pada tabel aplikasi; authenticated hanya memperoleh operasi yang dibutuhkan dan tetap dibatasi RLS. Tidak ada INSERT/UPDATE/DELETE untuk pengguna pada ledger dan daily dues log.
-- Migrasi `restrict_table_grants` tercatat sebagai versi database `20261021005411`. Security Advisor tetap `lints: []` setelah perubahan.
-- Source Edge Function `supabase/functions/member-register/index.ts` sudah masuk repository dan fungsi aktif versi 2. Pencarian username memakai exact match (bukan pola wildcard).
+## 5. Status database saat pemeriksaan terakhir
 
-- Supabase browser client kini memakai URL proyek dan **publishable key publik** sebagai fallback aman di `src/lib/supabase.js`; environment Netlify tidak wajib untuk konfigurasi dasar. Nilai `VITE_*` tetap dapat dipakai sebagai override. Publishable key memang dirancang untuk frontend; service-role key tetap hanya di server.
-- Commit frontend terbaru: `3e329639e5f0003a125ee68ae38d427e207c576c`. Pemeriksaan status commit GitHub belum menampilkan status CI; build tetap belum terverifikasi.
+- `dues_settings.report_date = 2026-10-21`
+- `daily_amount = 1000`
+- `adm_default = 10000`
+- `cash_operations_enabled = false`
+- Auth users: 0; member profiles: 0; payment submissions: 0; ledger entries: 0.
+- Histori tarif awal memiliki satu baris efektif mulai 2026-10-21.
+- Tidak ada data kas nyata atau anggota lama yang diimpor.
+- Pemeriksaan processor sebelum safety guard terakhir dilakukan saat database kosong dan menghasilkan 0 baris; setelah guard dipasang, pemanggilan service-role saat flag false menghasilkan error yang diharapkan. Ini bukan pengganti tes regresi end-to-end.
 
+## 6. Migrasi Supabase V2 yang diterapkan
 
-## Status pekerjaan terbaru — versi 2.0 (21 Oktober 2026)
+Migration history langsung diperiksa. File dengan versi yang sama harus tetap ada di `supabase/migrations/`.
 
-### Implementasi frontend terbaru
-- UI login dan pendaftaran anggota tetap menggunakan username/password melalui Supabase Auth. Pendaftaran dilakukan oleh Edge Function `member-register` versi 2 yang aktif; akun baru berstatus pending.
-- Dashboard anggota sekarang menampilkan saldo dibayar ke depan, tunggakan, ADM, NextPay, dan riwayat pengajuan. Format tampilan uang dibagi 1.000 agar 1.000 unit database tampil sebagai 1K.
-- Anggota dapat mengajukan pembayaran KAS atau ADM dan mengunggah bukti privat JPG/PNG/WEBP maksimal 5 MB ke bucket `payment-proofs`. Nama objek diawali UUID pemilik.
-- Panel admin memuat antrean pendaftaran dan antrean pembayaran, membuka bukti lewat signed URL 5 menit, serta memanggil RPC server-side untuk menyetujui/menolak.
-- Aksi persetujuan pendaftaran hanya dapat mengubah status pending menjadi active/rejected melalui `private.review_member_registration` dan wrapper `public.review_member_registration`; role tidak dapat diubah lewat operasi browser. Direct UPDATE ke `member_profiles` dicabut.
-- Aksi pembayaran menggunakan `private.review_payment` dan wrapper `public.review_payment`. Direct UPDATE ke `payment_submissions` dicabut. Fungsi mengunci pengajuan dan wallet, menulis status, wallet, ledger, dan audit log dalam satu transaksi.
-- KAS: alokasi persetujuan menutup tunggakan dahulu, sisa masuk ke balance. Fungsi mensyaratkan nominal KAS kelipatan tarif harian, menggeser `unpaid_from` sesuai hari tunggakan yang dilunasi, dan memajukan `next_pay` sesuai saldo ke depan bila tunggakan tertutup.
-- ADM: nominal tidak boleh melebihi ADM tersisa; persetujuan mengurangi `adm_due` tanpa mengubah wallet KAS.
-- Migrasi terbaru:
-  - `20261021015000_lock_payment_status_until_atomic_review.sql`
-  - `20261021016000_atomic_payment_review.sql`
-  - `20261021017000_expose_guarded_review_rpc.sql`
-  - `20261021018000_secure_member_registration_review.sql`
-- Database migration history saat audit terakhir menunjukkan `lock_payment_status_until_atomic_review`, `atomic_payment_review`, `expose_guarded_review_rpc`, dan `secure_member_registration_review` berhasil diterapkan.
-- Security Advisor: `lints: []`. Performance Advisor hanya memberi informasi unused index karena tabel masih kosong; itu bukan error keamanan.
-- Audit database memastikan bucket privat dan batas 5 MB, serta belum ada akun Auth (count = 0). Karena itu, admin pertama belum dapat masuk dan harus diprovision melalui jalur pemilik/server tepercaya; jangan menambah password default atau backdoor di repository.
-- Build lokal belum dapat dijalankan karena lingkungan pemeriksaan tidak dapat mengakses GitHub/npm network. GitHub status-check endpoint belum menunjukkan hasil CI. Netlify deployment terbaru belum diverifikasi.
-- Daily dues processor dan cron **belum diaktifkan**. Jangan mengaktifkannya sebelum tanggal efektif tarif, arti report_date, catch-up, dan aturan NextPay diuji terhadap seluruh kasus regresi.
+- `20261021004747_restrict_rls_auto_enable_execution`
+- `20261021004923_v2_secure_foundation`
+- `20261021004959_harden_private_admin_predicate`
+- `20261021005020_optimize_rls_auth_checks`
+- `20261021005119_add_member_login_username`
+- `20261021005411_restrict_table_grants`
+- `20261021005937_lock_payment_status_until_atomic_review`
+- `20261021010042_atomic_payment_review`
+- `20261021010100_expose_guarded_review_rpc`
+- `20261021010345_secure_member_registration_review`
+- `20261021011042_one_time_admin_bootstrap`
+- `20261021011213_cash_operations_safety_lock`
+- `20261021012233_admin_console_settings_and_member_management`
+- `20261021012756_advance_next_pay_when_arrears_are_settled`
+- `20261021013142_idempotent_daily_dues_processor`
+- `20261021013228_guard_daily_rate_changes_with_open_obligations`
+- `20261021013255_add_private_rate_history_admin_policy`
+- `20261021013445_guard_daily_processor_until_enabled`
+- `20261021013603_auto_advance_report_date_in_daily_processor`
+- `20261021013619_guard_settings_and_report_date_wib`
+- `20261021013635_allow_trusted_db_scheduler_for_daily_dues`
 
-### Keputusan keamanan penting
-- Public browser key disetel sebagai fallback di `src/lib/supabase.js`; publishable key aman untuk publik karena akses data tetap dikontrol grants/RLS. Service-role key hanya dibaca oleh Edge Function server-side.
-- Endpoint pendaftaran publik memakai `verify_jwt=false` karena pengguna belum login; validasi input dan pemeriksaan duplikasi berjalan di server. CORS dibatasi pada domain Netlify V2 dan localhost development.
-- Tidak ada data lama atau transaksi nyata yang diimpor. Jangan menyatakan V2 siap produksi.
-- Jangan aktifkan pembayaran nyata sampai test cases 21–34 di `docs/qa/kas-regression-test-plan.md` lulus, terutama alokasi pembayaran, NextPay, partial arrears, race condition, akses bukti privat, dan build/deploy.
+## 7. Build dan deployment
 
-### Status operasional
-- GitHub repository: `nzxajax-del/webkas-fam-sos-v2`, branch `main`.
-- Supabase V2: `lzciyzibqbujshoizlbu`, database baru terpisah dari proyek lama.
-- Netlify URL target: `https://webkas-fam-sos-v2.netlify.app`; update terbaru belum dikonfirmasi live.
-- Rencana tes: `docs/qa/kas-regression-test-plan.md`.
+- GitHub Actions build untuk source frontend terbaru telah lulus pada commit `5b70dcf3f19171fd83c6c1c33b4fdda1b2aa0672`, run https://github.com/nzxajax-del/webkas-fam-sos-v2/actions/runs/39528100594.
+- Dokumentasi/test-plan commits berikutnya memicu build workflow baru; status run harus dilihat sebelum menyatakan commit terbaru lulus.
+- Netlify URL target: https://webkas-fam-sos-v2.netlify.app. Konektor Netlify tidak tersedia dan URL tidak dapat diverifikasi dari alat pemeriksaan ini; jangan klaim deployment terbaru sudah live tanpa bukti.
+- `src/lib/supabase.js` berisi URL V2 dan publishable key publik sebagai fallback. `VITE_SUPABASE_URL` dan `VITE_SUPABASE_ANON_KEY` boleh menjadi override. Jangan pernah memakai service-role key pada browser.
+- Edge Function `member-register` aktif versi 2; service-role key hanya dibaca dari environment function di server.
 
-- **Reproducibility fix:** migration filenames in GitHub have been aligned with the exact versions already recorded by Supabase (20261021004747 through 20261021010345), including the initial rls_auto_enable hardening file. This avoids duplicate local migration versions when comparing repository history with the live V2 database.
-- GitHub Actions run 39525588015 for commit 89965a907a3b22bbe3d667da44f3769c06f17576 was still in progress during the last check; dependency installation had started and the Vite build step was pending. Do not mark it successful until the workflow reports completion.
+## 8. Pengujian dan release gate
 
-- **Build check verified:** GitHub Actions run 39525588015 completed with `success` for code commit 89965a907a3b22bbe3d667da44f3769c06f17576 (React/Vite build). A documentation-only commit after it triggered run 39525632815, which was still in progress at last check. Netlify deployment is not verified by the available connector.
+Rencana lengkap: `docs/qa/kas-regression-test-plan.md` (kasus 1–48). **Belum dijalankan end-to-end pada lingkungan simulasi** karena tidak tersedia test project terisolasi di sesi ini.
 
-### Bootstrap admin utama (versi 2.1)
-- Database V2 awalnya memiliki 0 akun Auth. Dibuat mekanisme bootstrap satu kali yang aman: token hanya disimpan sebagai SHA-256 hash di tabel privat, tidak ada token plaintext di repository, dan fungsi hanya bekerja jika belum ada profil dengan role admin.
-- Pemilik membuat akun lewat halaman Daftar anggota, login saat status pending, lalu memasukkan token bootstrap yang diberikan secara terpisah. Fungsi mengubah hanya akun yang sedang login menjadi admin aktif, menandai token terpakai, mengatur akun admin agar tidak terkena ADM/KAS, dan mencatat audit log.
-- Setelah bootstrap berhasil, tidak ada cara kedua untuk memakai token. Jangan menyalin token ke README, kode frontend, atau commit publik.
-- Migrasi bootstrap sudah diterapkan dengan versi Supabase 20261021011042 dan file migrasi repository diselaraskan ke versi tersebut.
-- Admin bootstrap hanya menyelesaikan akses awal. Akun admin pertama masih belum dibuat dan tidak ada pengguna Auth saat pemeriksaan terakhir.
+Wajib lulus sebelum operasi kas dibuka:
+1. Partial arrears, pelunasan penuh, saldo prabayar, NextPay dan `unpaid_from`.
+2. Proses harian tanggal sama berulang, catch-up multi-hari, celah histori, anggota baru/pengecualian.
+3. Rate history dan perubahan tarif; report date WIB, catch-up dan larangan tanggal mundur/masa depan.
+4. Dua approval bersamaan, approval berulang, penolakan tanpa mutasi ledger.
+5. RLS, akses bukti privat, role admin, bootstrap token satu kali, upload/orphan cleanup.
+6. Build frontend dan verifikasi deployment Netlify.
+7. Jadwalkan cron setelah extension/scheduler tersedia dan tes lulus; job harus memakai WIB 00:01 dan memproses hari sebelumnya.
 
-- **Build check after admin bootstrap UI:** GitHub Actions run 39525799143 completed successfully for commit 798f2c3ce8177dc6e312a581c02bb54545bd00f1. Subsequent commits only changed migration naming/documentation/test-plan files; their workflows were queued/running at the last poll. The React/Vite source including the bootstrap screen has therefore passed the repository build workflow.
+## 9. Satu langkah pemilik yang tetap diperlukan
 
-### Safety interlock for payment operations
-- Column `dues_settings.cash_operations_enabled` exists and is false by default. A database trigger rejects any transition from pending to approved while false, even if an RPC is called directly. Direct UPDATE on `dues_settings` was revoked from authenticated users; no UI can enable it accidentally.
-- Member payment submission controls and admin approval buttons are disabled while this flag is false. Admin rejection remains available so a pending request can be declined without changing the ledger.
-- Migration applied as version 20261021011213 and repository filename matches the database history. Security Advisor remained `lints: []` after the change.
-- Do not enable cash operations until the full regression test plan passes and the daily-dues/NextPay design is complete.
+Admin pertama belum dibuat dan database belum memiliki Auth user. Pemilik harus membuka website V2 yang terbaru, mendaftar dengan username/kata sandi pilihannya, login saat status pending, lalu memakai token bootstrap satu kali yang sudah diberikan secara terpisah di percakapan penyiapan. Token tidak boleh dimasukkan ke repository atau dokumen publik. Setelah admin utama aktif, admin dapat menyetujui anggota berikutnya.
 
-- **Latest UI build verification:** GitHub Actions run 39525983224 completed `success` for code commit 428ee9e3f83354d7613da889f064d6b0f765d187, including the database-enforced safety-lock UI. Documentation-only commits after that are triggering new runs; Netlify live deployment remains unverified.
+## 10. Prinsip kerja berikutnya
 
-
-## Audit lanjutan otonom — 21 Oktober 2026
-
-Pemeriksaan langsung pada Supabase V2 menghasilkan status berikut:
-- Proyek yang diperiksa tetap `lzciyzibqbujshoizlbu`; tanggal database dan tanggal rekap sama-sama 2026-10-21.
-- `dues_settings`: tarif KAS 1000 unit/hari, ADM default 10000 unit, dan `cash_operations_enabled=false`.
-- Belum ada pengguna Auth maupun profil admin; satu token bootstrap tersimpan dan belum digunakan.
-- Tabel aplikasi pada schema `public` memiliki RLS aktif. Security Advisor mengembalikan `lints: []`.
-- Pemeriksaan struktur tabel menemukan `private.admin_bootstrap_tokens` memiliki RLS nonaktif. Tabel ini berada di schema privat dan semua grant tabel telah dicabut dari PUBLIC/anon/authenticated/service_role, sehingga temuan ini harus dievaluasi bersama privilege schema dan fungsi SECURITY DEFINER; jangan menyimpulkan tabel terekspos ke browser hanya dari flag RLS. Jangan mengaktifkan RLS secara membabi buta tanpa merancang akses fungsi yang diperlukan.
-- Migration history langsung cocok dengan versi keamanan, bootstrap admin satu kali, dan safety lock kas sampai `20261021011213`.
-- Tes regresi tetap belum dijalankan secara lengkap; settlement, NextPay, tanggal tunggakan, concurrency, dan daily dues belum boleh dianggap tervalidasi. Jangan mengaktifkan cron atau operasi kas.
-
-Tindak lanjut:
-1. Audit privilege schema `private`, ACL fungsi bootstrap, dan jalur akses wrapper sebelum mengubah status RLS token.
-2. Lengkapi tes regresi di database terisolasi; jangan menggunakan transaksi nyata.
-3. Verifikasi workflow terakhir dan deploy Netlify melalui hasil status yang nyata.
-4. Pertahankan pemisahan database lama dan V2; jangan mengimpor data lama sebelum mapping skema dan aturan bisnis tervalidasi.
-
-
-### Hasil audit ACL bootstrap (lanjutan)
-Audit privilege langsung mengonfirmasi: `anon` dan `service_role` tidak memiliki USAGE pada schema `private`; `authenticated` memiliki USAGE untuk memanggil jalur bootstrap yang dibatasi. Ketiga role (`anon`, `authenticated`, `service_role`) tidak memiliki SELECT langsung pada `private.admin_bootstrap_tokens`. Wrapper `public.bootstrap_first_admin(text)` dapat dieksekusi `authenticated` saja; `anon` tidak dapat mengeksekusinya. Fungsi privat juga tidak dapat dieksekusi langsung oleh `anon`. Karena itu, RLS nonaktif pada tabel token adalah temuan hardening yang perlu ditinjau, tetapi pemeriksaan ACL ini tidak menunjukkan akses SELECT langsung bagi role client. Jangan mengubah kebijakan sebelum jalur SECURITY DEFINER dan hak pemilik fungsi diperiksa menyeluruh.
-CI build run `39525983224` telah diperiksa melalui detail job: semua langkah selesai dan kesimpulannya `success`. Ini membuktikan build commit kode `428ee9e3f83354d7613da889f064d6b0f765d187`, bukan membuktikan deployment Netlify terbaru sudah aktif.
-
-
-## Status implementasi admin terbaru — 21 Oktober 2026
-- Supabase V2 sudah memiliki schema aplikasi dengan RLS aktif, private payment-proof bucket, approval RPC atomik, bootstrap admin sekali pakai, serta safety lock kas yang default-nya OFF.
-- Migrasi `20261021012233_admin_console_settings_and_member_management` sudah diterapkan ke project V2 dan dicatat dalam repository.
-- Admin UI kini memuat antrean pendaftaran, antrean pembayaran, manajemen nama anggota dan pengecualian KAS, pengaturan tarif KAS/ADM, laporan 100 transaksi terbaru, audit aktivitas admin, total tunggakan, dan prioritas anggota dengan tunggakan minimal 7K.
-- RPC pengaturan dan edit profil anggota membatasi akses ke admin aktif dan menulis perubahan ke `admin_audit_log`. Perubahan nama tidak menghapus riwayat transaksi.
-- Build GitHub Actions sukses untuk commit UI admin `a749d33fd3556fe7f14a2e9962bbf5b80bcf6614`: https://github.com/nzxajax-del/webkas-fam-sos-v2/actions/runs/39527329421. Dua percobaan sebelumnya gagal akibat satu kurung tutup yang kurang pada ekspresi pengurutan; sudah diperbaiki dan build terbaru lulus.
-- Security Advisor terbaru: tidak ada temuan keamanan (`lints: []`). Performance Advisor hanya memberi catatan indeks yang belum terpakai pada database yang masih kosong; indeks tersebut dipertahankan karena memang dipakai untuk pola query aplikasi.
-- Belum selesai: mesin pemrosesan harian dan rekonsiliasi NextPay/tunggakan, perubahan tanggal rekap yang menjalankan catch-up aman, tes regresi transaksi end-to-end, pembersihan bukti otomatis, verifikasi konfigurasi environment dan deployment Netlify terbaru, serta pembuatan akun admin pertama oleh pemilik.
-- Jangan membuka `cash_operations_enabled` atau mengaktifkan cron sampai semua tes transaksi dan aturan NextPay lulus. Jangan menyatakan website selesai produksi sebelum deployment live dan alur bootstrap diverifikasi.
-
-
-## Addendum akhir — 21 Oktober 2026, admin console & settlement
-- UI admin tambahan sudah mencakup ekspor CSV anggota/transaksi/audit, total tunggakan, prioritas tunggakan >=7K, daftar ADM belum lunas, serta kolom NextPay dan Belum bayar dari.
-- Migration `20261021012756_advance_next_pay_when_arrears_are_settled` mengubah settlement KAS agar NextPay ikut maju untuk hari tunggakan yang benar-benar dibayar; test #38 pada regression plan menargetkan kasus tunggakan 5K, pembayaran 3K, dan pergeseran NextPay/unpaid_from sebanyak tiga hari.
-- Build GitHub Actions untuk fitur admin dan ekspor lulus; run terakhir yang telah diverifikasi untuk panel admin adalah [39527636421](https://github.com/nzxajax-del/webkas-fam-sos-v2/actions/runs/39527636421). Build setelah commit CSV UTF-8 juga lulus pada run [39527589648](https://github.com/nzxajax-del/webkas-fam-sos-v2/actions/runs/39527589648).
-- Keadaan database saat ini tetap aman: report_date 2026-10-21, daily_amount 1000, adm_default 10000, cash_operations_enabled=false; tidak ada Auth user, anggota, submission pembayaran, atau ledger entry.
-- Security Advisor kembali `lints: []`. Uji end-to-end belum dijalankan karena tidak tersedia lingkungan tes terisolasi yang terhubung pada sesi ini; jangan menjalankan tes mutasi ke data produksi. Netlify live deployment juga belum bisa dikonfirmasi oleh konektor yang tersedia.
-- Mesin harian, catch-up perubahan tanggal, cron, dan retensi bukti belum aktif. Pertahankan safety lock sampai perilaku NextPay, tanggal efektif, saldo dibayar ke depan, tunggakan, serta pencegahan tagihan ganda diuji lengkap.
-
-
-## Addendum — mesin tagihan harian V2 (21 Oktober 2026)
-- Migration `20261021013142_idempotent_daily_dues_processor` menambahkan `dues_start_date`, histori tarif efektif (`dues_rate_history`), inisialisasi tanggal mulai saat anggota diaktifkan, dan fungsi catch-up idempoten yang memakai `daily_dues_log` unik per anggota/tanggal.
-- Pemroses harian hanya bisa dipanggil role `service_role`, memeriksa celah histori dan ketidaksesuaian balance/NextPay, menulis log serta ledger dalam transaksi yang sama, dan kini menolak bekerja selama `cash_operations_enabled=false` (migration `20261021013445_guard_daily_processor_until_enabled`). Belum ada cron yang dijadwalkan.
-- Perubahan tanggal rekap memakai RPC admin yang menolak tanggal mundur, menjalankan catch-up sampai hari sebelum tanggal rekap baru, dan mencatat audit; RPC ini menolak bekerja selama safety lock aktif. UI tanggal rekap terkunci saat flag false.
-- Perubahan tarif harian direkam berdasarkan tanggal efektif dan ditolak jika anggota aktif masih memiliki saldo prabayar, tunggakan, atau NextPay di masa depan; ini mencegah tarif baru menghitung ulang kewajiban lama.
-- Tes runtime pemroses dilakukan hanya pada database kosong: panggilan service-role sebelum safety interlock diperketat menghasilkan 0 baris karena belum ada anggota aktif. Tidak ada anggota atau transaksi yang dibuat. Tes regresi dengan data simulasi terisolasi belum dapat dijalankan pada sesi ini; cash lock tetap OFF.
-- Security Advisor setelah policy histori tarif kembali `lints: []`. Keadaan database: `report_date=2026-10-21`, `daily_amount=1000`, `adm_default=10000`, `cash_operations_enabled=false`, 0 Auth user dan 0 ledger entries.
-
-
-## Addendum — scheduled-date semantics hardening (21 Oktober 2026)
-- Migration `20261021013603_auto_advance_report_date_in_daily_processor` membuat pemanggilan default pemroses harian menangani tanggal WIB: catch-up sampai kemarin, memajukan `report_date` ke hari ini secara atomik, dan mencatat audit ketika tanggal berubah.
-- Migration `20261021013619_guard_settings_and_report_date_wib` menolak perubahan tarif jika tanggal rekap tertinggal dari tanggal WIB hari ini dan menolak tanggal rekap masa depan. Migration `20261021013635_allow_trusted_db_scheduler_for_daily_dues` mengizinkan pemanggil service-role atau scheduler database tepercaya (`session_user=postgres`) saja.
-- Belum ada cron job yang dibuat/dijalankan. Safety lock `cash_operations_enabled=false` menyebabkan pemroses harian menolak berjalan, dan report-date UI tetap disabled. Ini sengaja dipertahankan sampai tes kasus #21–48 lulus di lingkungan simulasi.
-- Pemroses dipanggil satu kali pada database V2 yang masih kosong sebelum safety gate terbaru dipasang dan mengembalikan 0 baris; setelah gate terbaru, panggilan service-role saat flag false menghasilkan error yang diharapkan dan tidak melakukan pemrosesan. Tidak ada akun, anggota, atau transaksi dibuat.
+- Lanjutkan hanya di repo `nzxajax-del/webkas-fam-sos-v2` dan Supabase `lzciyzibqbujshoizlbu`.
+- Jangan ubah sistem lama.
+- Jangan impor data lama sebelum mapping selesai.
+- Jangan aktifkan `cash_operations_enabled`, jangan jadwalkan cron, dan jangan menyebut proyek siap produksi sampai seluruh tes regresi lulus dan Netlify deployment terbaru terbukti aktif.
