@@ -114,6 +114,7 @@ Migration history langsung diperiksa. File dengan versi yang sama harus tetap ad
 - `20261021013828_index_rate_history_created_by`
 - `20261021014246_fix_fractional_arrears_payment_nextpay`
 - `20261021014711_require_current_report_date_for_payment_approval`
+- `20261021015007_enable_realtime_for_core_kas_tables`
 
 ## 7. Build dan deployment
 
@@ -157,3 +158,9 @@ Admin pertama belum dibuat dan database belum memiliki Auth user. Pemilik harus 
 ## Payment approval catch-up guard — 21 October 2026
 - Migration `20261021014711_require_current_report_date_for_payment_approval` blocks approval if `dues_settings.report_date` differs from the current Asia/Jakarta date. This prevents a stale report-date horizon from allowing a payment settlement before missed daily dues are caught up.
 - A transactional smoke test set a stale report date and attempted approval. The RPC rejected it with the expected reconciliation error; the payment remained pending and wallet stayed unchanged. Fixture rolled back.
+
+
+## Realtime dashboard update — 21 October 2026
+- Migration `20261021015007_enable_realtime_for_core_kas_tables` adds the core dashboard tables to the `supabase_realtime` publication: member profiles, wallets, payment submissions, wallet transactions, KAS settings, and admin audit log.
+- Database inspection confirmed RLS is enabled on all six published tables. The React app now subscribes to authorized Postgres changes and refreshes the dashboard when relevant records change. Admin approval/edit actions also refresh wallet summaries, transaction history, and audit log after success.
+- Frontend build for the realtime React change is pending at the time of this note; do not claim it passed until its GitHub Actions run completes.
