@@ -572,6 +572,7 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .dashboard-shell[data-view="private-chat"] #member-history,
 .dashboard-shell[data-view="private-chat"] #member-payments,
 .dashboard-shell[data-view="private-chat"] #member-settings,
+.dashboard-shell[data-view="private-chat"] #member-rate-panel,
 .dashboard-shell[data-view="private-chat"] #member-directory{display:none!important}
 .dashboard-shell[data-view="private-chat"] .private-chat-panel{display:block;margin-top:0;min-height:calc(100dvh - 80px);border-radius:18px}
 .dashboard-shell[data-view="private-chat"] .dashboard-header{margin-bottom:8px}
