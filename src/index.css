@@ -542,3 +542,11 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 
 /* Keep the VIP lettering solid gold for maximum legibility inside the P7 shield. */
 .rank-vip .vip-shield-text{fill:#ffd84d;stroke:#fff0a3;stroke-width:.65;paint-order:stroke;filter:drop-shadow(0 0 2px #ffd84d);font-size:13px;font-weight:1000;letter-spacing:.4px}
+
+
+/* Super Admin emblem: glowing maroon shield with a bright gold frame and prominent backlight. */
+.rank-admin{position:relative;isolation:isolate;overflow:visible;color:#ffe7a0;background:linear-gradient(145deg,#5c001e 0%,#300012 48%,#120008 100%);border:1.5px solid #ffd45b;box-shadow:inset 0 0 0 1px #fff0a044,inset 0 0 10px #b5003b88,0 0 5px #ffd34d,0 0 13px #ffbf36,0 0 22px #a80036aa;}
+.rank-admin::before{content:"";position:absolute;z-index:-1;inset:-7px;border-radius:inherit;background:radial-gradient(ellipse at center,#ff254f99 0%,#c0003b66 38%,#ffbf3644 62%,transparent 76%);filter:blur(7px);pointer-events:none;}
+.rank-admin .admin-skull-icon{color:#ffe07a;filter:drop-shadow(0 0 2px #fff0a3) drop-shadow(0 0 5px #ffbf36) drop-shadow(0 0 9px #b5003b);}
+.rank-admin .admin-skull-icon path:first-child{fill:#350010;stroke:#ffd45b;stroke-width:2.1;}
+.rank-admin .admin-skull-icon text{fill:#ffe07a;filter:drop-shadow(0 0 2px #ffbd36);}
