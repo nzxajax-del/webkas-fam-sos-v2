@@ -558,3 +558,42 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .rank-admin-assistant .admin-skull-icon{color:#dce2e8;filter:drop-shadow(0 0 2px #cbd3dc) drop-shadow(0 0 5px #e7edf5);}
 .rank-admin-assistant .admin-skull-icon path:first-child{fill:#050505;stroke:currentColor;stroke-width:1.8;}
 .rank-admin-assistant .admin-skull-icon text{fill:currentColor;filter:none;}
+
+
+/* Privat Chat: isolated screen and responsive participant-only conversation UI. */
+.private-chat-panel{display:none}
+.dashboard-shell[data-view="private-chat"]{width:min(calc(100% - 20px),1000px);padding-top:8px}
+.dashboard-shell[data-view="private-chat"] .welcome-panel,
+.dashboard-shell[data-view="private-chat"] .db-usage-panel,
+.dashboard-shell[data-view="private-chat"] .admin-safe-notice,
+.dashboard-shell[data-view="private-chat"] .chat-panel,
+.dashboard-shell[data-view="private-chat"] .admin-layout,
+.dashboard-shell[data-view="private-chat"] .member-stats,
+.dashboard-shell[data-view="private-chat"] #member-history,
+.dashboard-shell[data-view="private-chat"] #member-payments,
+.dashboard-shell[data-view="private-chat"] #member-settings,
+.dashboard-shell[data-view="private-chat"] #member-directory{display:none!important}
+.dashboard-shell[data-view="private-chat"] .private-chat-panel{display:block;margin-top:0;min-height:calc(100dvh - 80px);border-radius:18px}
+.dashboard-shell[data-view="private-chat"] .dashboard-header{margin-bottom:8px}
+.dashboard-shell[data-view="private-chat"] .dashboard-header>.brand-mark,
+.dashboard-shell[data-view="private-chat"] .dashboard-header .review-actions button:first-child{display:none}
+.dashboard-shell[data-view="private-chat"] .dashboard-header .review-actions{margin-left:auto}
+.private-chat-top{align-items:flex-start}
+.private-chat-top h2{overflow-wrap:anywhere}
+.private-chat-actions{display:flex;gap:8px;flex-wrap:wrap}
+.private-chat-actions .danger-button{padding:10px 12px}
+.private-conversation-list{display:grid;gap:8px}
+.private-conversation-row{display:flex;align-items:center;gap:12px;width:100%;min-width:0;padding:12px;border:1px solid var(--line);border-radius:13px;background:#11160f;color:#f1f4e9;text-align:left}
+.private-conversation-row:hover{border-color:#657d45;background:#1a2115}
+.private-conversation-avatar{display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;border-radius:50%;background:#26351b;color:var(--lime);font-weight:900}
+.private-conversation-details{display:grid;gap:4px;flex:1;min-width:0}
+.private-conversation-details strong,.private-conversation-details small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.private-conversation-details small{color:var(--muted);font-size:12px}
+.private-conversation-arrow{font-size:26px;color:var(--lime)}
+.private-message-list{display:flex;flex-direction:column;gap:10px;min-height:42vh;max-height:calc(100dvh - 290px);overflow:auto;padding:12px;border:1px solid var(--line);border-radius:14px;background:#0e120d}
+.private-message{align-self:flex-start;width:min(88%,680px);padding:12px;border:1px solid #303a29;border-radius:13px;background:#182016;overflow-wrap:anywhere}
+.private-message.own{align-self:flex-end;border-color:#4b6530;background:#202c18}
+.private-message-meta{display:flex;justify-content:space-between;align-items:center;gap:10px;color:var(--lime);font-size:12px}
+.private-message-meta time{flex-shrink:0;color:var(--muted);font-size:10px}
+.private-message p{margin:8px 0 0;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5}
+@media(max-width:520px){.dashboard-shell[data-view="private-chat"]{width:100%;padding:0}.dashboard-shell[data-view="private-chat"] .private-chat-panel{min-height:100dvh;padding:12px 10px;border-radius:0;border-left:0;border-right:0}.private-chat-top{flex-direction:column}.private-chat-actions{width:100%}.private-chat-actions button{flex:1}.private-message-list{min-height:45vh;max-height:calc(100dvh - 310px);padding:9px}.private-message{width:96%;padding:10px}.private-message-meta{align-items:flex-start;flex-wrap:wrap}}
