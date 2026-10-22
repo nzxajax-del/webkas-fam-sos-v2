@@ -953,7 +953,7 @@ export default function App() {
     setChatSending(true);
     const { error: sendError } = await supabase.from("chat_messages").insert({ sender_id: session.user.id, body });
     if (sendError) setError("Pesan gagal dikirim: " + sendError.message);
-    else { setChatDraft(""); await loadChatMessages(); }
+    else { setChatDraft(""); setChatMention(null); await loadChatMessages(); }
     setChatSending(false);
   }
   const formatBytes = (bytes) => {
