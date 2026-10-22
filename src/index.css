@@ -558,3 +558,17 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .rank-admin-assistant .admin-skull-icon{color:#dce2e8;filter:drop-shadow(0 0 2px #cbd3dc) drop-shadow(0 0 5px #e7edf5);}
 .rank-admin-assistant .admin-skull-icon path:first-child{fill:#050505;stroke:currentColor;stroke-width:1.8;}
 .rank-admin-assistant .admin-skull-icon text{fill:currentColor;filter:none;}
+
+
+/* IC-name tagging in the shared chat composer */
+.chat-mention-suggestions{display:grid;gap:3px;max-height:240px;overflow-y:auto;margin-top:-2px;padding:7px;border:1px solid #46543a;border-radius:12px;background:#10150e;box-shadow:0 12px 28px #0006}
+.chat-mention-option{display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;text-align:left;border:1px solid transparent;border-radius:9px;background:transparent;color:#edf4e5}
+.chat-mention-option:hover,.chat-mention-option:focus{outline:none;border-color:#465d32;background:#202a19}
+.chat-mention-avatar{display:grid;place-items:center;flex:0 0 32px;width:32px;height:32px;border-radius:50%;background:#27351e;color:var(--lime);font-weight:900}
+.chat-mention-option>span:last-child{display:grid;gap:3px;min-width:0}
+.chat-mention-option strong{font-size:13px;overflow-wrap:anywhere}
+.chat-mention-option small{font-size:11px;color:var(--muted)}
+.chat-mention-empty{padding:12px;color:var(--muted);font-size:12px}
+.chat-message-body{white-space:pre-wrap;overflow-wrap:anywhere}
+.chat-mention-link{display:inline;padding:0;border:0;border-radius:4px;background:#27391d;color:var(--lime);font:inherit;font-weight:850;cursor:pointer}
+.chat-mention-link:hover,.chat-mention-link:focus{text-decoration:underline;outline:1px solid #668d3e;outline-offset:2px}
