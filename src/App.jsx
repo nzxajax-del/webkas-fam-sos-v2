@@ -529,17 +529,20 @@ export default function App() {
 
   async function reviewMember(id, decision) {
     setBusy(true); setError(""); setMessage("");
-    const { error: reviewError } = await supabase.rpc("review_member_registration", {
-      p_member_id: id, p_decision: decision, p_note: reviewNote,
+    const { data, error: reviewError } = await supabase.functions.invoke("review-member-registration", {
+      body: { memberId: id, decision, note: reviewNote },
     });
-    if (reviewError) {
-      setError("Pendaftaran belum diproses: " + reviewError.message);
+    if (reviewError || data?.error || data?.success !== true) {
+      setError("Pendaftaran belum diproses: " + (data?.error || reviewError?.message || "Keputusan belum dikonfirmasi."));
       setBusy(false); return;
     }
     setPendingMembers((rows) => rows.filter((row) => row.id !== id));
     setReviewNote("");
     await refreshAdminSnapshot();
-    setMessage(decision === "active" ? "Anggota disetujui. Akun sekarang aktif." : "Pendaftaran anggota ditolak.");
+    const decisionText = decision === "active" ? "Anggota disetujui. Akun sekarang aktif." : "Pendaftaran anggota ditolak.";
+    setMessage(data.proof_deleted
+      ? decisionText + " Screenshot bukti permohonan sudah dihapus dari Storage."
+      : decisionText + " Namun screenshot belum berhasil dihapus; perlu pembersihan ulang.");
     setBusy(false);
   }
 
