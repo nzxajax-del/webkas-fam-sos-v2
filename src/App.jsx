@@ -384,7 +384,7 @@ export default function App() {
           registrationProofMime: registrationProofFile.type,
           registrationNote: registrationNote.trim() },
       });
-      if (invokeError) throw new Error(data?.error || invokeError.message || "Layanan pendaftaran belum dapat dihubungi.");
+      if (invokeError) throw new Error("Pendaftaran gagal diproses. Silakan coba lagi atau gunakan nama lain.");
       if (data?.error) throw new Error(data.error);
       let phoneSaved = false;
       const registrationClient = createTemporarySupabaseClient();
