@@ -550,3 +550,11 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .rank-admin .admin-skull-icon{color:#ffe07a;filter:drop-shadow(0 0 2px #fff0a3) drop-shadow(0 0 5px #ffbf36) drop-shadow(0 0 9px #b5003b);}
 .rank-admin .admin-skull-icon path:first-child{fill:#350010;stroke:#ffd45b;stroke-width:2.1;}
 .rank-admin .admin-skull-icon text{fill:#ffe07a;filter:drop-shadow(0 0 2px #ffbd36);}
+
+
+/* Restore Admin Assistant emblem to its original silver/white look; keep Super Admin styling isolated. */
+.rank-admin-assistant{position:relative;isolation:isolate;overflow:visible;color:#dce2e8;background:#050505;border:1px solid #cbd3dc;box-shadow:0 0 3px #aeb9c8,0 0 7px #dce2e8;}
+.rank-admin-assistant::before{content:none;}
+.rank-admin-assistant .admin-skull-icon{color:#dce2e8;filter:drop-shadow(0 0 2px #cbd3dc) drop-shadow(0 0 5px #e7edf5);}
+.rank-admin-assistant .admin-skull-icon path:first-child{fill:#050505;stroke:currentColor;stroke-width:1.8;}
+.rank-admin-assistant .admin-skull-icon text{fill:currentColor;filter:none;}
