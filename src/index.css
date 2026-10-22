@@ -538,3 +538,7 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .rank-vip .vip-shield-inner{fill:#171106;stroke:#f6d46e;stroke-width:1.2}
 .rank-vip .vip-shield-text{fill:url(#vip-shield-metal);stroke:#fff0ad;stroke-width:.35;paint-order:stroke;filter:drop-shadow(0 0 2px #ffd85a);font-size:13px;font-weight:1000;letter-spacing:.4px}
 .rank-vip .vip-shield-detail{stroke:#f7dc81;stroke-width:1.2}
+
+
+/* Keep the VIP lettering solid gold for maximum legibility inside the P7 shield. */
+.rank-vip .vip-shield-text{fill:#ffd84d;stroke:#fff0a3;stroke-width:.65;paint-order:stroke;filter:drop-shadow(0 0 2px #ffd84d);font-size:13px;font-weight:1000;letter-spacing:.4px}
