@@ -643,6 +643,7 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 
 /* Dedicated P4/P5/P6 room, separate from the existing P5/P6 room. */
 .rank-chat456-panel{display:none}
+.rank-chat456-legacy-panel{display:none!important}
 .dashboard-shell[data-view="p4-p5-p6-chat"]{width:min(calc(100% - 20px),1000px);padding-top:8px}
 .dashboard-shell[data-view="p4-p5-p6-chat"] .welcome-panel,
 .dashboard-shell[data-view="p4-p5-p6-chat"] .db-usage-panel,
