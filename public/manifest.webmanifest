@@ -1,8 +1,8 @@
 {
   "id": "/",
-  "name": "WEBKAS FAM SOS V2",
-  "short_name": "WEBKAS",
-  "description": "Akses WEBKAS FAM SOS V2 sebagai aplikasi Android.",
+  "name": "SOS FAM",
+  "short_name": "SOS FAM",
+  "description": "Aplikasi SOS FAM — Street Of Style, catatan kas keluarga.",
   "lang": "id-ID",
   "start_url": "/",
   "scope": "/",
