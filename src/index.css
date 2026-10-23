@@ -676,3 +676,26 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .drawer-label{flex:1;min-width:0}
 .drawer-rank-emblem .rank-badge,.drawer-rank-emblem [class*="rank-badge"]{width:28px!important;height:28px!important;min-width:28px!important;min-height:28px!important;max-width:28px!important;max-height:28px!important;padding:0!important;border-radius:8px!important;box-shadow:none!important}
 .drawer-rank-emblem svg{width:20px!important;height:20px!important;max-width:20px!important;max-height:20px!important}
+
+
+/* Inline app download/install card inside the welcome profile panel; never float over page content. */
+.welcome-profile-row{display:grid;grid-template-columns:76px minmax(70px,1fr) minmax(112px,132px);align-items:center;gap:12px}
+.welcome-app-actions{display:flex;flex-direction:column;align-items:stretch;justify-content:center;gap:8px;min-width:0;padding:10px;border:1px solid #46553a;border-radius:14px;background:rgba(7,12,6,.42)}
+.welcome-app-label{display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;font-weight:850;line-height:1.2;text-align:center;color:#f3f7ec}
+.welcome-app-label img{width:28px;height:28px;flex:0 0 28px;border-radius:7px}
+.welcome-app-open{width:100%;min-height:36px;padding:8px 6px;border:1px solid #c1f45a;border-radius:9px;background:#c1f45a;color:#10120e;font:inherit;font-size:12px;font-weight:900;line-height:1.2;cursor:pointer}
+.welcome-app-open:focus-visible{outline:2px solid #f2ffd5;outline-offset:3px}
+.welcome-app-caption{font-size:10px;line-height:1.25;text-align:center;color:#b9c3ae}
+@media(max-width:520px){
+  .welcome-profile-row{grid-template-columns:64px minmax(64px,1fr) minmax(94px,108px);gap:8px}
+  .welcome-app-actions{padding:8px 6px;gap:7px}
+  .welcome-app-label{font-size:10px;gap:4px}
+  .welcome-app-label img{width:24px;height:24px;flex-basis:24px}
+  .welcome-app-open{font-size:11px;min-height:34px}
+  .welcome-app-caption{font-size:9px}
+}
+@media(max-width:350px){
+  .welcome-profile-row{grid-template-columns:58px minmax(0,1fr);align-items:center}
+  .welcome-app-actions{grid-column:1 / -1;display:grid;grid-template-columns:minmax(0,1fr) minmax(100px,130px);align-items:center}
+  .welcome-app-caption{grid-column:1 / -1}
+}
