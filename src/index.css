@@ -619,3 +619,23 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .member-card .member-rank-line .rank-badge span{font-size:10px}
 .member-card .member-rank-line{gap:3px;min-height:0;padding:0 0 3px}
 @media(max-width:420px){.member-card .member-rank-line .rank-badge .rank-emblem{width:15px;height:16px;flex-basis:15px}.member-card .member-rank-line .rank-badge .admin-skull-icon{width:15px;height:15px}}
+
+
+/* Dedicated rank chat screen: isolate the P5/P6 room from all other dashboard panels. */
+.rank-chat-panel{display:none}
+.dashboard-shell[data-view="p5-p6-chat"]{width:min(calc(100% - 20px),1000px);padding-top:8px}
+.dashboard-shell[data-view="p5-p6-chat"] .welcome-panel,
+.dashboard-shell[data-view="p5-p6-chat"] .db-usage-panel,
+.dashboard-shell[data-view="p5-p6-chat"] .admin-safe-notice,
+.dashboard-shell[data-view="p5-p6-chat"] .chat-panel,
+.dashboard-shell[data-view="p5-p6-chat"] .private-chat-panel,
+.dashboard-shell[data-view="p5-p6-chat"] .admin-layout,
+.dashboard-shell[data-view="p5-p6-chat"] .member-stats,
+.dashboard-shell[data-view="p5-p6-chat"] #member-history,
+.dashboard-shell[data-view="p5-p6-chat"] #member-payments,
+.dashboard-shell[data-view="p5-p6-chat"] #member-settings,
+.dashboard-shell[data-view="p5-p6-chat"] #member-rate-panel,
+.dashboard-shell[data-view="p5-p6-chat"] #member-directory{display:none!important}
+.dashboard-shell[data-view="p5-p6-chat"] .rank-chat-panel{display:block;margin-top:0;min-height:calc(100dvh - 80px);border-radius:18px}
+.dashboard-shell[data-view="p5-p6-chat"] .dashboard-header{margin-bottom:8px}
+@media(max-width:520px){.dashboard-shell[data-view="p5-p6-chat"]{width:100%;padding:0}.dashboard-shell[data-view="p5-p6-chat"] .rank-chat-panel{min-height:100dvh;padding:12px 10px;border-radius:0;border-left:0;border-right:0}}
