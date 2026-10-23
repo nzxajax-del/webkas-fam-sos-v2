@@ -611,3 +611,11 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .member-phone-inline{margin:0 0 0 auto;flex:0 0 auto}
 .member-phone-inline .member-phone-link{max-width:150px;font-size:11px;line-height:1.2}
 @media(max-width:420px){.member-phone-inline{gap:3px}.member-phone-inline .member-phone-link{max-width:100px;font-size:10px}}
+
+/* Shrink rank emblems in member management cards to save horizontal and vertical space. */
+.member-card .member-rank-line .rank-badge{gap:3px;padding:2px 4px;border-radius:6px;font-size:9px;line-height:1}
+.member-card .member-rank-line .rank-badge .rank-emblem{width:17px;height:18px;flex:0 0 17px;filter:none}
+.member-card .member-rank-line .rank-badge .admin-skull-icon{width:17px;height:17px;flex:0 0 17px}
+.member-card .member-rank-line .rank-badge span{font-size:10px}
+.member-card .member-rank-line{gap:3px;min-height:0;padding:0 0 3px}
+@media(max-width:420px){.member-card .member-rank-line .rank-badge .rank-emblem{width:15px;height:16px;flex-basis:15px}.member-card .member-rank-line .rank-badge .admin-skull-icon{width:15px;height:15px}}
