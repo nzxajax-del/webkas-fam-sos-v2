@@ -598,3 +598,9 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .private-message-meta time{flex-shrink:0;color:var(--muted);font-size:10px}
 .private-message p{margin:8px 0 0;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5}
 @media(max-width:520px){.dashboard-shell[data-view="private-chat"]{width:100%;padding:0}.dashboard-shell[data-view="private-chat"] .private-chat-panel{min-height:100dvh;padding:12px 10px;border-radius:0;border-left:0;border-right:0}.private-chat-top{flex-direction:column}.private-chat-actions{width:100%}.private-chat-actions button{flex:1}.private-message-list{min-height:45vh;max-height:calc(100dvh - 310px);padding:9px}.private-message{width:96%;padding:10px}.private-message-meta{align-items:flex-start;flex-wrap:wrap}}
+
+/* Compact admin member cards: reveal phone only on demand. */
+.member-phone-compact{display:flex;align-items:center;gap:6px;min-height:24px;margin-top:2px;min-width:0}
+.member-phone-toggle{display:inline-flex;align-items:center;justify-content:center;width:28px;height:26px;padding:0;border:1px solid var(--line);border-radius:7px;background:rgba(130,180,95,.10);color:var(--lime);font-size:15px;cursor:pointer;flex:0 0 auto}
+.member-phone-compact .member-phone-link{margin:0;font-size:12px;line-height:1.2;min-width:0;overflow-wrap:anywhere}
+@media(max-width:420px){.member-phone-compact{min-height:22px;margin-top:0}.member-phone-toggle{width:25px;height:23px;font-size:13px}.member-phone-compact .member-phone-link{font-size:11px}}
