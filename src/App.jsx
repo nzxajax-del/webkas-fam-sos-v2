@@ -288,6 +288,10 @@ export default function App() {
       }
     };
     refreshNotificationCounts();
+    // Poll counts if Realtime events are delayed or unavailable.
+    const notificationPoll = window.setInterval(() => {
+      if (document.visibilityState === "visible") refreshNotificationCounts();
+    }, 10000);
     const channel = supabase.channel("webkas-notifications-" + session.user.id)
       .on("postgres_changes", { event: "*", schema: "public", table: "member_profiles" }, () => refreshNotificationCounts("member_profiles"))
       .on("postgres_changes", { event: "*", schema: "public", table: "payment_submissions" }, () => refreshNotificationCounts("payment_submissions"))
@@ -296,7 +300,7 @@ export default function App() {
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "p4_p5_p6_chat_messages" }, () => refreshNotificationCounts("p4_p5_p6_chat_messages"))
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "private_messages" }, () => refreshNotificationCounts("private_messages"))
       .subscribe();
-    return () => { alive = false; supabase.removeChannel(channel); };
+    return () => { alive = false; window.clearInterval(notificationPoll); supabase.removeChannel(channel); };
   }, [session?.user?.id, profile?.role, profile?.status, activeSection]);
 
   useEffect(() => {
