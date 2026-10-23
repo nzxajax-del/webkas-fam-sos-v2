@@ -1002,11 +1002,17 @@ export default function App() {
   useEffect(() => {
     if (!supabase || !session?.user?.id || profile?.status !== "active" || activeSection !== "p5-p6-chat" || !(["P5","P6"].includes(profile?.rank_code) || profile?.role === "admin")) return undefined;
     let alive = true;
+    let lastSeenMessageId = null;
     const fetchMessages = async () => {
       const { data, error: chatError } = await supabase.from("p5_p6_chat_messages").select("id,sender_id,body,created_at").order("created_at", { ascending: true }).limit(200);
       if (!alive) return;
       if (chatError) setError("Ruang chat P5/P6 gagal dimuat: " + chatError.message);
-      else setRankChatMessages(await decorateChatMessages(data || []));
+      else {
+        const newestMessage = data?.[data.length - 1];
+        if (lastSeenMessageId && newestMessage?.id && newestMessage.id !== lastSeenMessageId && newestMessage.sender_id !== session?.user?.id) setMessage("Pesan baru di Leaders" + (newestMessage.body ? ": " + String(newestMessage.body).slice(0, 90) : "."));
+        if (newestMessage?.id) lastSeenMessageId = newestMessage.id;
+        setRankChatMessages(await decorateChatMessages(data || []));
+      }
     };
     fetchMessages();
     const channel = supabase.channel("webkas-p5-p6-chat-" + session.user.id).on("postgres_changes", { event: "*", schema: "public", table: "p5_p6_chat_messages" }, fetchMessages).subscribe();
@@ -1068,11 +1074,17 @@ export default function App() {
   useEffect(() => {
     if (!supabase || !session?.user?.id || profile?.status !== "active" || activeSection !== "senior-chat-disabled" || !(["P4","P5","P6"].includes(profile?.rank_code) || profile?.role === "admin")) return undefined;
     let alive = true;
+    let lastSeenMessageId = null;
     const fetchMessages = async () => {
       const { data, error: chatError } = await supabase.from("p4_p5_p6_chat_messages").select("id,sender_id,body,created_at").order("created_at", { ascending: true }).limit(200);
       if (!alive) return;
       if (chatError) setError("Ruang chat P4/P5/P6 gagal dimuat: " + chatError.message);
-      else setRankChat456Messages(await decorateChatMessages(data || []));
+      else {
+        const newestMessage = data?.[data.length - 1];
+        if (lastSeenMessageId && newestMessage?.id && newestMessage.id !== lastSeenMessageId && newestMessage.sender_id !== session?.user?.id) setMessage("Pesan baru di Ruang Chat Staff (P4)" + (newestMessage.body ? ": " + String(newestMessage.body).slice(0, 90) : "."));
+        if (newestMessage?.id) lastSeenMessageId = newestMessage.id;
+        setRankChat456Messages(await decorateChatMessages(data || []));
+      }
     };
     fetchMessages();
     const channel = supabase.channel("webkas-p4-p5-p6-chat-" + session.user.id).on("postgres_changes", { event: "*", schema: "public", table: "p4_p5_p6_chat_messages" }, fetchMessages).subscribe();
