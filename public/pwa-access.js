@@ -12,10 +12,6 @@
 
   const style = document.createElement("style");
   style.textContent = `
-    #webkas-app-access{position:fixed;left:12px;bottom:max(12px,env(safe-area-inset-bottom));z-index:1200;font:inherit}
-    #webkas-app-access *{box-sizing:border-box}
-    #webkas-app-open{display:flex;align-items:center;gap:9px;border:1px solid #c1f45a;border-radius:999px;padding:9px 14px 9px 9px;background:#0b0e0b;color:#f6f8f2;box-shadow:0 5px 22px #0008;font-weight:800;cursor:pointer}
-    #webkas-app-open img{width:34px;height:34px;border-radius:9px}
     #webkas-app-dialog{position:fixed;inset:0;z-index:1201;display:none;align-items:flex-end;justify-content:center;padding:16px;background:#0009}
     #webkas-app-dialog[data-open="true"]{display:flex}
     #webkas-app-card{width:min(100%,440px);padding:20px;border:1px solid #536744;border-radius:22px;background:#10150e;color:#f6f8f2;box-shadow:0 20px 70px #000a;font:15px/1.5 system-ui,sans-serif}
@@ -26,14 +22,9 @@
     #webkas-app-card .webkas-app-disabled{background:#20251d;border-color:#424a3c;color:#aab3a2;cursor:not-allowed}
     #webkas-app-close{float:right;border:0;background:transparent;color:#dce5d5;font-size:24px;cursor:pointer}
     #webkas-app-note{font-size:12px;color:#aab3a2!important}
-    @media(min-width:700px){#webkas-app-dialog{align-items:center}#webkas-app-access{left:18px;bottom:18px}}
+    @media(min-width:700px){#webkas-app-dialog{align-items:center}}
   `;
   document.head.appendChild(style);
-
-  const host = document.createElement("div");
-  host.id = "webkas-app-access";
-  host.innerHTML = `<button id="webkas-app-open" type="button" aria-haspopup="dialog" aria-controls="webkas-app-dialog"><img src="/icons/webkas-app.svg" alt=""><span>Aplikasi WEBKAS</span></button>`;
-  document.body.appendChild(host);
 
   const dialog = document.createElement("div");
   dialog.id = "webkas-app-dialog";
@@ -42,8 +33,8 @@
   document.body.appendChild(dialog);
 
   const open = () => { dialog.dataset.open = "true"; document.getElementById("webkas-pwa-install").focus(); };
-  const close = () => { delete dialog.dataset.open; document.getElementById("webkas-app-open").focus(); };
-  document.getElementById("webkas-app-open").addEventListener("click", open);
+  const close = () => { delete dialog.dataset.open; const trigger = document.getElementById("webkas-app-open"); if (trigger) trigger.focus(); };
+  document.addEventListener("click", (event) => { if (event.target.closest("#webkas-app-open")) open(); });
   document.getElementById("webkas-app-close").addEventListener("click", close);
   document.getElementById("webkas-app-close-secondary").addEventListener("click", close);
   dialog.addEventListener("click", (event) => { if (event.target === dialog) close(); });
