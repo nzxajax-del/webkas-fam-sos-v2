@@ -663,8 +663,9 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .dashboard-shell[data-view="p4-p5-p6-chat"] .dashboard-header{margin-bottom:8px}
 @media(max-width:520px){.dashboard-shell[data-view="p4-p5-p6-chat"]{width:100%;padding:0}.dashboard-shell[data-view="p4-p5-p6-chat"] .rank-chat456-panel{min-height:100dvh;padding:12px 10px;border-radius:0;border-left:0;border-right:0}}
 
-/* Floating page-scroll controls for long mobile pages */
-.page-scroll-controls{position:fixed;right:max(10px,env(safe-area-inset-right));bottom:calc(82px + env(safe-area-inset-bottom));z-index:950;display:flex;flex-direction:column;gap:8px}
-.page-scroll-controls button{display:grid;place-items:center;width:40px;height:40px;padding:0;border:1px solid #61734c;border-radius:13px;background:rgba(18,25,15,.92);color:var(--lime);font-size:25px;font-weight:800;line-height:1;box-shadow:0 4px 14px #0008;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);touch-action:manipulation}
-.page-scroll-controls button:active{transform:scale(.94);background:#26351b}
-.page-scroll-controls button:focus-visible{outline:2px solid var(--lime);outline-offset:3px}
+/* Floating volume-style page scroll slider */
+.page-scroll-controls{position:fixed;right:max(8px,env(safe-area-inset-right));top:50%;transform:translateY(-50%);z-index:950;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;width:42px;padding:10px 7px;border:1px solid #61734c;border-radius:22px;background:rgba(18,25,15,.92);box-shadow:0 4px 16px #0009;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.page-scroll-icon{font-size:17px;line-height:1;color:var(--lime);font-weight:900;user-select:none}
+.page-scroll-slider{appearance:slider-vertical;-webkit-appearance:slider-vertical;writing-mode:vertical-lr;direction:rtl;width:26px;height:min(34vh,220px);min-height:120px;margin:0;accent-color:var(--lime);cursor:pointer;touch-action:pan-x;}
+.page-scroll-slider:focus-visible{outline:2px solid var(--lime);outline-offset:3px;border-radius:12px}
+@media(max-width:520px){.page-scroll-controls{right:max(5px,env(safe-area-inset-right));width:38px;padding:9px 5px;background:rgba(18,25,15,.88)}.page-scroll-slider{height:min(30vh,190px);min-height:110px;width:25px}}
