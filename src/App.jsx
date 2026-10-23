@@ -960,7 +960,7 @@ export default function App() {
     }
     const { data, error: chatError } = await supabase.from("p5_p6_chat_messages").select("id,sender_id,body,created_at").order("created_at", { ascending: false }).limit(200);
     if (chatError) { setError("Ruang chat P5/P6 gagal dimuat: " + chatError.message); return false; }
-    setRankChatMessages(await decorateChatMessages(data || []));
+    setRankChatMessages(await decorateChatMessages((data || []).slice().reverse()));
     return true;
   }
   async function sendRankChat456Message(event) {
@@ -1042,7 +1042,7 @@ export default function App() {
     }
     const { data, error: chatError } = await supabase.from("p4_p5_p6_chat_messages").select("id,sender_id,body,created_at").order("created_at", { ascending: false }).limit(200);
     if (chatError) { setError("Ruang chat P4/P5/P6 gagal dimuat: " + chatError.message); return false; }
-    setRankChat456Messages(await decorateChatMessages(data || []));
+    setRankChat456Messages(await decorateChatMessages((data || []).slice().reverse()));
     return true;
   }
   async function sendRankChatMessage(event) {
