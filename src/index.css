@@ -662,3 +662,9 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .dashboard-shell[data-view="p4-p5-p6-chat"] .rank-chat456-panel{display:block;margin-top:0;min-height:calc(100dvh - 80px);border-radius:18px}
 .dashboard-shell[data-view="p4-p5-p6-chat"] .dashboard-header{margin-bottom:8px}
 @media(max-width:520px){.dashboard-shell[data-view="p4-p5-p6-chat"]{width:100%;padding:0}.dashboard-shell[data-view="p4-p5-p6-chat"] .rank-chat456-panel{min-height:100dvh;padding:12px 10px;border-radius:0;border-left:0;border-right:0}}
+
+/* Floating page-scroll controls for long mobile pages */
+.page-scroll-controls{position:fixed;right:max(10px,env(safe-area-inset-right));bottom:calc(82px + env(safe-area-inset-bottom));z-index:950;display:flex;flex-direction:column;gap:8px}
+.page-scroll-controls button{display:grid;place-items:center;width:40px;height:40px;padding:0;border:1px solid #61734c;border-radius:13px;background:rgba(18,25,15,.92);color:var(--lime);font-size:25px;font-weight:800;line-height:1;box-shadow:0 4px 14px #0008;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);touch-action:manipulation}
+.page-scroll-controls button:active{transform:scale(.94);background:#26351b}
+.page-scroll-controls button:focus-visible{outline:2px solid var(--lime);outline-offset:3px}
