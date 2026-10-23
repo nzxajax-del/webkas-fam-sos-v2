@@ -669,3 +669,10 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .page-scroll-slider{appearance:slider-vertical;-webkit-appearance:slider-vertical;writing-mode:vertical-lr;direction:rtl;width:26px;height:min(34vh,220px);min-height:120px;margin:0;accent-color:var(--lime);cursor:pointer;touch-action:pan-x;}
 .page-scroll-slider:focus-visible{outline:2px solid var(--lime);outline-offset:3px;border-radius:12px}
 @media(max-width:520px){.page-scroll-controls{right:max(5px,env(safe-area-inset-right));width:38px;padding:9px 5px;background:rgba(18,25,15,.88)}.page-scroll-slider{height:min(30vh,190px);min-height:110px;width:25px}}
+
+/* Ikon menu laci: ukuran seragam dan emblem pangkat ringkas */
+.drawer-item{justify-content:flex-start;align-items:center;gap:12px}
+.drawer-icon{display:inline-flex;align-items:center;justify-content:center;flex:0 0 28px;width:28px;height:28px;font-size:22px;line-height:1;color:var(--lime,#39ff14);text-align:center}
+.drawer-label{flex:1;min-width:0}
+.drawer-rank-emblem .rank-badge,.drawer-rank-emblem [class*="rank-badge"]{width:28px!important;height:28px!important;min-width:28px!important;min-height:28px!important;max-width:28px!important;max-height:28px!important;padding:0!important;border-radius:8px!important;box-shadow:none!important}
+.drawer-rank-emblem svg{width:20px!important;height:20px!important;max-width:20px!important;max-height:20px!important}
