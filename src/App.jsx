@@ -1031,6 +1031,86 @@ export default function App() {
     const timer = window.setInterval(() => { if (document.visibilityState === "visible" && activeSection === "p4-p5-p6-chat") fetchMessages(); }, 15000);
     return () => { alive = false; window.clearInterval(timer); supabase.removeChannel(channel); };
   }, [session?.user?.id, profile?.status, profile?.rank_code, profile?.role, activeSection]);
+  async function loadSeniorChatMessages() {
+    if (!supabase || !session?.user?.id || profile?.status !== "active" || !(["P4","P5","P6"].includes(profile?.rank_code) || profile?.role === "admin")) {
+      setSeniorChatMessages([]);
+      return false;
+    }
+    const { data, error: chatError } = await supabase.from("p4_p5_p6_chat_messages").select("id,sender_id,body,created_at").order("created_at", { ascending: true }).limit(200);
+    if (chatError) { setError("Ruang chat P4/P5/P6 gagal dimuat: " + chatError.message); return false; }
+    setSeniorChatMessages(await decorateChatMessages(data || []));
+    return true;
+  }
+  async function sendSeniorChatMessage(event) {
+    event?.preventDefault?.();
+    const body = seniorChatDraft.trim();
+    if (!body || !session?.user?.id || seniorChatSending || !(["P4","P5","P6"].includes(profile?.rank_code) || profile?.role === "admin")) return;
+    setSeniorChatSending(true);
+    const { error: sendError } = await supabase.from("p4_p5_p6_chat_messages").insert({ sender_id: session.user.id, body });
+    if (sendError) setError("Pesan ruang P4/P5/P6 gagal dikirim: " + sendError.message);
+    else { setSeniorChatDraft(""); await loadSeniorChatMessages(); }
+    setSeniorChatSending(false);
+  }
+  async function refreshSeniorChatMessages() {
+    if (seniorChatRefreshing) return;
+    setSeniorChatRefreshing(true);
+    await loadSeniorChatMessages();
+    setSeniorChatRefreshing(false);
+  }
+  useEffect(() => {
+    if (!supabase || !session?.user?.id || profile?.status !== "active" || activeSection !== "p4-p5-p6-chat" || !(["P4","P5","P6"].includes(profile?.rank_code) || profile?.role === "admin")) return undefined;
+    let alive = true;
+    const fetchMessages = async () => {
+      const { data, error: chatError } = await supabase.from("p4_p5_p6_chat_messages").select("id,sender_id,body,created_at").order("created_at", { ascending: true }).limit(200);
+      if (!alive) return;
+      if (chatError) setError("Ruang chat P4/P5/P6 gagal dimuat: " + chatError.message);
+      else setSeniorChatMessages(await decorateChatMessages(data || []));
+    };
+    fetchMessages();
+    const channel = supabase.channel("webkas-p4-p5-p6-chat-" + session.user.id).on("postgres_changes", { event: "*", schema: "public", table: "p4_p5_p6_chat_messages" }, fetchMessages).subscribe();
+    const timer = window.setInterval(() => { if (document.visibilityState === "visible" && activeSection === "p4-p5-p6-chat") fetchMessages(); }, 15000);
+    return () => { alive = false; window.clearInterval(timer); supabase.removeChannel(channel); };
+  }, [session?.user?.id, profile?.status, profile?.rank_code, profile?.role, activeSection]);
+  async function loadRankChat456Messages() {
+    if (!supabase || !session?.user?.id || profile?.status !== "active" || !(["P4","P5","P6"].includes(profile?.rank_code) || profile?.role === "admin")) {
+      setRankChat456Messages([]);
+      return false;
+    }
+    const { data, error: chatError } = await supabase.from("p4_p4_p5_p6_chat_messages").select("id,sender_id,body,created_at").order("created_at", { ascending: true }).limit(200);
+    if (chatError) { setError("Ruang chat P4/P4/P5/P6 gagal dimuat: " + chatError.message); return false; }
+    setRankChat456Messages(await decorateChatMessages(data || []));
+    return true;
+  }
+  async function sendSeniorChatMessage(event) {
+    event?.preventDefault?.();
+    const body = rankChat456Draft.trim();
+    if (!body || !session?.user?.id || rankChat456Sending || !(["P4","P5","P6"].includes(profile?.rank_code) || profile?.role === "admin")) return;
+    setRankChat456Sending(true);
+    const { error: sendError } = await supabase.from("p4_p4_p5_p6_chat_messages").insert({ sender_id: session.user.id, body });
+    if (sendError) setError("Pesan ruang P4/P4/P5/P6 gagal dikirim: " + sendError.message);
+    else { setRankChat456Draft(""); await loadRankChat456Messages(); }
+    setRankChat456Sending(false);
+  }
+  async function refreshRankChat456Messages() {
+    if (rankChat456Refreshing) return;
+    setRankChat456Refreshing(true);
+    await loadRankChat456Messages();
+    setRankChat456Refreshing(false);
+  }
+  useEffect(() => {
+    if (!supabase || !session?.user?.id || profile?.status !== "active" || activeSection !== "p4-p4-p5-p6-chat" || !(["P4","P5","P6"].includes(profile?.rank_code) || profile?.role === "admin")) return undefined;
+    let alive = true;
+    const fetchMessages = async () => {
+      const { data, error: chatError } = await supabase.from("p4_p4_p5_p6_chat_messages").select("id,sender_id,body,created_at").order("created_at", { ascending: true }).limit(200);
+      if (!alive) return;
+      if (chatError) setError("Ruang chat P4/P4/P5/P6 gagal dimuat: " + chatError.message);
+      else setRankChat456Messages(await decorateChatMessages(data || []));
+    };
+    fetchMessages();
+    const channel = supabase.channel("webkas-p4-p4-p5-p6-chat-" + session.user.id).on("postgres_changes", { event: "*", schema: "public", table: "p4_p4_p5_p6_chat_messages" }, fetchMessages).subscribe();
+    const timer = window.setInterval(() => { if (document.visibilityState === "visible" && activeSection === "p4-p4-p5-p6-chat") fetchMessages(); }, 15000);
+    return () => { alive = false; window.clearInterval(timer); supabase.removeChannel(channel); };
+  }, [session?.user?.id, profile?.status, profile?.rank_code, profile?.role, activeSection]);
   async function loadPrivateConversations() {
     if (!supabase || !profile?.id || profile.status !== "active") return;
     const uid = profile.id;
