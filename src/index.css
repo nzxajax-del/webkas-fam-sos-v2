@@ -604,3 +604,10 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .member-phone-toggle{display:inline-flex;align-items:center;justify-content:center;width:28px;height:26px;padding:0;border:1px solid var(--line);border-radius:7px;background:rgba(130,180,95,.10);color:var(--lime);font-size:15px;cursor:pointer;flex:0 0 auto}
 .member-phone-compact .member-phone-link{margin:0;font-size:12px;line-height:1.2;min-width:0;overflow-wrap:anywhere}
 @media(max-width:420px){.member-phone-compact{min-height:22px;margin-top:0}.member-phone-toggle{width:25px;height:23px;font-size:13px}.member-phone-compact .member-phone-link{font-size:11px}}
+
+/* Keep the phone toggle beside the three-line member menu, not below the profile. */
+.member-name-bar{display:flex;align-items:center;gap:6px;min-width:0}
+.member-name-bar .member-character-name{min-width:0;overflow-wrap:anywhere}
+.member-phone-inline{margin:0 0 0 auto;flex:0 0 auto}
+.member-phone-inline .member-phone-link{max-width:150px;font-size:11px;line-height:1.2}
+@media(max-width:420px){.member-phone-inline{gap:3px}.member-phone-inline .member-phone-link{max-width:100px;font-size:10px}}
