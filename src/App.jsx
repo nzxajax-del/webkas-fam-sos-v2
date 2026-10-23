@@ -958,7 +958,7 @@ export default function App() {
       setRankChatMessages([]);
       return false;
     }
-    const { data, error: chatError } = await supabase.from("p5_p6_chat_messages").select("id,sender_id,body,created_at").order("created_at", { ascending: true }).limit(200);
+    const { data, error: chatError } = await supabase.from("p5_p6_chat_messages").select("id,sender_id,body,created_at").order("created_at", { ascending: false }).limit(200);
     if (chatError) { setError("Ruang chat P5/P6 gagal dimuat: " + chatError.message); return false; }
     setRankChatMessages(await decorateChatMessages(data || []));
     return true;
@@ -1013,10 +1013,10 @@ export default function App() {
       setMessage("Pesan baru di Leaders" + (row.body ? ": " + String(row.body).slice(0, 90) : "."));
     };
     const fetchMessages = async () => {
-      const { data, error: chatError } = await supabase.from("p5_p6_chat_messages").select("id,sender_id,body,created_at").order("created_at", { ascending: true }).limit(200);
+      const { data, error: chatError } = await supabase.from("p5_p6_chat_messages").select("id,sender_id,body,created_at").order("created_at", { ascending: false }).limit(200);
       if (!alive) return;
       if (chatError) { setError("Ruang chat P5/P6 gagal dimuat: " + chatError.message); return; }
-      const rows = data || [];
+      const rows = (data || []).slice().reverse();
       if (!initialized) {
         rows.forEach((row) => seenIds.add(row.id));
         initialized = true;
@@ -1040,7 +1040,7 @@ export default function App() {
       setRankChat456Messages([]);
       return false;
     }
-    const { data, error: chatError } = await supabase.from("p4_p5_p6_chat_messages").select("id,sender_id,body,created_at").order("created_at", { ascending: true }).limit(200);
+    const { data, error: chatError } = await supabase.from("p4_p5_p6_chat_messages").select("id,sender_id,body,created_at").order("created_at", { ascending: false }).limit(200);
     if (chatError) { setError("Ruang chat P4/P5/P6 gagal dimuat: " + chatError.message); return false; }
     setRankChat456Messages(await decorateChatMessages(data || []));
     return true;
@@ -1099,10 +1099,10 @@ export default function App() {
       setMessage("Pesan baru di Ruang Chat Staff (P4)" + (row.body ? ": " + String(row.body).slice(0, 90) : "."));
     };
     const fetchMessages = async () => {
-      const { data, error: chatError } = await supabase.from("p4_p5_p6_chat_messages").select("id,sender_id,body,created_at").order("created_at", { ascending: true }).limit(200);
+      const { data, error: chatError } = await supabase.from("p4_p5_p6_chat_messages").select("id,sender_id,body,created_at").order("created_at", { ascending: false }).limit(200);
       if (!alive) return;
       if (chatError) { setError("Ruang chat P4/P5/P6 gagal dimuat: " + chatError.message); return; }
-      const rows = data || [];
+      const rows = (data || []).slice().reverse();
       if (!initialized) {
         rows.forEach((row) => seenIds.add(row.id));
         initialized = true;
@@ -1126,7 +1126,7 @@ export default function App() {
       setRankChat456Messages([]);
       return false;
     }
-    const { data, error: chatError } = await supabase.from("p4_p5_p6_chat_messages").select("id,sender_id,body,created_at").order("created_at", { ascending: true }).limit(200);
+    const { data, error: chatError } = await supabase.from("p4_p5_p6_chat_messages").select("id,sender_id,body,created_at").order("created_at", { ascending: false }).limit(200);
     if (chatError) { setError("Ruang chat P4/P4/P5/P6 gagal dimuat: " + chatError.message); return false; }
     setRankChat456Messages(await decorateChatMessages(data || []));
     return true;
@@ -1151,7 +1151,7 @@ export default function App() {
     if (!supabase || !session?.user?.id || profile?.status !== "active" || activeSection !== "p4-p4-p5-p6-chat" || !(["P4","P5","P6"].includes(profile?.rank_code) || profile?.role === "admin")) return undefined;
     let alive = true;
     const fetchMessages = async () => {
-      const { data, error: chatError } = await supabase.from("p4_p5_p6_chat_messages").select("id,sender_id,body,created_at").order("created_at", { ascending: true }).limit(200);
+      const { data, error: chatError } = await supabase.from("p4_p5_p6_chat_messages").select("id,sender_id,body,created_at").order("created_at", { ascending: false }).limit(200);
       if (!alive) return;
       if (chatError) setError("Ruang chat P4/P4/P5/P6 gagal dimuat: " + chatError.message);
       else setRankChat456Messages(await decorateChatMessages(data || []));
