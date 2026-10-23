@@ -1072,7 +1072,7 @@ export default function App() {
     setRankChat456Refreshing(false);
   }
   useEffect(() => {
-    if (!supabase || !session?.user?.id || profile?.status !== "active" || activeSection !== "senior-chat-disabled" || !(["P4","P5","P6"].includes(profile?.rank_code) || profile?.role === "admin")) return undefined;
+    if (!supabase || !session?.user?.id || profile?.status !== "active" || activeSection !== "p4-p5-p6-chat" || !(["P4","P5","P6"].includes(profile?.rank_code) || profile?.role === "admin")) return undefined;
     let alive = true;
     let lastSeenMessageId = null;
     const fetchMessages = async () => {
@@ -1098,7 +1098,7 @@ export default function App() {
     }
     const { data, error: chatError } = await supabase.from("p4_p5_p6_chat_messages").select("id,sender_id,body,created_at").order("created_at", { ascending: true }).limit(200);
     if (chatError) { setError("Ruang chat P4/P5/P6 gagal dimuat: " + chatError.message); return false; }
-    setSeniorChatMessages(await decorateChatMessages(data || []));
+    setRankChat456Messages(await decorateChatMessages(data || []));
     return true;
   }
   async function sendSeniorChatMessage(event) {
