@@ -19,7 +19,6 @@
     #webkas-app-card p{margin:6px 0 14px;color:#cbd3c3}
     #webkas-app-card .webkas-app-action{display:flex;width:100%;justify-content:center;align-items:center;gap:8px;min-height:44px;margin-top:9px;padding:11px 14px;border:1px solid #c1f45a;border-radius:12px;background:#c1f45a;color:#10120e;font-weight:850;cursor:pointer;text-decoration:none}
     #webkas-app-card .webkas-app-secondary{background:#151b12;color:#f6f8f2;border-color:#46553a}
-    #webkas-app-card .webkas-app-disabled{background:#20251d;border-color:#424a3c;color:#aab3a2;cursor:not-allowed}
     #webkas-app-close{float:right;border:0;background:transparent;color:#dce5d5;font-size:24px;cursor:pointer}
     #webkas-app-note{font-size:12px;color:#aab3a2!important}
     @media(min-width:700px){#webkas-app-dialog{align-items:center}}
@@ -29,7 +28,7 @@
   const dialog = document.createElement("div");
   dialog.id = "webkas-app-dialog";
   dialog.setAttribute("role", "presentation");
-  dialog.innerHTML = `<section id="webkas-app-card" role="dialog" aria-modal="true" aria-labelledby="webkas-app-title"><button id="webkas-app-close" type="button" aria-label="Tutup">×</button><h2 id="webkas-app-title">SOS FAM</h2><p>Pilih cara mengakses SOS FAM dari perangkat Android.</p><button id="webkas-pwa-install" class="webkas-app-action" type="button">Pasang SOS FAM di layar utama</button><p id="webkas-app-note">Jika tombol instal belum tersedia, buka menu Chrome (⋮), lalu pilih “Tambahkan ke layar utama” atau “Instal aplikasi”.</p><button id="webkas-apk-download" class="webkas-app-action webkas-app-disabled" type="button" disabled aria-disabled="true">APK Android — sedang disiapkan</button><p id="webkas-app-note">Unduhan APK akan diaktifkan setelah berkas resmi dibangun, diuji, dan diunggah. Jangan unduh APK dari sumber tidak resmi.</p><button id="webkas-app-close-secondary" class="webkas-app-action webkas-app-secondary" type="button">Kembali ke WEBKAS</button></section>`;
+  dialog.innerHTML = `<section id="webkas-app-card" role="dialog" aria-modal="true" aria-labelledby="webkas-app-title"><button id="webkas-app-close" type="button" aria-label="Tutup">×</button><h2 id="webkas-app-title">SOS FAM</h2><p>Pilih cara mengakses SOS FAM dari perangkat Android.</p><button id="webkas-pwa-install" class="webkas-app-action" type="button">Pasang SOS FAM di layar utama</button><p id="webkas-app-note">Jika tombol instal belum tersedia, buka menu Chrome (⋮), lalu pilih “Tambahkan ke layar utama” atau “Instal aplikasi”.</p><button id="webkas-app-close-secondary" class="webkas-app-action webkas-app-secondary" type="button">Kembali ke WEBKAS</button></section>`;
   document.body.appendChild(dialog);
 
   const open = () => { dialog.dataset.open = "true"; document.getElementById("webkas-pwa-install").focus(); };
