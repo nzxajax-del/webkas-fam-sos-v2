@@ -128,11 +128,12 @@ input[type=color]{height:48px;padding:5px;cursor:pointer}
 
 /* Compact member list: aim for about five rows visible before scrolling */
 .member-card-grid{
+  -webkit-overflow-scrolling:touch;
   grid-template-columns:minmax(0,1fr);
   gap:7px;
   max-height: min(68vh, 720px);
   overflow-y:auto;
-  overscroll-behavior:contain;
+  overscroll-behavior:auto;
   padding:2px 5px 2px 1px;
   scrollbar-width:thin;
   scrollbar-color:#536344 #11150e;
@@ -245,7 +246,7 @@ input[type=color]{height:48px;padding:5px;cursor:pointer}
 
 /* Small centered member settings modal; correction form lives inside this window */
 .member-modal-backdrop{position:fixed;inset:0;z-index:220;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.76);backdrop-filter:blur(3px)}
-.member-modal{width:min(100%,440px);max-height:min(86vh,760px);overflow-y:auto;padding:17px;border:1px solid #465b32;border-radius:16px;background:#11170f;box-shadow:0 24px 80px #000b;overscroll-behavior:contain}
+.member-modal{width:min(100%,440px);max-height:min(86vh,760px);overflow-y:auto;padding:17px;border:1px solid #465b32;border-radius:16px;background:#11170f;box-shadow:0 24px 80px #000b;overscroll-behavior:auto}
 .member-modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid #303a29}
 .member-modal-head h3{margin:4px 0;font-size:18px;overflow-wrap:anywhere}
 .member-modal-head small{color:var(--muted);font-size:11px}
@@ -320,7 +321,7 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .dashboard-shell[data-view="chat"] #member-history,
 .dashboard-shell[data-view="chat"] #member-payments,
 .dashboard-shell[data-view="chat"] #member-settings{display:none}
-.chat-message-list{display:flex;flex-direction:column;gap:12px;min-height:360px;height:calc(100dvh - 300px);max-height:760px;overflow-y:auto;overscroll-behavior:contain;scroll-behavior:smooth;padding:clamp(10px,2vw,18px);border:1px solid var(--line);border-radius:14px;background:radial-gradient(ellipse at top,#172015,#0c100c 65%)}
+.chat-message-list{-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:12px;min-height:360px;height:calc(100dvh - 300px);max-height:760px;overflow-y:auto;overscroll-behavior:auto;scroll-behavior:smooth;padding:clamp(10px,2vw,18px);border:1px solid var(--line);border-radius:14px;background:radial-gradient(ellipse at top,#172015,#0c100c 65%)}
 .chat-message{align-self:flex-start;width:min(92%,860px);padding:12px 14px;border:1px solid #303a2d;border-radius:4px 14px 14px 14px;background:#171d16;overflow-wrap:anywhere}
 .chat-message.own{align-self:flex-end;border-color:#53653b;background:#20291b;border-radius:14px 4px 14px 14px}
 .chat-message-sender{display:flex;align-items:center;gap:10px;min-width:0}
@@ -591,7 +592,7 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .private-conversation-details strong,.private-conversation-details small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .private-conversation-details small{color:var(--muted);font-size:12px}
 .private-conversation-arrow{font-size:26px;color:var(--lime)}
-.private-message-list{display:flex;flex-direction:column;gap:10px;min-height:42vh;max-height:calc(100dvh - 290px);overflow:auto;padding:12px;border:1px solid var(--line);border-radius:14px;background:#0e120d}
+.private-message-list{-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:10px;min-height:42vh;max-height:calc(100dvh - 290px);overflow:auto;padding:12px;border:1px solid var(--line);border-radius:14px;background:#0e120d}
 .private-message{align-self:flex-start;width:min(88%,680px);padding:12px;border:1px solid #303a29;border-radius:13px;background:#182016;overflow-wrap:anywhere}
 .private-message.own{align-self:flex-end;border-color:#4b6530;background:#202c18}
 .private-message-meta{display:flex;justify-content:space-between;align-items:center;gap:10px;color:var(--lime);font-size:12px}
