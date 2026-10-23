@@ -1,0 +1,25 @@
+{
+  "id": "/",
+  "name": "WEBKAS FAM SOS V2",
+  "short_name": "WEBKAS",
+  "description": "Akses WEBKAS FAM SOS V2 sebagai aplikasi Android.",
+  "lang": "id-ID",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "orientation": "portrait-primary",
+  "background_color": "#0b0e0b",
+  "theme_color": "#10120e",
+  "icons": [
+    {
+      "src": "/icons/webkas-app.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

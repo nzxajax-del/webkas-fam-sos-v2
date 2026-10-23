@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="lime" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#eaff24"/><stop offset=".55" stop-color="#baff00"/><stop offset="1" stop-color="#5fbd00"/></linearGradient>
+    <linearGradient id="metal" x1="0" y1="0" x2="0.9" y2="1"><stop stop-color="#fff"/><stop offset=".55" stop-color="#c9ced2"/><stop offset="1" stop-color="#727a80"/></linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="#050605"/>
+  <rect x="14" y="14" width="484" height="484" rx="100" fill="#0b0e0b" stroke="url(#lime)" stroke-width="12"/>
+  <path d="M54 176 178 85 294 104 360 47 345 133 455 186 397 235 449 287 336 307 292 421 235 365 94 402 130 319 48 286 109 241Z" fill="url(#lime)" stroke="#111" stroke-width="16" stroke-linejoin="round"/>
+  <path d="M71 277 139 217 198 231 246 170 229 245 287 263 244 300 276 325 188 328 157 370 137 330 86 345 106 307Z" fill="#050605" stroke="url(#metal)" stroke-width="9" stroke-linejoin="round"/>
+  <path d="M263 205 317 167 375 187 416 166 402 220 441 241 399 269 417 292 350 298 324 338 307 304 275 310 292 269 251 248Z" fill="#050605" stroke="url(#metal)" stroke-width="9" stroke-linejoin="round"/>
+  <text x="256" y="260" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="86" font-weight="1000" font-style="italic" fill="#fff" stroke="#050605" stroke-width="13" paint-order="stroke" letter-spacing="-7">S.O.S</text>
+  <text x="256" y="322" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="42" font-weight="1000" font-style="italic" fill="#fff" stroke="#050605" stroke-width="8" paint-order="stroke" letter-spacing="-1">FAMILY</text>
+  <path d="M214 112 248 62 282 112 264 102 248 123 231 102Z" fill="#f5c842" stroke="#111" stroke-width="8" stroke-linejoin="round"/>
+</svg>
