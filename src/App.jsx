@@ -637,7 +637,7 @@ export default function App() {
   }
 
   async function deleteMember(member) {
-    const ok = window.confirm("HAPUS PERMANEN akun @" + member.login_username + "? Tindakan ini tidak bisa dibatalkan. Saldo, tunggakan, transaksi, dan pengajuan pembayaran akan diarsipkan ke audit admin sebelum akun dihapus.");
+    const ok = window.confirm("HAPUS PERMANEN akun @" + member.login_username + "? Tindakan ini tidak bisa dibatalkan. Saldo, tunggakan, dan riwayat keuangan akan diarsipkan ke log audit sebelum data akun dihapus.");
     if (!ok) return;
     const confirmation = window.prompt("Ketik username persis untuk konfirmasi penghapusan permanen:", "");
     if (confirmation === null) return;
@@ -649,27 +649,34 @@ export default function App() {
     const { data: deleteData, error: deleteError } = await supabase.rpc("admin_delete_member_without_financial_history", {
       p_member_id: member.id, p_confirmation_username: confirmation.trim(),
     });
-    if (deleteError || deleteData?.success !== true) {
-      setError("Akun tidak dihapus: " + (deleteError?.message || "respons server tidak valid") + ". Tidak ada penghapusan lanjutan yang dilakukan.");
+    if (deleteError) {
+      setError("Akun tidak dihapus: " + deleteError.message);
+      setBusy(false); return;
+    }
+    if (!deleteData || deleteData.success !== true || deleteData.financial_history_archived !== true) {
+      setError("Penghapusan dibatalkan karena server tidak mengonfirmasi arsip keuangan. Periksa log audit sebelum mencoba kembali.");
       setBusy(false); return;
     }
     const cleanupErrors = [];
-    const removePaths = async (bucket, paths, label) => {
-      const uniquePaths = [...new Set((paths || []).filter((path) => typeof path === "string" && path.trim()))];
-      if (!uniquePaths.length) return;
-      const { error: removeError } = await supabase.storage.from(bucket).remove(uniquePaths);
-      if (removeError) cleanupErrors.push(label + ": " + removeError.message);
-    };
-    await removePaths("profile-photos", [deleteData.profile_photo_path || member.profile_photo_path], "foto profil");
-    await removePaths("registration-proofs", [deleteData.registration_proof_path || member.registration_proof_path], "bukti pendaftaran");
-    await removePaths("payment-proofs", deleteData.payment_proof_paths, "bukti pembayaran");
+    if (member.profile_photo_path) {
+      const { error: photoError } = await supabase.storage.from("profile-photos").remove([member.profile_photo_path]);
+      if (photoError) cleanupErrors.push("foto profil: " + photoError.message);
+    }
+    if (member.registration_proof_path) {
+      const { error: registrationError } = await supabase.storage.from("registration-proofs").remove([member.registration_proof_path]);
+      if (registrationError) cleanupErrors.push("bukti pendaftaran: " + registrationError.message);
+    }
+    const paymentProofPaths = Array.isArray(deleteData.payment_proof_paths) ? deleteData.payment_proof_paths.filter((path) => typeof path === "string" && path.trim()) : [];
+    if (paymentProofPaths.length) {
+      const { error: paymentProofError } = await supabase.storage.from("payment-proofs").remove([...new Set(paymentProofPaths)]);
+      if (paymentProofError) cleanupErrors.push("bukti pembayaran: " + paymentProofError.message);
+    }
+    if (cleanupErrors.length) setError("Akun sudah dihapus dan arsip keuangan tersimpan, tetapi berkas berikut perlu dibersihkan manual: " + cleanupErrors.join("; "));
     setOpenMemberActions(null);
     await refreshAdminSnapshot();
-    if (cleanupErrors.length) setError("Akun sudah dihapus dan riwayat keuangan diarsipkan, tetapi berkas perlu dibersihkan manual: " + cleanupErrors.join("; "));
-    setMessage("Akun anggota @" + member.login_username + " berhasil dihapus permanen. Saldo, tunggakan, dan riwayat keuangannya sudah diarsipkan ke audit admin.");
+    setMessage("Akun anggota @" + member.login_username + " berhasil dihapus permanen. Saldo, tunggakan, dan riwayat keuangan telah diarsipkan ke log audit.");
     setBusy(false);
   }
-
   async function adjustMemberBalance(event) {
     event.preventDefault();
     if (!balanceCorrection) return;
