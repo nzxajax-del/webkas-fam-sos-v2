@@ -54,6 +54,10 @@ export default function App() {
   const [rankChatDraft, setRankChatDraft] = useState("");
   const [rankChatSending, setRankChatSending] = useState(false);
   const [rankChatRefreshing, setRankChatRefreshing] = useState(false);
+  const [seniorChatMessages, setSeniorChatMessages] = useState([]);
+  const [seniorChatDraft, setSeniorChatDraft] = useState("");
+  const [seniorChatSending, setSeniorChatSending] = useState(false);
+  const [seniorChatRefreshing, setSeniorChatRefreshing] = useState(false);
   const [rankChat456Messages, setRankChat456Messages] = useState([]);
   const [rankChat456Draft, setRankChat456Draft] = useState("");
   const [rankChat456Sending, setRankChat456Sending] = useState(false);
