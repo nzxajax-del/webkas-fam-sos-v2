@@ -1026,12 +1026,38 @@ export default function App() {
   async function sendRankChatMessage(event) {
     event?.preventDefault?.();
     const body = rankChat456Draft.trim();
-    if (!body || !session?.user?.id || rankChat456Sending || !(["P4","P5","P6"].includes(profile?.rank_code) || profile?.role === "admin")) return;
+    if (!body) {
+      setError("Tulis pesan terlebih dahulu sebelum mengirim.");
+      return;
+    }
+    if (!supabase || !session?.user?.id) {
+      setError("Sesi login belum siap. Muat ulang halaman dan masuk kembali.");
+      return;
+    }
+    if (rankChat456Sending) return;
+    if (profile?.status !== "active" || !(["P4","P5","P6"].includes(profile?.rank_code) || profile?.role === "admin")) {
+      setError("Akun ini tidak memiliki izin mengirim pesan di ruang P4/P5/P6.");
+      return;
+    }
     setRankChat456Sending(true);
-    const { error: sendError } = await supabase.from("p4_p5_p6_chat_messages").insert({ sender_id: session.user.id, body });
-    if (sendError) setError("Pesan ruang P4/P5/P6 gagal dikirim: " + sendError.message);
-    else { setRankChat456Draft(""); await loadRankChat456Messages(); }
-    setRankChat456Sending(false);
+    setError("");
+    setMessage("");
+    try {
+      const { error: sendError } = await supabase
+        .from("p4_p5_p6_chat_messages")
+        .insert({ sender_id: session.user.id, body });
+      if (sendError) {
+        setError("Pesan ruang P4/P5/P6 gagal dikirim: " + sendError.message);
+      } else {
+        setRankChat456Draft("");
+        const loaded = await loadRankChat456Messages();
+        if (loaded) setMessage("Pesan berhasil dikirim.");
+      }
+    } catch (sendException) {
+      setError("Pesan ruang P4/P5/P6 gagal dikirim karena koneksi atau aplikasi: " + (sendException?.message || "silakan coba lagi."));
+    } finally {
+      setRankChat456Sending(false);
+    }
   }
   async function refreshRankChat456Messages() {
     if (rankChat456Refreshing) return;
