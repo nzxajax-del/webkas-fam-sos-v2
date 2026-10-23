@@ -704,3 +704,79 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
   .welcome-app-caption{grid-column:1 / -1}
 }
 @media(prefers-reduced-motion:reduce){.welcome-app-open{transition:none}}
+
+
+/* Home dashboard refinement: consistent rhythm, compact cards, and safe mobile wrapping. */
+.dashboard-shell[data-view="admin-home"],
+.dashboard-shell[data-view="member-home"]{width:min(calc(100% - 28px),1050px);padding-top:18px}
+.dashboard-shell[data-view="admin-home"] .welcome-panel,
+.dashboard-shell[data-view="member-home"] .welcome-panel{padding:clamp(18px,3.5vw,30px);border-radius:22px;margin-bottom:16px;overflow:hidden}
+.dashboard-shell[data-view="admin-home"] .welcome-panel h1,
+.dashboard-shell[data-view="member-home"] .welcome-panel h1{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0;margin:14px 0 16px;font-size:clamp(27px,5.8vw,43px);line-height:1.12;letter-spacing:-.045em;overflow-wrap:anywhere}
+.dashboard-shell[data-view="admin-home"] .welcome-name-with-rank>span,
+.dashboard-shell[data-view="member-home"] .welcome-name-with-rank>span{min-width:0;overflow-wrap:anywhere}
+.dashboard-shell[data-view="admin-home"] .welcome-name-with-rank .rank-badge,
+.dashboard-shell[data-view="member-home"] .welcome-name-with-rank .rank-badge{flex:0 0 auto}
+.dashboard-shell[data-view="admin-home"] .welcome-profile-row,
+.dashboard-shell[data-view="member-home"] .welcome-profile-row{display:grid;grid-template-columns:clamp(66px,12vw,92px) minmax(0,1fr) minmax(116px,140px);align-items:center;gap:clamp(8px,2vw,14px);margin:12px 0 16px}
+.dashboard-shell[data-view="admin-home"] .profile-avatar-wrap,
+.dashboard-shell[data-view="member-home"] .profile-avatar-wrap{width:100%;max-width:92px;aspect-ratio:1;min-width:0}
+.dashboard-shell[data-view="admin-home"] .profile-avatar,
+.dashboard-shell[data-view="member-home"] .profile-avatar{width:100%;height:100%;object-fit:cover}
+.dashboard-shell[data-view="admin-home"] .welcome-profile-details,
+.dashboard-shell[data-view="member-home"] .welcome-profile-details{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-width:0}
+.dashboard-shell[data-view="admin-home"] .welcome-status,
+.dashboard-shell[data-view="member-home"] .welcome-status{flex-wrap:wrap;line-height:1.35}
+.dashboard-shell[data-view="admin-home"] .welcome-app-actions,
+.dashboard-shell[data-view="member-home"] .welcome-app-actions{width:100%;max-width:140px}
+.dashboard-shell[data-view="admin-home"] .welcome-panel>.muted,
+.dashboard-shell[data-view="member-home"] .welcome-panel>.muted{margin:10px 0 0;line-height:1.55}
+.dashboard-shell[data-view="admin-home"] .db-usage-panel,
+.dashboard-shell[data-view="member-home"] .history-panel{margin-top:16px}
+.dashboard-shell[data-view="admin-home"] .db-usage-panel{padding:clamp(16px,3vw,24px);border-radius:20px;background:linear-gradient(145deg,rgba(21,28,17,.98),rgba(14,18,13,.98))}
+.dashboard-shell[data-view="admin-home"] .db-usage-panel .section-head{align-items:flex-start;gap:14px;margin-bottom:14px}
+.dashboard-shell[data-view="admin-home"] .db-usage-panel .section-head>div{min-width:0;flex:1}
+.dashboard-shell[data-view="admin-home"] .db-usage-panel .section-head h2{margin:7px 0 8px;font-size:clamp(21px,4vw,29px);line-height:1.2;letter-spacing:-.025em}
+.dashboard-shell[data-view="admin-home"] .db-usage-panel .section-head p{max-width:42ch;margin:0}
+.dashboard-shell[data-view="admin-home"] .db-usage-panel .section-head>button{flex:0 0 auto;min-height:42px;padding:10px 14px}
+.dashboard-shell[data-view="admin-home"] .db-usage-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0}
+.dashboard-shell[data-view="admin-home"] .db-usage-card{align-content:start;gap:7px;padding:14px;border-radius:14px;background:linear-gradient(145deg,#151c12,#10140e);border-color:#303d28}
+.dashboard-shell[data-view="admin-home"] .db-usage-card span{font-size:11px;line-height:1.4;letter-spacing:.015em}
+.dashboard-shell[data-view="admin-home"] .db-usage-card strong{font-size:clamp(17px,3.6vw,23px);line-height:1.2;letter-spacing:-.025em}
+.dashboard-shell[data-view="admin-home"] .db-usage-card small{font-size:10px;line-height:1.45}
+.dashboard-shell[data-view="admin-home"] .db-usage-meter{padding:14px;border-radius:14px}
+.dashboard-shell[data-view="admin-home"] .db-usage-meter-head{align-items:flex-start}
+.dashboard-shell[data-view="admin-home"] .db-usage-quota-note{line-height:1.5}
+.dashboard-shell[data-view="admin-home"] .chat-panel,
+.dashboard-shell[data-view="admin-home"] .history-panel{border-radius:20px}
+@media(max-width:520px){
+ .dashboard-shell[data-view="admin-home"],.dashboard-shell[data-view="member-home"]{width:calc(100% - 14px);padding-top:10px;padding-bottom:24px}
+ .dashboard-shell[data-view="admin-home"] .dashboard-header,.dashboard-shell[data-view="member-home"] .dashboard-header{gap:8px;margin-bottom:14px}
+ .dashboard-shell[data-view="admin-home"] .welcome-panel,.dashboard-shell[data-view="member-home"] .welcome-panel{padding:16px 14px;border-radius:19px;margin-bottom:12px}
+ .dashboard-shell[data-view="admin-home"] .welcome-panel h1,.dashboard-shell[data-view="member-home"] .welcome-panel h1{font-size:clamp(25px,7vw,34px);gap:6px;margin:12px 0 14px}
+ .dashboard-shell[data-view="admin-home"] .welcome-profile-row,.dashboard-shell[data-view="member-home"] .welcome-profile-row{grid-template-columns:58px minmax(0,1fr) 96px;gap:8px;margin:10px 0 14px}
+ .dashboard-shell[data-view="admin-home"] .profile-avatar-wrap,.dashboard-shell[data-view="member-home"] .profile-avatar-wrap{max-width:58px}
+ .dashboard-shell[data-view="admin-home"] .welcome-app-actions,.dashboard-shell[data-view="member-home"] .welcome-app-actions{padding:8px 5px;gap:7px;border-radius:12px}
+ .dashboard-shell[data-view="admin-home"] .welcome-app-label,.dashboard-shell[data-view="member-home"] .welcome-app-label{flex-direction:column;gap:4px;font-size:9px}
+ .dashboard-shell[data-view="admin-home"] .welcome-app-label img,.dashboard-shell[data-view="member-home"] .welcome-app-label img{width:24px;height:24px;flex-basis:24px}
+ .dashboard-shell[data-view="admin-home"] .welcome-app-open,.dashboard-shell[data-view="member-home"] .welcome-app-open{font-size:10px;min-height:36px;padding:7px 3px;gap:4px}
+ .dashboard-shell[data-view="admin-home"] .welcome-app-open::before,.dashboard-shell[data-view="member-home"] .welcome-app-open::before{width:11px;height:11px;flex-basis:11px}
+ .dashboard-shell[data-view="admin-home"] .welcome-app-caption,.dashboard-shell[data-view="member-home"] .welcome-app-caption{font-size:9px}
+ .dashboard-shell[data-view="admin-home"] .db-usage-panel{padding:15px 12px;border-radius:18px}
+ .dashboard-shell[data-view="admin-home"] .db-usage-panel .section-head{gap:8px;margin-bottom:12px}
+ .dashboard-shell[data-view="admin-home"] .db-usage-panel .section-head h2{font-size:21px}
+ .dashboard-shell[data-view="admin-home"] .db-usage-panel .section-head p{font-size:12px}
+ .dashboard-shell[data-view="admin-home"] .db-usage-panel .section-head>button{padding:9px 10px;min-height:38px;font-size:12px}
+ .dashboard-shell[data-view="admin-home"] .db-usage-grid{gap:8px;margin:12px 0}
+ .dashboard-shell[data-view="admin-home"] .db-usage-card{padding:11px 10px;gap:6px;border-radius:12px}
+ .dashboard-shell[data-view="admin-home"] .db-usage-card span{font-size:10px}
+ .dashboard-shell[data-view="admin-home"] .db-usage-card strong{font-size:clamp(15px,4.2vw,19px)}
+ .dashboard-shell[data-view="admin-home"] .db-usage-card small{font-size:9px}
+}
+@media(max-width:360px){
+ .dashboard-shell[data-view="admin-home"] .welcome-profile-row,.dashboard-shell[data-view="member-home"] .welcome-profile-row{grid-template-columns:52px minmax(0,1fr);gap:8px}
+ .dashboard-shell[data-view="admin-home"] .profile-avatar-wrap,.dashboard-shell[data-view="member-home"] .profile-avatar-wrap{max-width:52px}
+ .dashboard-shell[data-view="admin-home"] .welcome-app-actions,.dashboard-shell[data-view="member-home"] .welcome-app-actions{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(100px,132px);align-items:center;max-width:none}
+ .dashboard-shell[data-view="admin-home"] .welcome-app-label,.dashboard-shell[data-view="member-home"] .welcome-app-label{flex-direction:row}
+ .dashboard-shell[data-view="admin-home"] .welcome-app-caption,.dashboard-shell[data-view="member-home"] .welcome-app-caption{grid-column:1/-1}
+}
