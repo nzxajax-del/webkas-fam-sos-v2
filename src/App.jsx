@@ -961,7 +961,7 @@ export default function App() {
     setRankChatMessages(await decorateChatMessages(data || []));
     return true;
   }
-  async function sendRankChatMessage(event) {
+  async function sendRankChat456Message(event) {
     event?.preventDefault?.();
     const body = rankChatDraft.trim();
     if (!body || !session?.user?.id || rankChatSending || !(["P5","P6"].includes(profile?.rank_code) || profile?.role === "admin")) return;
