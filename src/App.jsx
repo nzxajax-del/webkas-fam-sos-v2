@@ -253,6 +253,20 @@ export default function App() {
           if (alive && !countError) setChatUnreadNotice(count || 0);
         }
       }
+      if (table === "p5_p6_chat_messages" || !table) {
+        if (activeSection === "p5-p6-chat") { if (alive) setLeadersUnreadNotice(0); }
+        else {
+          const { count, error: countError } = await supabase.from("p5_p6_chat_messages").select("id", { count: "exact", head: true }).gt("created_at", readLastSeen("webkas-leaders-chat-last-seen-")).neq("sender_id", session.user.id);
+          if (alive && !countError) setLeadersUnreadNotice(count || 0);
+        }
+      }
+      if (table === "p4_p5_p6_chat_messages" || !table) {
+        if (activeSection === "p4-p5-p6-chat") { if (alive) setStaffUnreadNotice(0); }
+        else {
+          const { count, error: countError } = await supabase.from("p4_p5_p6_chat_messages").select("id", { count: "exact", head: true }).gt("created_at", readLastSeen("webkas-staff-chat-last-seen-")).neq("sender_id", session.user.id);
+          if (alive && !countError) setStaffUnreadNotice(count || 0);
+        }
+      }
       if (table === "private_messages" || !table) {
         if (activeSection === "private-chat") { if (alive) setPrivateChatUnreadNotice(0); }
         else {
@@ -278,10 +292,24 @@ export default function App() {
       .on("postgres_changes", { event: "*", schema: "public", table: "member_profiles" }, () => refreshNotificationCounts("member_profiles"))
       .on("postgres_changes", { event: "*", schema: "public", table: "payment_submissions" }, () => refreshNotificationCounts("payment_submissions"))
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "chat_messages" }, () => refreshNotificationCounts("chat_messages"))
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "p5_p6_chat_messages" }, () => refreshNotificationCounts("p5_p6_chat_messages"))
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "p4_p5_p6_chat_messages" }, () => refreshNotificationCounts("p4_p5_p6_chat_messages"))
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "private_messages" }, () => refreshNotificationCounts("private_messages"))
       .subscribe();
     return () => { alive = false; supabase.removeChannel(channel); };
   }, [session?.user?.id, profile?.role, profile?.status, activeSection]);
+
+  useEffect(() => {
+    if (!session?.user?.id) return;
+    if (activeSection === "p5-p6-chat") {
+      try { localStorage.setItem("webkas-leaders-chat-last-seen-" + session.user.id, new Date().toISOString()); } catch {}
+      setLeadersUnreadNotice(0);
+    }
+    if (activeSection === "p4-p5-p6-chat") {
+      try { localStorage.setItem("webkas-staff-chat-last-seen-" + session.user.id, new Date().toISOString()); } catch {}
+      setStaffUnreadNotice(0);
+    }
+  }, [activeSection, session?.user?.id]);
 
   useEffect(() => {
     if (activeSection !== "private-chat" || !session?.user?.id) return;
