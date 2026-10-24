@@ -853,7 +853,7 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
   min-width: 0;
   min-height: 48px;
   max-height: 32dvh;
-  resize: vertical;
+  resize: none;
   font-size: 16px;
   line-height: 1.45;
 }
@@ -1290,4 +1290,76 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
  .builtin-sticker-item { min-height:62px; }
  .gangster-sticker.small { max-width:62px; }
  .chat-message-body.is-sticker .gangster-sticker { width:132px; }
+}
+
+
+/* Mobile chat usability: icon-only send action, no textarea resize grip, reliable nested scrolling. */
+.dashboard-shell .chat-compose-footer {
+  min-width: 0;
+}
+.dashboard-shell .chat-compose-footer button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  min-width: 48px;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border-radius: 14px;
+  flex: 0 0 48px;
+  line-height: 1;
+  font-size: 0;
+}
+.dashboard-shell .chat-compose-footer button .chat-send-icon {
+  display: block;
+  width: 23px;
+  height: 23px;
+  flex: 0 0 23px;
+}
+.dashboard-shell .chat-compose-footer button .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+.dashboard-shell .chat-compose textarea {
+  resize: none !important;
+}
+.dashboard-shell .chat-message-list,
+.dashboard-shell .private-message-list {
+  overscroll-behavior-y: auto !important;
+  touch-action: pan-y;
+  scroll-padding-block: 18px;
+  padding-bottom: 22px;
+  -webkit-overflow-scrolling: touch;
+}
+@media (max-width: 600px) {
+  .dashboard-shell .chat-compose-footer {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 8px;
+  }
+  .dashboard-shell .chat-compose-footer small {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .dashboard-shell .chat-compose-footer button {
+    width: 48px;
+    min-width: 48px;
+    flex: 0 0 48px;
+  }
+  .dashboard-shell .chat-message-list,
+  .dashboard-shell .private-message-list {
+    max-height: min(62dvh, 620px);
+    overscroll-behavior-y: auto !important;
+    touch-action: pan-y;
+  }
 }
