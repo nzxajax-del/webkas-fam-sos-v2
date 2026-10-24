@@ -1482,9 +1482,9 @@ function GangsterSticker({ id, small = false }) {
     <path d="M82 102 Q100 96 118 102" fill="none" stroke="#171717" strokeWidth="5" strokeLinecap="round"/>,
     <path d="M82 94 Q100 124 118 94" fill="none" stroke="#171717" strokeWidth="5" strokeLinecap="round"/>
   ];
-  return <svg className={"gangster-sticker" + (small ? " small" : "")} viewBox="0 0 200 200" role="img" aria-label={\`Stiker gangster ekspresi \${n}\`}>
+  return <svg className={"gangster-sticker" + (small ? " small" : "")} viewBox="0 0 200 200" role="img" aria-label={`Stiker gangster ekspresi ${n}`}>
     <path d="M100 8 C150 8 190 48 190 105 C190 157 151 190 100 190 C49 190 10 157 10 105 C10 48 50 8 100 8Z" fill="#fff"/>
-    <g transform={\`rotate(\${headTilt} 100 88)\`}>
+    <g transform={`rotate(${headTilt} 100 88)`}>
       <path d="M37 178 Q35 137 60 128 L73 122 L127 122 L143 129 Q168 142 165 178Z" fill="#171717" stroke="#fff" strokeWidth="5" strokeLinejoin="round"/>
       <path d="M70 128 L100 158 L130 128 L121 120 L79 120Z" fill="#343434" stroke="#111" strokeWidth="3"/>
       <path d="M84 128 L100 145 L116 128 L109 123 L91 123Z" fill="#f2f2f2"/>
