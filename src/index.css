@@ -974,3 +974,83 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .dashboard-shell .section-head > p.muted {
   display: none !important;
 }
+
+
+/* Minimal Admin Assistant account list: compact rows instead of oversized member cards. */
+.assistant-management-panel {
+  padding: 12px;
+  margin: 12px 0 16px;
+  border-radius: 14px;
+}
+.assistant-management-panel > .section-head {
+  margin-bottom: 8px;
+}
+.assistant-management-panel > .muted {
+  display: none !important;
+}
+.assistant-management-panel .assistant-account-list {
+  gap: 6px;
+}
+.assistant-management-panel .assistant-account-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 11px;
+}
+.assistant-management-panel .assistant-account-row > div {
+  flex: 1 1 auto;
+  gap: 3px;
+}
+.assistant-management-panel .assistant-account-row strong {
+  font-size: 14px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+.assistant-management-panel .assistant-account-row small {
+  font-size: 11px;
+  line-height: 1.3;
+}
+.assistant-management-panel .assistant-account-row button {
+  flex: 0 0 auto;
+  width: auto;
+  min-height: 34px;
+  padding: 7px 10px;
+  border-radius: 9px;
+  font-size: 11px;
+}
+@media (max-width: 560px) {
+  .assistant-management-panel {
+    padding: 10px;
+    margin: 10px 0 14px;
+  }
+  .assistant-management-panel .assistant-account-row {
+    flex-direction: row;
+    align-items: center;
+    padding: 9px 10px;
+    gap: 8px;
+  }
+  .assistant-management-panel .assistant-account-row button {
+    width: auto;
+    max-width: 104px;
+    min-height: 32px;
+    padding: 6px 8px;
+    font-size: 10px;
+    white-space: nowrap;
+  }
+}
+@media (max-width: 360px) {
+  .assistant-management-panel .assistant-account-row {
+    padding: 8px;
+    gap: 6px;
+  }
+  .assistant-management-panel .assistant-account-row strong {
+    font-size: 13px;
+  }
+  .assistant-management-panel .assistant-account-row button {
+    max-width: 90px;
+    font-size: 9px;
+  }
+}
