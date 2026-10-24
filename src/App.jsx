@@ -745,7 +745,7 @@ export default function App() {
       ...owingMembers.map((member, index) => (index + 1) + " | " + (member.display_name || "Tanpa nama") + " | " + money(member.arrears)),
       "",
       "Total tunggakan: " + money(total)
-    ].join("\\n");
+    ].join("\n");
     try {
       if (navigator.clipboard && window.isSecureContext) {
         await navigator.clipboard.writeText(recapText);
