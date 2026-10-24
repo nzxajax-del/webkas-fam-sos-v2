@@ -966,3 +966,11 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
     padding: 6px;
   }
 }
+
+
+/* Simplify oversized explanatory copy across the dashboard; keep compact field hints and instructions. */
+.dashboard-shell .section-head > div > p.muted,
+.dashboard-shell .section-head > div > p.intro,
+.dashboard-shell .section-head > p.muted {
+  display: none !important;
+}
