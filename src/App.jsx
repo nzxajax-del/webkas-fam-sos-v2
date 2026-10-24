@@ -739,17 +739,23 @@ export default function App() {
     setError("");
     setMessage("");
     try {
-      // Pull a fresh snapshot immediately before copying so WhatsApp recap does not use stale UI state.
-      const refreshed = await refreshAdminSnapshot();
-      if (!refreshed) return;
-      const owingMembers = refreshed.members
-        .filter((member) => member.status === "active" && Number(member.arrears || 0) > 0)
+      // Fetch a fresh recap snapshot including members, Boss ranks, Admin, and Admin Assistants.
+      const [profilesResult, walletsResult] = await Promise.all([
+        supabase.from("member_profiles").select("id,display_name,status,rank_code,role").in("role", ["member", "admin", "admin_assistant"]).eq("status", "active").order("display_name", { ascending: true }).limit(1000),
+        supabase.from("member_wallets").select("member_id,arrears")
+      ]);
+      if (profilesResult.error || walletsResult.error) {
+        throw new Error("Data semua anggota gagal diperbarui: " + (profilesResult.error?.message || walletsResult.error?.message || "data tidak tersedia"));
+      }
+      const arrearsByMember = new Map((walletsResult.data || []).map((wallet) => [wallet.member_id, Number(wallet.arrears || 0)]));
+      const allActiveMembers = (profilesResult.data || [])
+        .map((member) => ({ ...member, arrears: arrearsByMember.get(member.id) || 0 }))
         .sort((a, b) => Number(b.arrears || 0) - Number(a.arrears || 0) || String(a.display_name || "").localeCompare(String(b.display_name || "")));
-      const total = owingMembers.reduce((sum, member) => sum + Number(member.arrears || 0), 0);
+      const total = allActiveMembers.reduce((sum, member) => sum + Number(member.arrears || 0), 0);
       const recapText = [
-        "REKAP TUNGGAKAN KAS",
+        "REKAP TUNGGAKAN KAS - SEMUA ANGGOTA",
         "No | Nama Anggota | Tunggakan",
-        ...owingMembers.map((member, index) => (index + 1) + " | " + (member.display_name || "Tanpa nama") + " | " + money(member.arrears)),
+        ...allActiveMembers.map((member, index) => (index + 1) + " | " + (member.display_name || "Tanpa nama") + " | " + money(member.arrears)),
         "",
         "Total tunggakan: " + money(total)
       ].join("\n");
@@ -768,7 +774,7 @@ export default function App() {
         if (!copied) throw new Error("Penyalinan otomatis tidak didukung browser ini.");
       }
       setError("");
-      setMessage(owingMembers.length ? "Recap terbaru berhasil diperbarui dan disalin. Tempelkan langsung ke WhatsApp." : "Recap terbaru berhasil disalin. Saat ini tidak ada anggota aktif dengan tunggakan.");
+      setMessage(allActiveMembers.length ? "Recap semua anggota termasuk Boss dan Admin berhasil diperbarui dan disalin. Tempelkan langsung ke WhatsApp." : "Recap berhasil disalin. Belum ada akun aktif.");
     } catch (copyError) {
       setError("Recap terbaru belum berhasil disalin: " + (copyError?.message || "akses clipboard tidak tersedia."));
       setMessage("");
