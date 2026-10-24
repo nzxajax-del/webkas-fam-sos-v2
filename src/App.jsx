@@ -739,26 +739,42 @@ export default function App() {
     setError("");
     setMessage("");
     try {
-      // Fetch a fresh recap snapshot including members, Boss ranks, Admin, and Admin Assistants.
-      const [profilesResult, walletsResult] = await Promise.all([
-        supabase.from("member_profiles").select("id,display_name,status,rank_code,role").in("role", ["member", "admin", "admin_assistant"]).eq("status", "active").order("display_name", { ascending: true }).limit(1000),
-        supabase.from("member_wallets").select("member_id,arrears")
+      // Page through the full directory so server row limits cannot silently omit accounts.
+      const pageSize = 500;
+      const fetchAllPages = async (makeQuery) => {
+        const rows = [];
+        for (let from = 0; ; from += pageSize) {
+          const { data, error: queryError } = await makeQuery().range(from, from + pageSize - 1);
+          if (queryError) throw queryError;
+          const page = data || [];
+          rows.push(...page);
+          if (page.length < pageSize) break;
+        }
+        return rows;
+      };
+      const [allProfiles, allWallets] = await Promise.all([
+        fetchAllPages(() => supabase.from("member_profiles")
+          .select("id,display_name,status,rank_code,role")
+          .in("role", ["member", "admin", "admin_assistant"])
+          .order("id", { ascending: true })),
+        fetchAllPages(() => supabase.from("member_wallets")
+          .select("member_id,arrears")
+          .order("member_id", { ascending: true }))
       ]);
-      if (profilesResult.error || walletsResult.error) {
-        throw new Error("Data semua anggota gagal diperbarui: " + (profilesResult.error?.message || walletsResult.error?.message || "data tidak tersedia"));
-      }
-      const arrearsByMember = new Map((walletsResult.data || []).map((wallet) => [wallet.member_id, Number(wallet.arrears || 0)]));
-      const allActiveMembers = (profilesResult.data || [])
+      if (!allProfiles.length) throw new Error("Daftar akun kosong atau tidak dapat dibaca; recap tidak disalin agar tidak menghasilkan laporan yang keliru.");
+      const arrearsByMember = new Map(allWallets.map((wallet) => [wallet.member_id, Number(wallet.arrears || 0)]));
+      const allMembers = allProfiles
         .map((member) => ({ ...member, arrears: arrearsByMember.get(member.id) || 0 }))
         .sort((a, b) => Number(b.arrears || 0) - Number(a.arrears || 0) || String(a.display_name || "").localeCompare(String(b.display_name || "")));
-      const total = allActiveMembers.reduce((sum, member) => sum + Number(member.arrears || 0), 0);
+      const total = allMembers.reduce((sum, member) => sum + Number(member.arrears || 0), 0);
       const recapText = [
-        "REKAP TUNGGAKAN KAS - SEMUA ANGGOTA",
+        "REKAP TUNGGAKAN KAS - SEMUA AKUN",
         "No | Nama Anggota | Tunggakan",
-        ...allActiveMembers.map((member, index) => (index + 1) + " | " + (member.display_name || "Tanpa nama") + " | " + money(member.arrears)),
+        ...allMembers.map((member, index) => (index + 1) + " | " + (member.display_name || "Tanpa nama") + " | " + money(member.arrears)),
         "",
+        "Jumlah akun tercantum: " + allMembers.length,
         "Total tunggakan: " + money(total)
-      ].join("\n");
+      ].join("\\n");
       if (navigator.clipboard && window.isSecureContext) {
         await navigator.clipboard.writeText(recapText);
       } else {
@@ -774,9 +790,9 @@ export default function App() {
         if (!copied) throw new Error("Penyalinan otomatis tidak didukung browser ini.");
       }
       setError("");
-      setMessage(allActiveMembers.length ? "Recap semua anggota termasuk Boss dan Admin berhasil diperbarui dan disalin. Tempelkan langsung ke WhatsApp." : "Recap berhasil disalin. Belum ada akun aktif.");
+      setMessage("Recap semua akun (" + allMembers.length + " akun), termasuk Boss, Admin, dan status nonaktif/menunggu, berhasil disalin. Tempelkan ke WhatsApp.");
     } catch (copyError) {
-      setError("Recap terbaru belum berhasil disalin: " + (copyError?.message || "akses clipboard tidak tersedia."));
+      setError("Recap belum berhasil disalin: " + (copyError?.message || "data tidak tersedia."));
       setMessage("");
     } finally {
       setBusy(false);
