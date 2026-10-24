@@ -1274,3 +1274,20 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
   .builtin-sticker-grid { grid-template-columns:repeat(5,minmax(0,1fr)); gap:4px; }
   .builtin-sticker-item { min-height:40px; font-size:23px; }
 }
+
+
+/* Custom bald-gangster meme stickers: vector-rendered, no image storage required. */
+.builtin-sticker-panel { z-index: 30; }
+.builtin-sticker-item { display:flex; align-items:center; justify-content:center; padding:2px; overflow:hidden; }
+.gangster-sticker { display:block; width:112px; max-width:100%; height:auto; filter:drop-shadow(0 2px 1px #0005); }
+.gangster-sticker.small { width:100%; max-width:72px; }
+.chat-sticker-message { display:flex; align-items:center; min-height:0; }
+.chat-message-body.is-sticker { margin:2px 0 !important; }
+.chat-message-body.is-sticker .gangster-sticker { width:clamp(100px, 30vw, 160px); }
+@media(max-width:600px) {
+ .builtin-sticker-panel { width:min(100%, 340px); }
+ .builtin-sticker-grid { grid-template-columns:repeat(4,minmax(0,1fr)); gap:4px; }
+ .builtin-sticker-item { min-height:62px; }
+ .gangster-sticker.small { max-width:62px; }
+ .chat-message-body.is-sticker .gangster-sticker { width:132px; }
+}
