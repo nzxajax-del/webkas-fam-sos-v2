@@ -1054,3 +1054,101 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
     font-size: 9px;
   }
 }
+
+
+/* Compact the Admin Master member-management header and summary area on mobile. */
+#admin-members.history-panel {
+  padding: 14px;
+  margin-top: 12px;
+  border-radius: 16px;
+}
+#admin-members .section-head {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  align-items: center;
+  gap: 8px 10px;
+  margin-bottom: 10px;
+}
+#admin-members .section-head > div {
+  min-width: 0;
+}
+#admin-members .section-head h2 {
+  margin: 4px 0 0;
+  font-size: 20px;
+}
+#admin-members .section-head > .pill {
+  justify-self: end;
+}
+#admin-members .section-head > button {
+  grid-column: 1 / -1;
+  justify-self: start;
+  min-height: 38px;
+  padding: 8px 13px;
+  font-size: 13px;
+}
+#admin-members > p.muted {
+  display: none !important;
+}
+#admin-members .member-search {
+  gap: 5px;
+  margin: 8px 0 10px;
+  font-size: 13px;
+}
+#admin-members .member-search input {
+  min-height: 44px;
+  padding: 10px 12px;
+}
+#admin-members .stats-grid {
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 8px;
+  margin: 10px 0 12px;
+}
+#admin-members .stat {
+  padding: 11px 10px;
+  border-radius: 13px;
+}
+#admin-members .stat span {
+  font-size: 11px;
+  line-height: 1.35;
+}
+#admin-members .stat strong {
+  margin: 7px 0 4px;
+  font-size: clamp(19px,5vw,25px);
+  line-height: 1.15;
+}
+#admin-members .stat small {
+  font-size: 10px;
+}
+@media (max-width: 560px) {
+  #admin-members.history-panel {
+    padding: 11px;
+    margin-top: 9px;
+  }
+  #admin-members .section-head {
+    grid-template-columns: minmax(0,1fr) auto;
+    gap: 7px;
+    margin-bottom: 8px;
+  }
+  #admin-members .section-head .eyebrow {
+    font-size: 9px;
+    letter-spacing: .1em;
+  }
+  #admin-members .section-head h2 {
+    font-size: 18px;
+  }
+  #admin-members .section-head > button {
+    min-height: 34px;
+    padding: 7px 11px;
+    font-size: 12px;
+  }
+  #admin-members .stats-grid {
+    gap: 7px;
+    margin: 8px 0 10px;
+  }
+  #admin-members .stat {
+    padding: 9px 8px;
+  }
+  #admin-members .stat strong {
+    font-size: clamp(18px,5vw,22px);
+  }
+}
