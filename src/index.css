@@ -1152,3 +1152,108 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
     font-size: clamp(18px,5vw,22px);
   }
 }
+
+
+/* Compact message bubbles across every chat room, especially on phones. */
+.dashboard-shell .chat-message,
+.dashboard-shell .rank-chat-panel .chat-message,
+.dashboard-shell .rank-chat456-panel .chat-message,
+.dashboard-shell .senior-chat-panel .chat-message,
+.dashboard-shell .private-chat-panel .chat-message {
+  width: min(96%, 760px);
+  padding: 9px 11px;
+  border-radius: 12px;
+}
+.dashboard-shell .chat-message-sender {
+  gap: 8px;
+}
+.dashboard-shell .chat-sender-avatar {
+  flex-basis: 36px;
+  width: 36px;
+  height: 36px;
+}
+.dashboard-shell .chat-sender-identity {
+  gap: 2px;
+}
+.dashboard-shell .chat-sender-identity > strong {
+  font-size: 12px;
+  line-height: 1.25;
+}
+.dashboard-shell .chat-sender-rank {
+  gap: 5px;
+  font-size: 10px;
+}
+.dashboard-shell .chat-message-sender time {
+  font-size: 9px;
+  padding-top: 1px;
+}
+.dashboard-shell .chat-message p {
+  margin: 7px 0 0;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.dashboard-shell .chat-delete {
+  margin-top: 5px;
+  font-size: 11px;
+}
+.dashboard-shell .chat-message-list {
+  gap: 8px;
+}
+@media (max-width: 600px) {
+  .dashboard-shell .chat-message,
+  .dashboard-shell .rank-chat-panel .chat-message,
+  .dashboard-shell .rank-chat456-panel .chat-message,
+  .dashboard-shell .senior-chat-panel .chat-message,
+  .dashboard-shell .private-chat-panel .chat-message {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 9px;
+    border-radius: 11px;
+  }
+  .dashboard-shell .chat-message-list {
+    gap: 7px;
+    padding: 7px;
+  }
+  .dashboard-shell .chat-message-sender {
+    gap: 7px;
+  }
+  .dashboard-shell .chat-sender-avatar {
+    flex-basis: 32px;
+    width: 32px;
+    height: 32px;
+  }
+  .dashboard-shell .chat-sender-avatar span {
+    font-size: 14px;
+  }
+  .dashboard-shell .chat-sender-identity > strong {
+    font-size: 12px;
+  }
+  .dashboard-shell .chat-sender-rank {
+    gap: 4px;
+    font-size: 9px;
+  }
+  .dashboard-shell .chat-message-sender time {
+    font-size: 8px;
+  }
+  .dashboard-shell .chat-message p {
+    margin-top: 6px;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+}
+@media (max-width: 380px) {
+  .dashboard-shell .chat-message,
+  .dashboard-shell .rank-chat-panel .chat-message,
+  .dashboard-shell .rank-chat456-panel .chat-message,
+  .dashboard-shell .senior-chat-panel .chat-message,
+  .dashboard-shell .private-chat-panel .chat-message {
+    padding: 7px 8px;
+  }
+  .dashboard-shell .chat-message-list {
+    padding: 5px;
+    gap: 6px;
+  }
+  .dashboard-shell .chat-message p {
+    font-size: 12px;
+  }
+}
