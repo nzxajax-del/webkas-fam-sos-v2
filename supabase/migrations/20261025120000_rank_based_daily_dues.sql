@@ -117,8 +117,7 @@ begin
   end loop;
   return v_processed;
 end;
-$function$
-
+$function$;
 
 CREATE OR REPLACE FUNCTION private.admin_set_member_rank(p_member_id uuid, p_rank_code text)
  RETURNS jsonb
@@ -158,8 +157,7 @@ begin
                        'after',jsonb_build_object('rank_code',p_rank_code,'exempt_kas_forced',v_exempt)));
   return jsonb_build_object('success',true,'member_id',p_member_id,'rank_code',p_rank_code,'exempt_kas',v_exempt);
 end;
-$function$
-
+$function$;
 
 revoke all on function private.process_daily_dues_internal(date) from public, anon, authenticated, service_role;
 revoke all on function private.admin_set_member_rank(uuid,text) from public, anon;
