@@ -114,7 +114,7 @@ export default function App() {
   const [bootstrapToken, setBootstrapToken] = useState("");
   const [loading, setLoading] = useState(true);
   const [refreshVersion, setRefreshVersion] = useState(0);
-  const [activeSection, setActiveSection] = useState("home");
+  const [activeSection, setActiveSection] = useState("information");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [realtimeConnected, setRealtimeConnected] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -1461,9 +1461,9 @@ export default function App() {
   }, [profile?.id, profile?.status, refreshVersion]);
 
   useEffect(() => {
-    setActiveSection("home");
+    if (profile?.id && profile?.status === "active") setActiveSection("information");
     setDrawerOpen(false);
-  }, [profile?.id, profile?.role]);
+  }, [profile?.id, profile?.role, profile?.status]);
 
   useEffect(() => {
     document.documentElement.style.setProperty("--lime", branding.accent_color || "#c1f45a");
