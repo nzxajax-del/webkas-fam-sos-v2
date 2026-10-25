@@ -1408,3 +1408,8 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 @media(max-width:520px){.dashboard-shell[data-view="information"]{width:100%;padding:0}.dashboard-shell[data-view="information"] .information-panel{min-height:100dvh;padding:14px 10px;border-radius:0;border-left:0;border-right:0}.information-compose{padding:12px}.information-compose-footer{align-items:stretch}.information-compose-footer button{width:100%}}
 
 .dashboard-shell[data-view="information"] > .panel:not(.information-panel){display:none!important}
+
+
+/* Information announcement actions */
+.information-card-actions{display:flex;justify-content:flex-end;margin-top:12px}
+.information-card-actions .danger-button{font-size:12px;padding:8px 11px}
