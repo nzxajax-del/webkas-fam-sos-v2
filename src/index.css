@@ -1364,3 +1364,45 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
     touch-action: pan-y;
   }
 }
+
+
+/* Information announcements */
+.dashboard-shell .information-panel{display:none}
+.dashboard-shell[data-view="information"]{width:min(calc(100% - 20px),1000px);padding-top:8px}
+.dashboard-shell[data-view="information"] .welcome-panel,
+.dashboard-shell[data-view="information"] .db-usage-panel,
+.dashboard-shell[data-view="information"] .admin-layout,
+.dashboard-shell[data-view="information"] .admin-safe-notice,
+.dashboard-shell[data-view="information"] .member-stats,
+.dashboard-shell[data-view="information"] #member-directory,
+.dashboard-shell[data-view="information"] #member-history,
+.dashboard-shell[data-view="information"] #member-payments,
+.dashboard-shell[data-view="information"] #member-settings,
+.dashboard-shell[data-view="information"] #chat-panel,
+.dashboard-shell[data-view="information"] #private-chat-panel,
+.dashboard-shell[data-view="information"] #rank-chat-panel,
+.dashboard-shell[data-view="information"] #senior-chat-panel,
+.dashboard-shell[data-view="information"] #admin-registrations,
+.dashboard-shell[data-view="information"] #admin-payments,
+.dashboard-shell[data-view="information"] #admin-members,
+.dashboard-shell[data-view="information"] #admin-settings,
+.dashboard-shell[data-view="information"] #admin-profile-settings,
+.dashboard-shell[data-view="information"] #admin-transactions,
+.dashboard-shell[data-view="information"] #admin-recap{display:none!important}
+.dashboard-shell[data-view="information"] .information-panel{display:block;margin-top:0;min-height:calc(100dvh - 90px)}
+.information-compose{display:grid;gap:12px;padding:16px;margin:16px 0;border:1px solid var(--line);border-radius:14px;background:#0e130c}
+.information-compose textarea{width:100%;min-width:0;resize:vertical;padding:13px 14px;color:#f5f8ef;background:#0b0e0b;border:1px solid #414d37;border-radius:11px;outline:none;font:inherit;line-height:1.5}
+.information-compose textarea:focus{border-color:var(--lime);box-shadow:0 0 0 3px #c1f45a1a}
+.information-compose-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.information-compose-footer small{flex:1 1 180px}
+.information-compose-footer button{flex:0 0 auto}
+.information-readonly-note{padding:12px 14px;border:1px solid var(--line);border-radius:10px}
+.information-list{display:grid;gap:12px;margin-top:16px}
+.information-card{padding:16px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(135deg,#171e12,#10140e);overflow-wrap:anywhere}
+.information-card-head{display:flex;align-items:center;gap:10px}
+.information-megaphone{display:grid;place-items:center;width:40px;height:40px;flex:0 0 40px;border-radius:12px;background:#c1f45a18;font-size:22px}
+.information-card-head>div{display:grid;gap:4px;min-width:0}
+.information-card-head strong{font-size:14px}
+.information-card-head time{color:var(--muted);font-size:11px}
+.information-card p{margin:14px 0 0;color:#e6ecdf;white-space:pre-wrap;line-height:1.65}
+@media(max-width:520px){.dashboard-shell[data-view="information"]{width:100%;padding:0}.dashboard-shell[data-view="information"] .information-panel{min-height:100dvh;padding:14px 10px;border-radius:0;border-left:0;border-right:0}.information-compose{padding:12px}.information-compose-footer{align-items:stretch}.information-compose-footer button{width:100%}}
