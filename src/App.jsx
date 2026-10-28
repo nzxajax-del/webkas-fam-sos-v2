@@ -8,7 +8,8 @@ const wibDate = (value) => { if (!value) return ""; const parts = new Intl.DateT
 const authEmail = (username) => username.trim().toLowerCase() + "@login.webkas-fam-sos.invalid";
 const rankNames = { P1: "Newbie", P2: "Soldier", P3: "Captain", P4: "Right Hand", P5: "UnderBoss", P6: "Boss", P7: "Member" };
 const rankOrder = { P6: 0, P5: 1, P4: 2, P7: 3, P3: 4, P2: 5, P1: 6 };
-const compareMemberRank = (a, b) => (rankOrder[a.rank_code || "P1"] ?? 7) - (rankOrder[b.rank_code || "P1"] ?? 7) || Number(b.arrears || 0) - Number(a.arrears || 0) || String(a.display_name || "").localeCompare(String(b.display_name || ""));
+const normalizeRankCode = (rank) => { const code = String(rank || "P1").trim().toUpperCase(); return Object.prototype.hasOwnProperty.call(rankOrder, code) ? code : "P1"; };
+const compareMemberRank = (a, b) => (rankOrder[normalizeRankCode(a.rank_code)] ?? 7) - (rankOrder[normalizeRankCode(b.rank_code)] ?? 7) || Number(b.arrears || 0) - Number(a.arrears || 0) || String(a.display_name || "").localeCompare(String(b.display_name || ""));
 const rankInfo = (rank) => ({ P1: { label: "P1", color: "#d6a34d" }, P2: { label: "P2", color: "#d6a34d" }, P3: { label: "P3", color: "#72a9ff" }, P4: { label: "P4", color: "#75c978" }, P5: { label: "P5", color: "#ff7373" }, P6: { label: "P6", color: "#f2d36d" }, P7: { label: "VIP", color: "#f2d36d" } })[rank] || { label: "P1", color: "#d6a34d" };
 const RankSymbol = ({ rank }) => {
   const common = { viewBox: "0 0 48 54", "aria-hidden": "true", className: "rank-symbol rank-emblem rank-emblem-" + String(rank).toLowerCase() };
@@ -184,7 +185,7 @@ export default function App() {
         const [pendingRes, memberRes, allMemberRes, walletListRes, transactionRes, completedRes, assistantRes] = await Promise.all([
           supabase.from("payment_submissions").select("id,member_id,amount,payment_type,proof_path,status,created_at,member_profiles(display_name,login_username)").eq("status", "pending").order("created_at", { ascending: true }).limit(100),
           supabase.from("member_profiles").select("id,display_name,login_username,created_at,rank_code,registration_proof_path,registration_note").eq("role", "member").eq("status", "pending").order("created_at", { ascending: true }).limit(100),
-          supabase.from("member_profiles").select("id,display_name,login_username,status,created_at,rank_code,profile_photo_path,registration_proof_path,phone_number").eq("role", "member").order("display_name", { ascending: true }).limit(500),
+          supabase.from("member_profiles").select("id,display_name,login_username,status,created_at,rank_code,profile_photo_path,registration_proof_path,phone_number").eq("role", "member").not("status", "in", "(pending,rejected)").order("display_name", { ascending: true }).limit(500),
           supabase.from("member_wallets").select("member_id,balance,arrears,unpaid_from,exempt_kas"),
           profileRes.data?.role === "admin" ? supabase.from("wallet_transactions").select("id,member_id,transaction_type,amount,description,created_at,member_profiles(display_name,login_username)").order("created_at", { ascending: false }).limit(10) : Promise.resolve({ data: [], error: null }),
           supabase.from("payment_submissions").select("id,member_id,amount,payment_type,status,created_at,review_note,member_profiles(display_name,login_username)").in("status", ["approved", "rejected"]).order("created_at", { ascending: false }).limit(1000),
@@ -197,7 +198,7 @@ export default function App() {
         if (completedRes.error) setError("Riwayat pembayaran selesai tidak dapat dimuat. " + completedRes.error.message);
         const walletByMember = new Map((walletListRes.data || []).map((w) => [w.member_id, w]));
         const membersWithPhotos = await withPhotoUrls(allMemberRes.data || []);
-        setAdminMembers(membersWithPhotos.map((m) => ({ ...m, ...(walletByMember.get(m.id) || {}) }))
+        setAdminMembers(membersWithPhotos.map((m) => ({ ...m, rank_code: normalizeRankCode(m.rank_code), ...(walletByMember.get(m.id) || {}) }))
           .sort(compareMemberRank));
         setAdminTransactions(transactionRes.data || []);
         setCompletedPayments(completedRes.data || []);
@@ -600,7 +601,7 @@ export default function App() {
     setPendingMembers((rows) => rows.filter((row) => row.id !== id));
     setReviewNote("");
     await refreshAdminSnapshot();
-    const decisionText = decision === "active" ? "Anggota disetujui. Akun sekarang aktif." : "Pendaftaran anggota ditolak.";
+    const decisionText = decision === "active" ? "Anggota disetujui. Akun sekarang aktif." : data.account_deleted ? "Pendaftaran ditolak dan akun calon anggota dihapus otomatis." : "Pendaftaran ditolak, tetapi akun belum dapat dihapus otomatis untuk menjaga data terkait.";
     setMessage(data.proof_deleted
       ? decisionText + " Screenshot bukti permohonan sudah dihapus dari Storage."
       : decisionText + " Namun screenshot belum berhasil dihapus; perlu pembersihan ulang.");
@@ -866,7 +867,7 @@ export default function App() {
 
   async function refreshAdminSnapshot() {
     const [allMemberRes, walletListRes, transactionRes, completedRes, assistantRes] = await Promise.all([
-      supabase.from("member_profiles").select("id,display_name,login_username,status,created_at,rank_code,profile_photo_path,registration_proof_path,phone_number").eq("role", "member").order("display_name", { ascending: true }).limit(500),
+      supabase.from("member_profiles").select("id,display_name,login_username,status,created_at,rank_code,profile_photo_path,registration_proof_path,phone_number").eq("role", "member").not("status", "in", "(pending,rejected)").order("display_name", { ascending: true }).limit(500),
       supabase.from("member_wallets").select("member_id,balance,arrears,unpaid_from,exempt_kas"),
       supabase.from("wallet_transactions").select("id,member_id,transaction_type,amount,description,created_at,member_profiles(display_name,login_username)").order("created_at", { ascending: false }).limit(10),
       supabase.from("payment_submissions").select("id,member_id,amount,payment_type,status,created_at,review_note,member_profiles(display_name,login_username)").in("status", ["approved", "rejected"]).order("created_at", { ascending: false }).limit(1000),
@@ -879,7 +880,7 @@ export default function App() {
     }
     const walletByMember = new Map((walletListRes.data || []).map((w) => [w.member_id, w]));
     const membersWithPhotos = await withPhotoUrls(allMemberRes.data || []);
-    const freshMembers = membersWithPhotos.map((m) => ({ ...m, ...(walletByMember.get(m.id) || {}) }))
+    const freshMembers = membersWithPhotos.map((m) => ({ ...m, rank_code: normalizeRankCode(m.rank_code), ...(walletByMember.get(m.id) || {}) }))
       .sort(compareMemberRank);
     setAdminMembers(freshMembers);
     setAdminTransactions(transactionRes.data || []);
@@ -1491,7 +1492,7 @@ export default function App() {
         setError("Daftar anggota belum dapat dimuat. " + directoryError.message);
         return;
       }
-      const membersWithPhotos = await withPhotoUrls(data || []);
+      const membersWithPhotos = await withPhotoUrls((data || []).map((m) => ({ ...m, rank_code: normalizeRankCode(m.rank_code) })));
       if (alive) setMemberDirectory(membersWithPhotos.sort(compareMemberRank));
     })();
     return () => { alive = false; };
