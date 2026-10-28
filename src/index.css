@@ -1444,3 +1444,12 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .leave-request-card p{margin:8px 0 12px;color:#e1e8d8;font-size:14px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere}
 .leave-request-card time{color:#87917a;font-size:11px}
 @media(max-width:520px){.leave-member-identity{padding:13px}.leave-request-card{padding:13px}.leave-request-card-head{align-items:flex-start}.leave-request-person strong{font-size:14px}}
+
+
+/* Fix: the permissions view must show only its own panel, not sibling menu content. */
+.dashboard-shell[data-view="permissions"] > :not(.dashboard-header):not(.drawer-backdrop):not(.app-drawer):not(#leave-permissions-panel):not(.app-toast):not(footer) {
+  display: none !important;
+}
+.dashboard-shell[data-view="permissions"] > #leave-permissions-panel {
+  display: block !important;
+}
