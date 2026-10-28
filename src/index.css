@@ -1453,3 +1453,37 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .dashboard-shell[data-view="permissions"] > #leave-permissions-panel {
   display: block !important;
 }
+
+
+/* Kamar Perizinan as a shared chat room */
+.leave-permissions-panel{display:flex;flex-direction:column;gap:14px;min-height:calc(100dvh - 140px)}
+.leave-room-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-bottom:12px;border-bottom:1px solid #303a29}
+.leave-room-heading h2{margin:6px 0}
+.leave-chat-window{flex:1;min-height:240px;max-height:calc(100dvh - 365px);overflow-y:auto;overscroll-behavior:contain;padding:12px 4px;scrollbar-width:thin;scrollbar-color:#536344 #11150e}
+.leave-chat-list{display:flex;flex-direction:column;gap:12px}
+.leave-chat-message{width:min(94%,680px);align-self:flex-start;padding:12px 14px;border:1px solid #35432c;border-radius:15px 15px 15px 4px;background:linear-gradient(145deg,#192116,#11160f);overflow-wrap:anywhere}
+.leave-chat-message.own-message{align-self:flex-end;border-color:#526d36;background:linear-gradient(145deg,#26371b,#172014);border-radius:15px 15px 4px 15px}
+.leave-chat-message-head{display:flex;align-items:center;gap:9px;min-width:0}
+.leave-chat-message-head .rank-badge{flex:0 0 auto;width:38px;height:40px;padding:4px}
+.leave-chat-sender{flex:1;min-width:0}
+.leave-chat-sender strong{display:block;font-size:13px;overflow-wrap:anywhere}
+.leave-chat-sender small{display:block;margin-top:3px;color:var(--muted);font-size:10px}
+.leave-chat-message-head time{flex:0 0 auto;color:#9aa58f;font-size:10px;text-align:right}
+.leave-chat-type{margin-top:12px;color:var(--lime);font-size:12px;font-weight:900}
+.leave-chat-reason{margin:6px 0 0;color:#e7eddf;font-size:14px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}
+.leave-chat-empty{min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;color:var(--muted);padding:24px}
+.leave-chat-empty>span{font-size:30px}
+.leave-chat-empty strong{color:#e5eedb}
+.leave-chat-empty p{max-width:360px;margin:0;font-size:12px;line-height:1.5}
+.leave-chat-composer{display:grid;gap:10px;padding:12px;border:1px solid #3b4930;border-radius:15px;background:#10150e}
+.leave-chat-format{display:flex;gap:10px;align-items:end}
+.leave-chat-format label{flex:1;min-width:0;font-size:11px}
+.leave-chat-format select,.leave-chat-format input{padding:9px 10px;font-size:12px}
+.leave-chat-days{max-width:110px}
+.leave-chat-compose-row{display:flex;align-items:flex-end;gap:8px}
+.leave-chat-compose-row textarea{flex:1;min-width:0;resize:vertical;min-height:46px;max-height:140px;padding:11px 12px;color:#f5f8ef;background:#0b100a;border:1px solid #414d37;border-radius:12px;outline:none;font:inherit;font-size:13px;line-height:1.45}
+.leave-chat-compose-row textarea:focus{border-color:var(--lime);box-shadow:0 0 0 3px #c1f45a1a}
+.leave-chat-send{flex:0 0 46px;width:46px;height:46px;padding:0;font-size:21px;border-radius:50%}
+.leave-chat-feedback{margin:0;color:#c1f45a;font-size:12px}
+.leave-chat-feedback.error-text{color:#ff9e9e}
+@media(max-width:520px){.leave-permissions-panel{min-height:calc(100dvh - 110px);padding:14px 11px}.leave-chat-window{max-height:calc(100dvh - 345px);padding:8px 1px}.leave-chat-message{width:96%;padding:10px}.leave-chat-message-head{gap:7px}.leave-chat-message-head .rank-badge{width:33px;height:36px}.leave-chat-message-head time{font-size:9px}.leave-chat-composer{padding:9px}.leave-chat-format{gap:8px}.leave-chat-days{max-width:94px}.leave-chat-format select,.leave-chat-format input{padding:9px 7px;font-size:11px}}
