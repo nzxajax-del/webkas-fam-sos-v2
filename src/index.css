@@ -1489,3 +1489,7 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .leave-chat-feedback{margin:0;color:#c1f45a;font-size:12px}
 .leave-chat-feedback.error-text{color:#ff9e9e}
 @media(max-width:520px){.leave-permissions-panel{min-height:calc(100dvh - 110px);padding:14px 11px}.leave-chat-window{max-height:calc(100dvh - 345px);padding:8px 1px}.leave-chat-message{width:96%;padding:10px}.leave-chat-message-head{gap:7px}.leave-chat-message-head .rank-badge{width:33px;height:36px}.leave-chat-message-head time{font-size:9px}.leave-chat-composer{padding:9px}.leave-chat-format{gap:8px}.leave-chat-days{max-width:94px}.leave-chat-format select,.leave-chat-format input{padding:9px 7px;font-size:11px}}
+
+/* Tombol hapus pesan hanya ditampilkan pada Kamar Perizinan untuk admin aktif. */
+.leave-chat-delete{width:auto;flex:0 0 auto;padding:6px 8px;font-size:10px;white-space:nowrap}
+@media(max-width:520px){.leave-chat-delete{padding:5px 6px;font-size:9px}.leave-chat-message-head{flex-wrap:wrap}.leave-chat-message-head time{margin-left:auto}}
