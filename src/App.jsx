@@ -6,7 +6,7 @@ const dailyRateForRank = (dailyAmount, rank) => ["P5", "P6", "P7"].includes(rank
 const date = (value) => value ? new Date(value + "T00:00:00+07:00").toLocaleDateString("id-ID", { day: "2-digit", month: "long", year: "numeric", timeZone: "Asia/Jakarta" }) : "Belum ditetapkan";
 const wibDate = (value) => { if (!value) return ""; const parts = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Jakarta", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date(value)); const part = (type) => parts.find((p) => p.type === type)?.value || ""; return part("year") + "-" + part("month") + "-" + part("day"); }
 const authEmail = (username) => username.trim().toLowerCase() + "@login.webkas-fam-sos.invalid";
-const rankNames = { P1: "Newbie", P2: "Soldier", P3: "Captain", P4: "Right Hand", P5: "UnderBoss", P6: "Boss", P7: "Member" };
+const rankNames = { P1: "Newbie", P2: "Soldier", P3: "Captain", P4: "Right Hand", P5: "UnderBoss", P6: "Boss", P7: "VIP member" };
 const rankOrder = { P6: 0, P5: 1, P4: 2, P7: 3, P3: 4, P2: 5, P1: 6 };
 const normalizeRankCode = (rank) => { const code = String(rank || "P1").trim().toUpperCase(); return Object.prototype.hasOwnProperty.call(rankOrder, code) ? code : "P1"; };
 const compareMemberRank = (a, b) => (rankOrder[normalizeRankCode(a.rank_code)] ?? 7) - (rankOrder[normalizeRankCode(b.rank_code)] ?? 7) || Number(b.arrears || 0) - Number(a.arrears || 0) || String(a.display_name || "").localeCompare(String(b.display_name || ""));
