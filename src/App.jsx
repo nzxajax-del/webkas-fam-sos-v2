@@ -288,7 +288,7 @@ export default function App() {
       if (table === "member_leave_requests" || !table) {
         if (activeSection === "permissions") { if (alive) setPermissionsUnreadNotice(0); }
         else {
-          const { count, error: countError } = await supabase.from("member_leave_requests").select("id", { count: "exact", head: true }).gt("created_at", readLastSeen("webkas-permissions-last-seen-")).neq("sender_id", session.user.id);
+          const { count, error: countError } = await supabase.from("member_leave_requests").select("id", { count: "exact", head: true }).gt("created_at", readLastSeen("webkas-permissions-last-seen-")).neq("member_id", session.user.id);
           if (alive && !countError) setPermissionsUnreadNotice(count || 0);
         }
       }
