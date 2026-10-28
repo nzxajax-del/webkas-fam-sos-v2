@@ -22,7 +22,7 @@ alter table public.member_leave_requests enable row level security;
 create policy member_leave_requests_select_self_or_admin
   on public.member_leave_requests
   for select to authenticated
-  using (member_id = auth.uid() or public.is_admin());
+  using (member_id = auth.uid() or private.is_admin());
 
 create policy member_leave_requests_insert_self_active
   on public.member_leave_requests
