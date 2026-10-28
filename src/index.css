@@ -1413,3 +1413,34 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 /* Information announcement actions */
 .information-card-actions{display:flex;justify-content:flex-end;margin-top:12px}
 .information-card-actions .danger-button{font-size:12px;padding:8px 11px}
+
+
+/* Kamar Perizinan: keep this view isolated from other dashboard panels. */
+.dashboard-shell[data-view="permissions"] .welcome-panel,
+.dashboard-shell[data-view="permissions"] .panel:not(#leave-permissions-panel),
+.dashboard-shell[data-view="permissions"] .admin-layout,
+.dashboard-shell[data-view="permissions"] .db-usage-panel,
+.dashboard-shell[data-view="permissions"] .admin-safe-notice{display:none!important}
+.dashboard-shell[data-view="permissions"] #leave-permissions-panel{display:block!important;width:100%;margin-top:0}
+.dashboard-shell[data-view="permissions"] .dashboard-header{margin-bottom:10px}
+.leave-member-identity{display:flex;align-items:center;gap:14px;padding:16px;border:1px solid #414d32;border-radius:16px;background:linear-gradient(135deg,#1b2814,#11160e);margin:18px 0 22px}
+.leave-member-emblem{display:grid;place-items:center;flex:0 0 54px;width:54px;height:54px;border:1px solid #4d6139;border-radius:14px;background:#0e130c}
+.leave-member-emblem .rank-badge{width:42px;height:46px}
+.leave-member-identity strong,.leave-request-person strong{display:block;font-size:16px;overflow-wrap:anywhere}
+.leave-member-identity small,.leave-request-person small{display:block;margin-top:5px;color:var(--muted);font-size:11px}
+.leave-request-form{max-width:680px}
+.leave-request-form select,.leave-request-form textarea{width:100%;padding:13px 14px;color:#f5f8ef;background:#0d110c;border:1px solid #414d37;border-radius:11px;outline:none;font:inherit}
+.leave-request-form select:focus,.leave-request-form textarea:focus{border-color:var(--lime);box-shadow:0 0 0 3px #c1f45a1a}
+.leave-request-form textarea{resize:vertical;min-height:92px;line-height:1.5}
+.leave-request-history{margin-top:32px;padding-top:22px;border-top:1px solid #303a29}
+.leave-request-history h3{margin:5px 0;font-size:18px}
+.leave-request-list{display:grid;gap:12px}
+.leave-request-card{min-width:0;padding:16px;border:1px solid #34402a;border-radius:15px;background:#11160f}
+.leave-request-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.leave-request-person{display:flex;align-items:center;gap:10px;min-width:0}
+.leave-request-person .rank-badge{flex:0 0 40px;width:40px;height:44px}
+.leave-request-card .pill{flex:0 0 auto}
+.leave-request-type{margin-top:16px;color:var(--lime);font-size:13px;font-weight:850}
+.leave-request-card p{margin:8px 0 12px;color:#e1e8d8;font-size:14px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere}
+.leave-request-card time{color:#87917a;font-size:11px}
+@media(max-width:520px){.leave-member-identity{padding:13px}.leave-request-card{padding:13px}.leave-request-card-head{align-items:flex-start}.leave-request-person strong{font-size:14px}}
