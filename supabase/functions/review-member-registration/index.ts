@@ -71,23 +71,49 @@ Deno.serve(async (req: Request) => {
   }
 
   const proofPath = typeof member.registration_proof_path === "string" ? member.registration_proof_path : null;
-  if (!proofPath) return json({ success: true, proof_deleted: true, status: decision, already_without_proof: true }, 200, origin);
+  let proofDeleted = !proofPath;
 
-  let removed = false;
-  for (let attempt = 0; attempt < 2 && !removed; attempt++) {
-    const { error } = await admin.storage.from("registration-proofs").remove([proofPath]);
-    if (!error) removed = true;
-  }
-  if (!removed) {
-    return json({ success: true, proof_deleted: false, cleanup_pending: true, status: decision,
-      message: "Keputusan tersimpan, tetapi screenshot belum dapat dihapus dari Storage." }, 200, origin);
+  if (proofPath) {
+    for (let attempt = 0; attempt < 2 && !proofDeleted; attempt++) {
+      const { error } = await admin.storage.from("registration-proofs").remove([proofPath]);
+      if (!error) proofDeleted = true;
+    }
+    if (!proofDeleted) {
+      return json({ success: true, proof_deleted: false, cleanup_pending: true, account_deleted: false, status: decision,
+        message: "Keputusan tersimpan, tetapi screenshot belum dapat dihapus. Penghapusan akun ditunda agar bukti tidak menjadi berkas yatim." }, 200, origin);
+    }
+
+    const { error: clearPathError } = await admin.from("member_profiles")
+      .update({ registration_proof_path: null }).eq("id", memberId).eq("status", decision);
+    if (clearPathError && decision === "active") {
+      return json({ success: true, proof_deleted: true, database_path_cleared: false, status: decision,
+        message: "Screenshot sudah dihapus, tetapi referensi berkas di database belum berhasil dikosongkan." }, 200, origin);
+    }
   }
 
-  const { error: clearPathError } = await admin.from("member_profiles")
-    .update({ registration_proof_path: null }).eq("id", memberId).eq("status", decision);
-  if (clearPathError) {
-    return json({ success: true, proof_deleted: true, database_path_cleared: false, status: decision,
-      message: "Screenshot sudah dihapus, tetapi referensi berkas di database belum berhasil dikosongkan." }, 200, origin);
+  if (decision === "rejected") {
+    // Rejected applicants should be removed completely when safe. Never delete an account
+    // that already has financial history; preserve its audit/ledger trail instead.
+    const [transactions, payments, dues] = await Promise.all([
+      admin.from("wallet_transactions").select("id", { count: "exact", head: true }).eq("member_id", memberId),
+      admin.from("payment_submissions").select("id", { count: "exact", head: true }).eq("member_id", memberId),
+      admin.from("daily_dues_log").select("id", { count: "exact", head: true }).eq("member_id", memberId),
+    ]);
+    if (transactions.error || payments.error || dues.error) {
+      return json({ success: true, proof_deleted: proofDeleted, account_deleted: false, status: decision,
+        message: "Pendaftaran ditolak, tetapi pemeriksaan riwayat kas gagal. Akun dipertahankan demi keamanan data." }, 200, origin);
+    }
+    if ((transactions.count || 0) > 0 || (payments.count || 0) > 0 || (dues.count || 0) > 0) {
+      return json({ success: true, proof_deleted: proofDeleted, account_deleted: false, status: decision,
+        message: "Pendaftaran ditolak. Akun dipertahankan karena memiliki riwayat kas yang harus dijaga." }, 200, origin);
+    }
+    const { error: deleteUserError } = await admin.auth.admin.deleteUser(memberId);
+    if (deleteUserError) {
+      return json({ success: true, proof_deleted: proofDeleted, account_deleted: false, status: decision,
+        message: "Pendaftaran ditolak, tetapi akun belum dapat dihapus otomatis: " + deleteUserError.message }, 200, origin);
+    }
+    return json({ success: true, proof_deleted: proofDeleted, account_deleted: true, status: decision }, 200, origin);
   }
-  return json({ success: true, proof_deleted: true, database_path_cleared: true, status: decision }, 200, origin);
+
+  return json({ success: true, proof_deleted: proofDeleted, database_path_cleared: true, status: decision }, 200, origin);
 });
