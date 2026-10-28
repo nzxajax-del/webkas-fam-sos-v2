@@ -1416,6 +1416,8 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 
 
 /* Kamar Perizinan: keep this view isolated from other dashboard panels. */
+/* Panel perizinan adalah anak langsung dashboard, jadi sembunyikan di semua menu selain view Perizinan. */
+.dashboard-shell:not([data-view="permissions"]) > #leave-permissions-panel{display:none!important}
 .dashboard-shell[data-view="permissions"] .welcome-panel,
 .dashboard-shell[data-view="permissions"] .panel:not(#leave-permissions-panel),
 .dashboard-shell[data-view="permissions"] .admin-layout,
