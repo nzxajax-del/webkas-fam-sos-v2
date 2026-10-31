@@ -641,22 +641,30 @@ export default function App() {
   }
 
   async function reviewMember(id, decision) {
+    let decisionCommitted = false;
     setBusy(true); setError(""); setMessage("");
-    const { data, error: reviewError } = await supabase.functions.invoke("review-member-registration", {
-      body: { memberId: id, decision, note: reviewNote },
-    });
-    if (reviewError || data?.error || data?.success !== true) {
-      setError("Pendaftaran belum diproses: " + (data?.error || reviewError?.message || "Keputusan belum dikonfirmasi."));
-      setBusy(false); return;
+    try {
+      const { data, error: reviewError } = await supabase.functions.invoke("review-member-registration", {
+        body: { memberId: id, decision, note: reviewNote },
+      });
+      if (reviewError || data?.error || data?.success !== true) {
+        throw new Error(data?.error || reviewError?.message || "Keputusan belum dikonfirmasi.");
+      }
+      decisionCommitted = true;
+      setPendingMembers((rows) => rows.filter((row) => row.id !== id));
+      setReviewNote("");
+      await refreshAdminSnapshot();
+      const decisionText = decision === "active" ? "Anggota disetujui. Akun sekarang aktif." : data.account_deleted ? "Pendaftaran ditolak dan akun calon anggota dihapus otomatis." : "Pendaftaran ditolak, tetapi akun belum dapat dihapus otomatis untuk menjaga data terkait.";
+      setMessage(data.proof_deleted
+        ? decisionText + " Screenshot bukti permohonan sudah dihapus dari Storage."
+        : decisionText + " Namun screenshot belum berhasil dihapus; perlu pembersihan ulang.");
+    } catch (err) {
+      setError(decisionCommitted
+        ? "Keputusan pendaftaran sudah tersimpan, tetapi daftar belum berhasil disegarkan. Tekan Segarkan untuk memuat ulang. " + (err?.message || "")
+        : "Pendaftaran belum dapat dipastikan berhasil. Segarkan antrean sebelum mencoba lagi. " + (err?.message || "Koneksi atau server bermasalah."));
+    } finally {
+      setBusy(false);
     }
-    setPendingMembers((rows) => rows.filter((row) => row.id !== id));
-    setReviewNote("");
-    await refreshAdminSnapshot();
-    const decisionText = decision === "active" ? "Anggota disetujui. Akun sekarang aktif." : data.account_deleted ? "Pendaftaran ditolak dan akun calon anggota dihapus otomatis." : "Pendaftaran ditolak, tetapi akun belum dapat dihapus otomatis untuk menjaga data terkait.";
-    setMessage(data.proof_deleted
-      ? decisionText + " Screenshot bukti permohonan sudah dihapus dari Storage."
-      : decisionText + " Namun screenshot belum berhasil dihapus; perlu pembersihan ulang.");
-    setBusy(false);
   }
 
   async function openProof(path) {
@@ -675,20 +683,28 @@ export default function App() {
   }
 
   async function reviewPayment(id, decision) {
+    let decisionCommitted = false;
     setBusy(true); setError(""); setMessage("");
-    const { data, error: reviewError } = await supabase.functions.invoke("review-payment", {
-      body: { submissionId: id, decision, note: reviewNote },
-    });
-    if (reviewError || data?.error) {
-      setError("Pembayaran belum diproses: " + (data?.error || reviewError?.message || "Kesalahan tidak diketahui."));
-      setBusy(false); return;
+    try {
+      const { data, error: reviewError } = await supabase.functions.invoke("review-payment", {
+        body: { submissionId: id, decision, note: reviewNote },
+      });
+      if (reviewError || data?.error || data?.success !== true) {
+        throw new Error(data?.error || reviewError?.message || "Keputusan belum dikonfirmasi.");
+      }
+      decisionCommitted = true;
+      setPendingPayments((rows) => rows.filter((row) => row.id !== id));
+      setReviewNote("");
+      await refreshAdminSnapshot();
+      const decisionText = decision === "approved" ? "Pembayaran disetujui dan pembukuan kas diperbarui." : "Pengajuan pembayaran ditolak.";
+      setMessage(data?.proof_deleted ? decisionText + " Screenshot bukti sudah dihapus dari penyimpanan dan database." : decisionText + " Namun penghapusan screenshot belum selesai; bukti disembunyikan dari antrean dan perlu pembersihan ulang.");
+    } catch (err) {
+      setError(decisionCommitted
+        ? "Keputusan pembayaran sudah tersimpan, tetapi daftar belum berhasil disegarkan. Tekan Segarkan untuk memuat ulang. " + (err?.message || "")
+        : "Pembayaran belum dapat dipastikan berhasil. Segarkan antrean sebelum mencoba lagi. " + (err?.message || "Koneksi atau server bermasalah."));
+    } finally {
+      setBusy(false);
     }
-    setPendingPayments((rows) => rows.filter((row) => row.id !== id));
-    setReviewNote("");
-    await refreshAdminSnapshot();
-    const decisionText = decision === "approved" ? "Pembayaran disetujui dan pembukuan kas diperbarui." : "Pengajuan pembayaran ditolak.";
-    setMessage(data?.proof_deleted ? decisionText + " Screenshot bukti sudah dihapus dari penyimpanan dan database." : decisionText + " Namun penghapusan screenshot belum selesai; bukti disembunyikan dari antrean dan perlu pembersihan ulang.");
-    setBusy(false);
   }
 
   async function deleteCompletedPaymentHistory(submissionId = null) {
