@@ -262,6 +262,37 @@ export default function App() {
   const [informationUnreadNotice, setInformationUnreadNotice] = useState(0);
   const [permissionsUnreadNotice, setPermissionsUnreadNotice] = useState(0);
 
+  // Keep the installed PWA launcher badge in sync with the existing unread/activity counters.
+  // This is a best-effort enhancement: unsupported launchers simply keep the in-app indicators.
+  const appIconUnreadCount = Math.min(999,
+    pendingRegistrationNotice +
+    pendingPaymentNotice +
+    chatUnreadNotice +
+    privateChatUnreadNotice +
+    leadersUnreadNotice +
+    staffUnreadNotice +
+    informationUnreadNotice +
+    permissionsUnreadNotice
+  );
+
+  useEffect(() => {
+    if (typeof navigator === "undefined") return;
+    const updateAppIconBadge = async () => {
+      try {
+        if (!session?.user?.id || profile?.status !== "active" || appIconUnreadCount <= 0) {
+          if (typeof navigator.clearAppBadge === "function") await navigator.clearAppBadge();
+          return;
+        }
+        if (typeof navigator.setAppBadge === "function") {
+          await navigator.setAppBadge(appIconUnreadCount);
+        }
+      } catch {
+        // Badge support is optional and must never interfere with WEBKAS functionality.
+      }
+    };
+    updateAppIconBadge();
+  }, [session?.user?.id, profile?.status, appIconUnreadCount]);
+
   useEffect(() => {
     if (!supabase || !session?.user?.id || profile?.status !== "active") return undefined;
     let alive = true;
