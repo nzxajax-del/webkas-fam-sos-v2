@@ -825,7 +825,12 @@ export default function App() {
       if (data?.success !== true) throw new Error(data?.message || "Database tidak mengonfirmasi koreksi saldo.");
       const refreshed = await refreshAdminSnapshot();
       setBalanceCorrection(null);
-      if (refreshed) setMessage("Koreksi saldo berhasil dicatat. Saldo baru: " + money(data.balance) + ".");
+      if (refreshed) {
+        const correctionSummary = delta > 0
+          ? "Penambahan " + money(delta) + " diproses: tunggakan terbayar " + money(data.arrears_paid || 0) + ", masuk saldo " + money(data.balance_credit || 0) + "."
+          : "Saldo dikurangi " + money(Math.abs(delta)) + ". Tunggakan tidak diubah.";
+        setMessage("Koreksi saldo berhasil dicatat. " + correctionSummary + " Saldo akhir: " + money(data.balance) + "; tunggakan akhir: " + money(data.arrears) + ".");
+      }
     } catch (err) {
       setError("Koreksi saldo gagal: " + (err?.message || "Kesalahan tidak diketahui.") + " Tidak ada perubahan yang dikonfirmasi.");
     } finally { setBusy(false); }
