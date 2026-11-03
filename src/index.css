@@ -1493,3 +1493,25 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 /* Tombol hapus pesan hanya ditampilkan pada Kamar Perizinan untuk admin aktif. */
 .leave-chat-delete{width:auto;flex:0 0 auto;padding:6px 8px;font-size:10px;white-space:nowrap}
 @media(max-width:520px){.leave-chat-delete{padding:5px 6px;font-size:9px}.leave-chat-message-head{flex-wrap:wrap}.leave-chat-message-head time{margin-left:auto}}
+
+
+/* Histori Brangkas: tampilan buku kas bersama. */
+.treasury-ledger-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.treasury-ledger-grid>div{display:flex;flex-direction:column;gap:5px;min-width:0;padding:10px;border:1px solid #34432b;border-radius:10px;background:#0e140c}
+.treasury-ledger-grid span,.treasury-preview span{color:#aab59d;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+.treasury-ledger-grid strong{font-size:14px;overflow-wrap:anywhere}
+.treasury-ledger-grid small{color:#c5ceb9;font-size:11px;line-height:1.4;white-space:pre-wrap;overflow-wrap:anywhere}
+.treasury-ledger-grid .treasury-positive{color:#9fe078}
+.treasury-ledger-grid .treasury-negative{color:#ff9c8c}
+.treasury-ledger-grid .treasury-closing{grid-column:1/-1;border-color:#668b3b;background:linear-gradient(135deg,#1d2c14,#111a0d)}
+.treasury-ledger-grid .treasury-closing strong{color:#c8f77a;font-size:17px}
+.treasury-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.treasury-form-grid label{display:flex;flex-direction:column;gap:6px;color:#d8e2cf;font-size:11px;font-weight:700;min-width:0}
+.treasury-form-grid input,.treasury-form-grid textarea{width:100%;min-width:0;padding:10px;color:#f5f8ef;background:#0b100a;border:1px solid #414d37;border-radius:10px;outline:none;font:inherit;font-size:13px}
+.treasury-form-grid textarea{resize:vertical;min-height:58px;line-height:1.4}
+.treasury-form-grid input:focus,.treasury-form-grid textarea:focus{border-color:var(--lime);box-shadow:0 0 0 3px #c1f45a1a}
+.treasury-form-grid .treasury-wide{grid-column:1/-1}
+.treasury-preview{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px;border:1px solid #668b3b;border-radius:12px;background:#1b2912}
+.treasury-preview strong{color:#c8f77a;font-size:18px;text-align:right}
+.treasury-composer>.primary{width:100%;min-height:44px}
+@media(max-width:520px){.treasury-ledger-grid{gap:7px}.treasury-ledger-grid>div{padding:8px}.treasury-ledger-grid strong{font-size:12px}.treasury-form-grid{gap:8px}.treasury-form-grid input,.treasury-form-grid textarea{font-size:12px;padding:9px}.treasury-preview strong{font-size:15px}}
