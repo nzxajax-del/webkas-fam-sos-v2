@@ -1558,3 +1558,10 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 
 /* Letakkan saldo akhir sejajar di kanan kotak pengeluaran. */
 .treasury-ledger-grid .treasury-closing{grid-column:auto;}
+
+/* Suffix K selalu terlihat di kolom nominal Histori Brangkas. */
+.treasury-k-input{display:flex;align-items:stretch;width:100%;min-width:0;border:1px solid #414d37;border-radius:10px;background:#0b100a;overflow:hidden}
+.treasury-k-input input{flex:1;min-width:0;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
+.treasury-k-input>span{display:flex;align-items:center;padding:0 11px;color:#c8f77a;font-size:13px;font-weight:800;background:#1b2912;border-left:1px solid #414d37}
+.treasury-k-input:focus-within{border-color:var(--lime);box-shadow:0 0 0 3px #c1f45a1a}
+.treasury-composer .treasury-form-grid .treasury-k-input input{padding:7px 8px}
