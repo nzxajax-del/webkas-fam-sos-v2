@@ -62,10 +62,18 @@ Deno.serve(async (req: Request) => {
   }
 
   const { data: submission, error: submissionError } = await admin
-    .from("payment_submissions").select("id,proof_path,status").eq("id", submissionId).maybeSingle();
+    .from("payment_submissions").select("id,member_id,proof_path,status").eq("id", submissionId).maybeSingle();
   if (submissionError) return json({ error: "Pengajuan pembayaran tidak dapat dibaca." }, 500, origin);
   if (!submission) return json({ error: "Pengajuan pembayaran tidak ditemukan." }, 404, origin);
   if (submission.status !== "pending") return json({ error: "Pengajuan ini sudah diproses." }, 409, origin);
+  if (profile.role === "admin_assistant") {
+    const { data: targetMember, error: targetMemberError } = await admin
+      .from("member_profiles").select("rank_code,status").eq("id", submission.member_id).maybeSingle();
+    if (targetMemberError) return json({ error: "Pangkat anggota tidak dapat diverifikasi." }, 500, origin);
+    if (!targetMember || targetMember.status !== "active" || !["P1", "P2", "P3", "P4"].includes(targetMember.rank_code)) {
+      return json({ error: "Admin Asisten hanya dapat memproses pembayaran anggota P1 sampai P4." }, 403, origin);
+    }
+  }
   const proofPath = typeof submission.proof_path === "string" ? submission.proof_path : null;
 
   // Run the existing database transaction first; it atomically updates the wallet,
