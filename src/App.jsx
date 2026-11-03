@@ -1158,8 +1158,8 @@ export default function App() {
         const authorIds = [...new Set(rows.map((entry) => entry.created_by).filter(Boolean))];
         let authorMap = new Map();
         if (authorIds.length) {
-          const { data: authors, error: authorError } = await supabase.from("member_profiles").select("id,display_name,role,rank_code").in("id", authorIds);
-          if (!authorError) authorMap = new Map((authors || []).map((author) => [author.id, author]));
+          const { data: authors, error: authorError } = await supabase.rpc("get_vault_entry_authors");
+          if (!authorError) authorMap = new Map((authors || []).filter((author) => authorIds.includes(author.id)).map((author) => [author.id, author]));
         }
         if (!alive) return;
         setVaultEntries(rows.map((entry) => ({
@@ -1211,8 +1211,8 @@ export default function App() {
         const authorIds = [...new Set(rows.map((entry) => entry.created_by).filter(Boolean))];
         let authorMap = new Map();
         if (authorIds.length) {
-          const { data: authors } = await supabase.from("member_profiles").select("id,display_name,role,rank_code").in("id", authorIds);
-          authorMap = new Map((authors || []).map((author) => [author.id, author]));
+          const { data: authors, error: authorError } = await supabase.rpc("get_vault_entry_authors");
+          if (!authorError) authorMap = new Map((authors || []).filter((author) => authorIds.includes(author.id)).map((author) => [author.id, author]));
         }
         setVaultEntries(rows.map((entry) => ({
           ...entry,
