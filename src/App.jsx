@@ -374,7 +374,7 @@ export default function App() {
       .on("postgres_changes", { event: "*", schema: "public", table: "member_profiles" }, () => refreshNotificationCounts("member_profiles"))
       .on("postgres_changes", { event: "*", schema: "public", table: "payment_submissions" }, () => refreshNotificationCounts("payment_submissions"))
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "information_messages" }, () => refreshNotificationCounts("information_messages"))
-      .on("postgres_changes", { event: "*", schema: "public", table: "member_leave_requests" }, () => refreshNotificationCounts("member_leave_requests"))
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "treasury_history" }, () => refreshNotificationCounts("treasury_history"))
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "chat_messages" }, () => refreshNotificationCounts("chat_messages"))
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "p5_p6_chat_messages" }, () => refreshNotificationCounts("p5_p6_chat_messages"))
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "p4_p5_p6_chat_messages" }, () => refreshNotificationCounts("p4_p5_p6_chat_messages"))
