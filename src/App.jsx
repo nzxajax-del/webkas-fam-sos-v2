@@ -740,7 +740,7 @@ export default function App() {
       setApprovePaymentTarget(null);
       await refreshAdminSnapshot();
       const decisionText = decision === "approved" ? "Pembayaran disetujui dan pembukuan kas diperbarui." : "Pengajuan pembayaran ditolak.";
-      setMessage(data?.proof_deleted ? decisionText + " Screenshot bukti sudah dihapus dari penyimpanan dan database." : decisionText + " Namun penghapusan screenshot belum selesai; bukti disembunyikan dari antrean dan perlu pembersihan ulang.");
+      setMessage(data?.message || (data?.proof_deleted ? decisionText + " Screenshot bukti sudah dihapus dari penyimpanan." : decisionText + " Namun penghapusan screenshot belum selesai; bukti disembunyikan dari antrean dan perlu pembersihan ulang."));
     } catch (err) {
       setError(decisionCommitted
         ? "Keputusan pembayaran sudah tersimpan, tetapi daftar belum berhasil disegarkan. Tekan Segarkan untuk memuat ulang. " + (err?.message || "")
