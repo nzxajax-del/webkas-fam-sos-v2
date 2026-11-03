@@ -1883,28 +1883,3 @@ function Brand({ compact = false, branding }) {
   const site = branding?.site_name || "WEBKAS FAM SOS V2";
   return <div className={"brand-mark" + (compact ? " compact" : "")}><span className="brand-icon">{family.replace(/[^A-Za-z0-9]/g, "").slice(0,1).toUpperCase() || "K"}</span><div><strong>{site}</strong><small>{family} · {branding?.subtitle || "CATATAN KAS KELUARGA"}</small></div></div>;
 }
-
-
-/* Vault History follows the shared chat-room presentation used by Perizinan. */
-.vault-history-panel{display:flex;flex-direction:column;gap:14px;min-height:calc(100dvh - 140px)}
-.vault-history-panel .vault-opening-form{margin:0;padding:12px;border:1px solid #3b4930;border-radius:15px;background:#10150e}
-.vault-history-panel .vault-stats{margin:0}
-.vault-chat-window{max-height:calc(100dvh - 500px);min-height:190px}
-.vault-chat-message{width:min(94%,680px)}
-.vault-chat-amount{display:block;margin-top:7px;font-size:17px;letter-spacing:.2px}
-.vault-income-label{color:#b9ed75}
-.vault-expense-label{color:#ff9b9b}
-.vault-chat-composer{margin-top:2px}
-.vault-chat-format label{display:grid;gap:6px;color:var(--muted);font-size:11px;font-weight:700}
-.vault-chat-format select,.vault-chat-format input{width:100%;min-width:0;padding:10px 11px;color:#f5f8ef;background:#0b100a;border:1px solid #414d37;border-radius:10px;font:inherit;font-size:12px}
-.vault-chat-amount-field{max-width:160px}
-.vault-chat-composer .review-actions{display:flex;gap:8px;flex-wrap:wrap}
-.vault-chat-composer .leave-chat-feedback{margin:0;color:#9aa58f;font-size:11px}
-@media(max-width:520px){
-  .vault-history-panel{min-height:calc(100dvh - 110px);padding:14px 11px}
-  .vault-chat-window{max-height:calc(100dvh - 530px);min-height:170px}
-  .vault-chat-message{width:96%;padding:10px}
-  .vault-chat-amount{font-size:15px}
-  .vault-chat-format{gap:8px}
-  .vault-chat-amount-field{max-width:125px}
-}
