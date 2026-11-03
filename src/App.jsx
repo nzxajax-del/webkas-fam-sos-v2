@@ -76,9 +76,9 @@ export default function App() {
   const [informationSending, setInformationSending] = useState(false);
   const [treasuryRecords, setTreasuryRecords] = useState([]);
   const [openingBalance, setOpeningBalance] = useState("");
-  const [treasuryIncome, setTreasuryIncome] = useState("0");
+  const [treasuryIncome, setTreasuryIncome] = useState("");
   const [treasuryIncomeNote, setTreasuryIncomeNote] = useState("");
-  const [treasuryExpense, setTreasuryExpense] = useState("0");
+  const [treasuryExpense, setTreasuryExpense] = useState("");
   const [treasuryExpenseNote, setTreasuryExpenseNote] = useState("");
   const [treasurySending, setTreasurySending] = useState(false);
   const [treasuryLoading, setTreasuryLoading] = useState(false);
@@ -1171,9 +1171,9 @@ export default function App() {
       setError("Catatan Histori Brangkas gagal dikirim: " + submitError.message);
     } else {
       setOpeningBalance("");
-      setTreasuryIncome("0");
+      setTreasuryIncome("");
       setTreasuryIncomeNote("");
-      setTreasuryExpense("0");
+      setTreasuryExpense("");
       setTreasuryExpenseNote("");
       const { data, error: refreshError } = await supabase.from("treasury_history")
         .select("id,sender_id,sender_name,sender_role,opening_balance,income,income_note,expense,expense_note,closing_balance,created_at")
