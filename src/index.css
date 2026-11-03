@@ -1495,6 +1495,46 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 @media(max-width:520px){.leave-chat-delete{padding:5px 6px;font-size:9px}.leave-chat-message-head{flex-wrap:wrap}.leave-chat-message-head time{margin-left:auto}}
 
 
+
+/* Histori Brangkas: layout ringkas agar hemat ruang di layar HP. */
+.treasury-history-message{width:100%;padding:8px 9px;border-radius:10px;gap:0}
+.treasury-history-message .leave-chat-message-head{gap:6px}
+.treasury-history-message .leave-chat-message-head .rank-badge{width:27px;height:29px;padding:2px}
+.treasury-history-message .leave-chat-sender strong{font-size:11px}
+.treasury-history-message .leave-chat-sender small{margin-top:1px;font-size:9px}
+.treasury-history-message .leave-chat-message-head time{font-size:9px}
+.treasury-history-message .treasury-ledger-grid{gap:5px;margin-top:7px}
+.treasury-history-message .treasury-ledger-grid>div{gap:2px;padding:6px 7px;border-radius:7px}
+.treasury-history-message .treasury-ledger-grid span{font-size:8px;letter-spacing:.025em}
+.treasury-history-message .treasury-ledger-grid strong{font-size:11px;line-height:1.25}
+.treasury-history-message .treasury-ledger-grid small{font-size:9px;line-height:1.25}
+.treasury-history-message .treasury-ledger-grid .treasury-closing strong{font-size:13px}
+.treasury-record-actions{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.treasury-record-actions button{min-height:28px;padding:5px 8px;font-size:10px;border-radius:7px}
+.treasury-history-message .treasury-edit-form{margin-top:7px;padding:8px;border-radius:9px}
+.treasury-composer{gap:7px;padding:9px;border-radius:10px}
+.treasury-composer .treasury-form-grid{gap:7px}
+.treasury-composer .treasury-form-grid label{gap:4px;font-size:10px}
+.treasury-composer .treasury-form-grid input,.treasury-composer .treasury-form-grid textarea{padding:7px 8px;font-size:11px;border-radius:7px}
+.treasury-composer .treasury-form-grid textarea{min-height:42px}
+.treasury-composer .treasury-preview{padding:8px 9px;border-radius:8px}
+.treasury-composer .treasury-preview span{font-size:9px}
+.treasury-composer .treasury-preview strong{font-size:14px}
+.treasury-composer>.primary{min-height:36px;padding:8px;font-size:12px}
+.treasury-history-message .treasury-record-actions button{min-height:26px}
+@media(max-width:520px){
+ .leave-permissions-panel .leave-chat-window{padding:7px 0;max-height:calc(100dvh - 300px)}
+ .leave-permissions-panel .leave-chat-list{gap:7px}
+ .treasury-history-message{width:100%;padding:7px}
+ .treasury-history-message .treasury-ledger-grid{gap:4px}
+ .treasury-history-message .treasury-ledger-grid>div{padding:5px 6px}
+ .treasury-history-message .treasury-ledger-grid strong{font-size:10px}
+ .treasury-history-message .treasury-ledger-grid .treasury-closing strong{font-size:12px}
+ .treasury-composer{padding:7px}
+ .treasury-composer .treasury-form-grid{gap:6px}
+ .treasury-composer .treasury-form-grid input,.treasury-composer .treasury-form-grid textarea{padding:6px 7px;font-size:11px}
+}
+
 /* Histori Brangkas: tampilan buku kas bersama. */
 .treasury-ledger-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
 .treasury-ledger-grid>div{display:flex;flex-direction:column;gap:5px;min-width:0;padding:10px;border:1px solid #34432b;border-radius:10px;background:#0e140c}
