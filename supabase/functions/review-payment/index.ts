@@ -110,22 +110,13 @@ Deno.serve(async (req: Request) => {
     }, 200, origin);
   }
 
-  const { error: clearPathError } = await admin.from("payment_submissions")
-    .update({ proof_path: null }).eq("id", submissionId).eq("status", decision);
-  if (clearPathError) {
-    return json({
-      success: true,
-      proof_deleted: true,
-      database_path_cleared: false,
-      status: decision,
-      message: "Screenshot sudah dihapus dari penyimpanan, tetapi jalur bukti di database belum berhasil dikosongkan.",
-    }, 200, origin);
-  }
-
+  // Keep the non-null proof_path as an audit reference. The object itself is deleted;
+  // clearing this column would violate the table constraint and must not affect the review result.
   return json({
     success: true,
     proof_deleted: true,
-    database_path_cleared: true,
+    database_path_cleared: false,
     status: decision,
+    message: "Keputusan pembayaran berhasil. Screenshot bukti sudah dihapus; catatan lokasi bukti tetap disimpan sebagai jejak riwayat.",
   }, 200, origin);
 });
