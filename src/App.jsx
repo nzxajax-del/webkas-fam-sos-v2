@@ -1846,7 +1846,7 @@ export default function App() {
               <RankBadge rank={entry.author?.rank_code || "P1"} isAdmin={entry.author?.role === "admin"} isAssistant={entry.author?.role === "admin_assistant"}/>
               <div className="leave-chat-sender"><strong>{entry.author?.display_name || (entry.created_by===session?.user?.id ? profile.display_name : "Anggota") || "Anggota"}</strong><small>{entry.author?.role === "admin" ? "Developer" : entry.author?.role === "admin_assistant" ? "Admin Asisten" : rankDisplayLabel(entry.author?.rank_code || "P1", true)}</small></div>
               <time dateTime={entry.created_at}>{new Date(entry.created_at).toLocaleString("id-ID",{timeZone:"Asia/Jakarta",day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"})} WIB</time>
-              {["admin","admin_assistant"].includes(profile.role) && <button type="button" className="danger-button leave-chat-delete" onClick={()=>{setVaultEditingEntry(entry);setVaultEntryType(entry.entry_type);setVaultAmountDraft(String(entry.amount));setVaultDescriptionDraft(entry.description);}} disabled={vaultSaving} aria-label="Ubah catatan brankas">✏️ Ubah</button>}
+              {["admin","admin_assistant"].includes(profile.role) && <button type="button" className="secondary leave-chat-delete" onClick={()=>{setVaultEditingEntry(entry);setVaultEntryType(entry.entry_type);setVaultAmountDraft(String(entry.amount));setVaultDescriptionDraft(entry.description);}} disabled={vaultSaving} aria-label="Ubah catatan brankas">✏️ Ubah</button>}
               {["admin","admin_assistant"].includes(profile.role) && <button type="button" className="danger-button leave-chat-delete" onClick={()=>deleteVaultEntry(entry)} disabled={vaultSaving} aria-label="Hapus catatan brankas">🗑️ Hapus</button>}
             </div>
             <div className={"leave-chat-type " + (entry.entry_type==="income" ? "vault-income-label" : "vault-expense-label")}>{entry.entry_type==="income" ? "🟢 PEMASUKAN" : "🔴 PENGELUARAN"}</div>
@@ -1882,4 +1882,29 @@ function Brand({ compact = false, branding }) {
   const family = branding?.family_name || "FAM SOS";
   const site = branding?.site_name || "WEBKAS FAM SOS V2";
   return <div className={"brand-mark" + (compact ? " compact" : "")}><span className="brand-icon">{family.replace(/[^A-Za-z0-9]/g, "").slice(0,1).toUpperCase() || "K"}</span><div><strong>{site}</strong><small>{family} · {branding?.subtitle || "CATATAN KAS KELUARGA"}</small></div></div>;
+}
+
+
+/* Vault History follows the shared chat-room presentation used by Perizinan. */
+.vault-history-panel{display:flex;flex-direction:column;gap:14px;min-height:calc(100dvh - 140px)}
+.vault-history-panel .vault-opening-form{margin:0;padding:12px;border:1px solid #3b4930;border-radius:15px;background:#10150e}
+.vault-history-panel .vault-stats{margin:0}
+.vault-chat-window{max-height:calc(100dvh - 500px);min-height:190px}
+.vault-chat-message{width:min(94%,680px)}
+.vault-chat-amount{display:block;margin-top:7px;font-size:17px;letter-spacing:.2px}
+.vault-income-label{color:#b9ed75}
+.vault-expense-label{color:#ff9b9b}
+.vault-chat-composer{margin-top:2px}
+.vault-chat-format label{display:grid;gap:6px;color:var(--muted);font-size:11px;font-weight:700}
+.vault-chat-format select,.vault-chat-format input{width:100%;min-width:0;padding:10px 11px;color:#f5f8ef;background:#0b100a;border:1px solid #414d37;border-radius:10px;font:inherit;font-size:12px}
+.vault-chat-amount-field{max-width:160px}
+.vault-chat-composer .review-actions{display:flex;gap:8px;flex-wrap:wrap}
+.vault-chat-composer .leave-chat-feedback{margin:0;color:#9aa58f;font-size:11px}
+@media(max-width:520px){
+  .vault-history-panel{min-height:calc(100dvh - 110px);padding:14px 11px}
+  .vault-chat-window{max-height:calc(100dvh - 530px);min-height:170px}
+  .vault-chat-message{width:96%;padding:10px}
+  .vault-chat-amount{font-size:15px}
+  .vault-chat-format{gap:8px}
+  .vault-chat-amount-field{max-width:125px}
 }
