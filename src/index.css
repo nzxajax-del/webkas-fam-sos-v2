@@ -1555,3 +1555,6 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .treasury-preview strong{color:#c8f77a;font-size:18px;text-align:right}
 .treasury-composer>.primary{width:100%;min-height:44px}
 @media(max-width:520px){.treasury-ledger-grid{gap:7px}.treasury-ledger-grid>div{padding:8px}.treasury-ledger-grid strong{font-size:12px}.treasury-form-grid{gap:8px}.treasury-form-grid input,.treasury-form-grid textarea{font-size:12px;padding:9px}.treasury-preview strong{font-size:15px}}
+
+/* Letakkan saldo akhir sejajar di kanan kotak pengeluaran. */
+.treasury-ledger-grid .treasury-closing{grid-column:auto;}
