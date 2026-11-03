@@ -95,7 +95,7 @@ begin
   end if;
   select role into v_admin_role from public.member_profiles
   where id = v_admin_id and status = 'active';
-  if v_admin_role not in ('admin','admin_assistant') then
+  if coalesce(v_admin_role, '') not in ('admin','admin_assistant') then
     raise exception 'Hanya Developer atau Admin Assistant aktif yang dapat memproses pembayaran' using errcode='42501';
   end if;
   if p_decision not in ('approved','rejected') then
