@@ -377,7 +377,7 @@ export default function App() {
     // Poll counts if Realtime events are delayed or unavailable.
     const notificationPoll = window.setInterval(() => {
       if (document.visibilityState === "visible") refreshNotificationCounts();
-    }, 10000);
+    }, 30000);
     const channel = supabase.channel("webkas-notifications-" + session.user.id)
       .on("postgres_changes", { event: "*", schema: "public", table: "member_profiles" }, () => refreshNotificationCounts("member_profiles"))
       .on("postgres_changes", { event: "*", schema: "public", table: "payment_submissions" }, () => refreshNotificationCounts("payment_submissions"))
@@ -1352,7 +1352,7 @@ export default function App() {
     setRankChatRefreshing(false);
   }
   useEffect(() => {
-    if (!supabase || !session?.user?.id || profile?.status !== "active" || !(["P5","P6"].includes(profile?.rank_code) || profile?.role === "admin")) return undefined;
+    if (!supabase || !session?.user?.id || profile?.status !== "active" || activeSection !== "p5-p6-chat" || !(["P5","P6"].includes(profile?.rank_code) || profile?.role === "admin")) return undefined;
     let alive = true;
     let initialized = false;
     const seenIds = new Set();
@@ -1382,9 +1382,9 @@ export default function App() {
       fetchMessages();
     }).subscribe();
     fetchMessages();
-    const timer = window.setInterval(() => { if (document.visibilityState === "visible") fetchMessages(); }, 10000);
+    const timer = window.setInterval(() => { if (document.visibilityState === "visible" && activeSection === "p5-p6-chat") fetchMessages(); }, 15000);
     return () => { alive = false; window.clearInterval(timer); supabase.removeChannel(channel); };
-  }, [session?.user?.id, profile?.status, profile?.rank_code, profile?.role]);
+  }, [session?.user?.id, profile?.status, profile?.rank_code, profile?.role, activeSection]);
   async function loadRankChat456Messages() {
     if (!supabase || !session?.user?.id || profile?.status !== "active" || !(["P4","P5","P6"].includes(profile?.rank_code) || profile?.role === "admin")) {
       setRankChat456Messages([]);
@@ -1438,7 +1438,7 @@ export default function App() {
     setRankChat456Refreshing(false);
   }
   useEffect(() => {
-    if (!supabase || !session?.user?.id || profile?.status !== "active" || !(["P4","P5","P6"].includes(profile?.rank_code) || profile?.role === "admin")) return undefined;
+    if (!supabase || !session?.user?.id || profile?.status !== "active" || activeSection !== "p4-p5-p6-chat" || !(["P4","P5","P6"].includes(profile?.rank_code) || profile?.role === "admin")) return undefined;
     let alive = true;
     let initialized = false;
     const seenIds = new Set();
@@ -1468,7 +1468,7 @@ export default function App() {
       fetchMessages();
     }).subscribe();
     fetchMessages();
-    const timer = window.setInterval(() => { if (document.visibilityState === "visible") fetchMessages(); }, 10000);
+    const timer = window.setInterval(() => { if (document.visibilityState === "visible" && activeSection === "p4-p5-p6-chat") fetchMessages(); }, 15000);
     return () => { alive = false; window.clearInterval(timer); supabase.removeChannel(channel); };
   }, [session?.user?.id, profile?.status, profile?.rank_code, profile?.role, activeSection]);
   async function loadRankChat456Messages() {
