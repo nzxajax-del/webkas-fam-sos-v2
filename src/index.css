@@ -1569,3 +1569,8 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 /* Label MENU pada tombol pembuka laci agar mudah dikenali anggota baru. */
 .hamburger-button{display:flex;align-items:center;justify-content:center;flex:0 0 68px;width:68px;min-width:68px;height:40px;padding:0 10px;gap:0}
 .hamburger-button span{display:block;width:auto;height:auto;border-radius:0;background:transparent;color:var(--lime);font-size:12px;font-weight:900;letter-spacing:.12em;line-height:1}
+
+
+/* Fixed, visible rejection dialog: keep it in the viewport on mobile and desktop. */
+.payment-review-overlay{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;padding:16px;background:rgba(0,0,0,.78);backdrop-filter:blur(3px)}
+.payment-review-dialog{width:min(640px,100%);max-height:calc(100dvh - 32px);margin:0;overflow-y:auto;overscroll-behavior:contain;box-shadow:0 24px 90px #000c}
