@@ -1565,3 +1565,7 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .treasury-k-input>span{display:flex;align-items:center;padding:0 11px;color:#c8f77a;font-size:13px;font-weight:800;background:#1b2912;border-left:1px solid #414d37}
 .treasury-k-input:focus-within{border-color:var(--lime);box-shadow:0 0 0 3px #c1f45a1a}
 .treasury-composer .treasury-form-grid .treasury-k-input input{padding:7px 8px}
+
+/* Label MENU pada tombol pembuka laci agar mudah dikenali anggota baru. */
+.hamburger-button{display:flex;align-items:center;justify-content:center;flex:0 0 68px;width:68px;min-width:68px;height:40px;padding:0 10px;gap:0}
+.hamburger-button span{display:block;width:auto;height:auto;border-radius:0;background:transparent;color:var(--lime);font-size:12px;font-weight:900;letter-spacing:.12em;line-height:1}
