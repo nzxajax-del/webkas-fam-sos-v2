@@ -40,6 +40,7 @@ Deno.serve(async (req: Request) => {
     return json({ error: "ID pengajuan tidak valid." }, 400, origin);
   }
   if (!["approved", "rejected"].includes(decision)) return json({ error: "Keputusan harus approved atau rejected." }, 400, origin);
+  if (decision === "rejected" && !note) return json({ error: "Keterangan penolakan wajib diisi." }, 400, origin);
 
   const url = Deno.env.get("SUPABASE_URL");
   const anonKey = Deno.env.get("SUPABASE_ANON_KEY");
