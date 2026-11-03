@@ -73,6 +73,30 @@ input[type=color]{height:48px;padding:5px;cursor:pointer}
 .dashboard-shell[data-view="member-home"] .member-stats{display:grid}
 .dashboard-shell[data-view="member-history"] #member-history,
 .dashboard-shell[data-view="member-payments"] #member-payments{display:block}
+.dashboard-shell[data-view$="vault-history"] .welcome-panel,
+.dashboard-shell[data-view$="vault-history"] .admin-layout,
+.dashboard-shell[data-view$="vault-history"] .db-usage-panel,
+.dashboard-shell[data-view$="vault-history"] .admin-safe-notice,
+.dashboard-shell[data-view$="vault-history"] .member-stats,
+.dashboard-shell[data-view$="vault-history"] .chat-panel,
+.dashboard-shell[data-view$="vault-history"] .private-chat-panel,
+.dashboard-shell[data-view$="vault-history"] #member-rate-panel,
+.dashboard-shell[data-view$="vault-history"] #member-history,
+.dashboard-shell[data-view$="vault-history"] #member-payments,
+.dashboard-shell[data-view$="vault-history"] #member-settings,
+.dashboard-shell[data-view$="vault-history"] #member-directory{display:none!important}
+.dashboard-shell[data-view$="vault-history"] #vault-history{display:block;margin-top:0}
+.vault-history-panel .vault-opening-form{margin:12px 0 22px;padding:16px;border:1px solid var(--line);border-radius:14px;background:#10150e}
+.vault-history-panel .vault-entry-form{margin:22px 0;padding:18px;border:1px solid var(--line);border-radius:14px;background:#10150e}
+.vault-history-panel .vault-entry-form h3{margin:0}
+.vault-history-panel .vault-stats{margin-top:18px}
+.vault-history-panel .vault-history-list-head{margin-top:28px}
+.vault-history-panel .amount-income{color:#b9ed75;font-weight:800}
+.vault-history-panel textarea,.vault-history-panel select{width:100%;padding:13px 14px;color:#f5f8ef;background:#0d110c;border:1px solid #414d37;border-radius:11px;font:inherit}
+.vault-history-panel textarea:focus,.vault-history-panel select:focus{border-color:var(--lime);outline:none;box-shadow:0 0 0 3px #c1f45a1a}
+.vault-history-panel .review-actions{display:flex;gap:8px;flex-wrap:wrap}
+@media(max-width:520px){.vault-history-panel{padding:14px 10px}.vault-history-panel .vault-stats{grid-template-columns:1fr 1fr}.vault-history-panel .section-head{align-items:flex-start;flex-wrap:wrap}.vault-history-panel th,.vault-history-panel td{white-space:normal;min-width:90px}}
+
 @media(max-width:560px){.dashboard-header{gap:9px}.hamburger-button{flex-basis:38px;width:38px;height:38px;padding:8px}.dashboard-header .brand-mark small{letter-spacing:.06em;font-size:8px}.dashboard-header .review-actions{gap:5px}.dashboard-header .review-actions .secondary{padding:8px 9px;font-size:11px}}
 
 
