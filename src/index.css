@@ -1542,3 +1542,44 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
   .vault-chat-format{gap:8px}
   .vault-chat-amount-field{max-width:125px}
 }
+
+
+/* Vault History: tampil hanya pada menu khusus, ringkas, dan maksimal 10 pesan. */
+.dashboard-shell:not([data-view$="vault-history"]) > #vault-history{display:none!important}
+.dashboard-shell[data-view$="vault-history"] .welcome-panel,
+.dashboard-shell[data-view$="vault-history"] .admin-layout,
+.dashboard-shell[data-view$="vault-history"] .db-usage-panel,
+.dashboard-shell[data-view$="vault-history"] .admin-safe-notice,
+.dashboard-shell[data-view$="vault-history"] > .panel:not(#vault-history),
+.dashboard-shell[data-view$="vault-history"] > #leave-permissions-panel{display:none!important}
+.dashboard-shell[data-view$="vault-history"] > #vault-history{display:flex!important;width:100%;min-height:0;margin:0;padding:14px;gap:10px}
+.dashboard-shell[data-view$="vault-history"] .vault-history-panel .leave-room-heading{gap:8px}
+.dashboard-shell[data-view$="vault-history"] .vault-history-panel .leave-room-heading h2{font-size:19px;margin:3px 0}
+.dashboard-shell[data-view$="vault-history"] .vault-history-panel .leave-room-heading p{font-size:11px;margin:3px 0}
+.dashboard-shell[data-view$="vault-history"] .vault-opening-form{display:flex;align-items:end;gap:9px;padding:9px!important}
+.dashboard-shell[data-view$="vault-history"] .vault-opening-form label{flex:1;font-size:11px;gap:5px}
+.dashboard-shell[data-view$="vault-history"] .vault-opening-form input{padding:9px 10px;font-size:12px}
+.dashboard-shell[data-view$="vault-history"] .vault-opening-form button{padding:9px 11px;font-size:10px}
+.dashboard-shell[data-view$="vault-history"] .vault-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.dashboard-shell[data-view$="vault-history"] .vault-stats .stat{padding:10px;border-radius:11px}
+.dashboard-shell[data-view$="vault-history"] .vault-stats .stat strong{font-size:17px;margin:6px 0 3px}
+.dashboard-shell[data-view$="vault-history"] .vault-stats .stat span{font-size:10px}
+.dashboard-shell[data-view$="vault-history"] .vault-stats .stat small{font-size:9px}
+.dashboard-shell[data-view$="vault-history"] .vault-chat-window{min-height:150px;max-height:42vh;padding:7px}
+.dashboard-shell[data-view$="vault-history"] .vault-chat-message{width:min(96%,560px);padding:9px;margin-bottom:7px}
+.dashboard-shell[data-view$="vault-history"] .vault-chat-message-head{gap:6px}
+.dashboard-shell[data-view$="vault-history"] .vault-chat-message-head time{font-size:9px}
+.dashboard-shell[data-view$="vault-history"] .vault-chat-amount{font-size:14px;margin-top:4px}
+.dashboard-shell[data-view$="vault-history"] .vault-chat-composer{margin:0;padding:9px;gap:7px}
+.dashboard-shell[data-view$="vault-history"] .vault-chat-format{gap:8px}
+.dashboard-shell[data-view$="vault-history"] .vault-chat-format select,
+.dashboard-shell[data-view$="vault-history"] .vault-chat-format input{padding:8px 9px;font-size:11px}
+.dashboard-shell[data-view$="vault-history"] .vault-chat-composer textarea{min-height:42px;padding:9px;font-size:12px}
+@media(max-width:520px){
+  .dashboard-shell[data-view$="vault-history"]{width:100%;padding:0}
+  .dashboard-shell[data-view$="vault-history"] .dashboard-header{margin:0;padding:10px}
+  .dashboard-shell[data-view$="vault-history"] > #vault-history{min-height:calc(100dvh - 58px);padding:12px 10px;border-radius:0;border-left:0;border-right:0}
+  .dashboard-shell[data-view$="vault-history"] .vault-chat-window{max-height:38vh;min-height:145px}
+  .dashboard-shell[data-view$="vault-history"] .vault-stats .stat{padding:9px}
+  .dashboard-shell[data-view$="vault-history"] .vault-stats .stat strong{font-size:15px}
+}
