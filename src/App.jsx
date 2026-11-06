@@ -201,7 +201,7 @@ export default function App() {
         if (sessionError) throw sessionError;
         setSession(data.session);
       })
-      .catch((err) => { if (alive) setBootstrapError(err?.message || "Sesi login belum dapat diperiksa."); })
+      .catch((err) => { if (alive) { alive = false; setBootstrapError(err?.message || "Sesi login belum dapat diperiksa."); } })
       .finally(() => { if (alive) setLoading(false); });
     return () => { alive = false; listener.subscription.unsubscribe(); };
   }, [authRetry]);
@@ -230,6 +230,7 @@ export default function App() {
       if (!alive) return;
       const ownRankRateRes = profileRes.data?.status === "active" ? await supabase.rpc("get_rank_daily_rate", { p_rank_code: profileRes.data?.rank_code || "P1" }) : { data: null, error: null };
       const adminRankRatesRes = profileRes.data?.role === "admin" && profileRes.data?.status === "active" ? await supabase.rpc("admin_get_rank_dues_rates") : { data: [], error: null };
+      if (!alive) return;
       const firstError = [profileRes, walletRes, settingsRes, paymentsRes, ownRankRateRes].find((r) => r.error);
       if (firstError) setError("Data akun belum dapat dimuat. " + firstError.error.message);
       let pendingRows = [];
@@ -251,6 +252,7 @@ export default function App() {
         if (completedRes.error) setError("Riwayat pembayaran selesai tidak dapat dimuat. " + completedRes.error.message);
         const walletByMember = new Map((walletListRes.data || []).map((w) => [w.member_id, w]));
         const membersWithPhotos = await withPhotoUrls(allMemberRes.data || []);
+        if (!alive) return;
         setAdminMembers(membersWithPhotos.map((m) => ({ ...m, rank_code: normalizeRankCode(m.rank_code), ...(walletByMember.get(m.id) || {}) }))
           .sort(compareMemberRank));
         setAdminTransactions(transactionRes.data || []);
@@ -285,7 +287,7 @@ export default function App() {
       setPendingPayments(pendingRows);
       setPendingMembers(pendingMemberRows);
     })(), 25000, "Pemuatan data Webkas")
-      .catch((err) => { if (alive) setBootstrapError(err?.message || "Data akun belum dapat dimuat. Coba ulangi."); })
+      .catch((err) => { if (alive) { alive = false; setBootstrapError(err?.message || "Data akun belum dapat dimuat. Coba ulangi."); } })
       .finally(() => { if (alive) setLoading(false); });
     return () => { alive = false; };
   }, [session?.user?.id, refreshVersion]);
