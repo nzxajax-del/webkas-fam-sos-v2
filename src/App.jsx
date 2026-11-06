@@ -544,7 +544,8 @@ export default function App() {
     const oldPath = profile.profile_photo_path || null;
     try {
       const uploadFile = await compressImageForUpload(profilePhotoFile, 1024, 0.72);
-      const newPath = session.user.id + "/" + crypto.randomUUID() + ".jpg";
+      const uploadExt = uploadFile.type === "image/jpeg" ? "jpg" : uploadFile.type === "image/png" ? "png" : "webp";
+      const newPath = session.user.id + "/" + crypto.randomUUID() + "." + uploadExt;
       const { error: uploadError } = await supabase.storage.from("profile-photos").upload(newPath, uploadFile, { upsert: false, contentType: uploadFile.type, cacheControl: "86400" });
       if (uploadError) throw new Error("Unggah foto profil gagal: " + uploadError.message);
       const { error: saveError } = await supabase.rpc("set_my_profile_photo_path", { p_path: newPath });
@@ -712,7 +713,8 @@ export default function App() {
         return;
       }
       const uploadFile = await compressImageForUpload(proofFile, 1440, 0.76);
-      const path = session.user.id + "/" + crypto.randomUUID() + ".jpg";
+      const uploadExt = uploadFile.type === "image/jpeg" ? "jpg" : uploadFile.type === "image/png" ? "png" : "webp";
+      const path = session.user.id + "/" + crypto.randomUUID() + "." + uploadExt;
       const { error: uploadError } = await supabase.storage.from("payment-proofs").upload(path, uploadFile, {
         upsert: false, contentType: uploadFile.type, cacheControl: "86400",
       });
