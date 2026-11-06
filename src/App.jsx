@@ -1191,7 +1191,7 @@ export default function App() {
       else setInformationMessages(data || []);
     };
     loadInformationMessages();
-    const timer = window.setInterval(() => { if (document.visibilityState === "visible") loadInformationMessages(); }, 15000);
+    const timer = window.setInterval(() => { if (document.visibilityState === "visible") loadInformationMessages(); }, 60000);
     const channel = supabase.channel("webkas-information-" + session.user.id)
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "information_messages" }, loadInformationMessages)
       .subscribe();
@@ -1467,7 +1467,7 @@ export default function App() {
       fetchMessages();
     }).subscribe();
     fetchMessages();
-    const timer = window.setInterval(() => { if (document.visibilityState === "visible" && activeSection === "p5-p6-chat") fetchMessages(); }, 15000);
+    const timer = window.setInterval(() => { if (document.visibilityState === "visible" && activeSection === "p5-p6-chat") fetchMessages(); }, 60000);
     return () => { alive = false; window.clearInterval(timer); supabase.removeChannel(channel); };
   }, [session?.user?.id, profile?.status, profile?.rank_code, profile?.role, activeSection]);
   async function loadRankChat456Messages() {
@@ -1553,7 +1553,7 @@ export default function App() {
       fetchMessages();
     }).subscribe();
     fetchMessages();
-    const timer = window.setInterval(() => { if (document.visibilityState === "visible" && activeSection === "p4-p5-p6-chat") fetchMessages(); }, 15000);
+    const timer = window.setInterval(() => { if (document.visibilityState === "visible" && activeSection === "p4-p5-p6-chat") fetchMessages(); }, 60000);
     return () => { alive = false; window.clearInterval(timer); supabase.removeChannel(channel); };
   }, [session?.user?.id, profile?.status, profile?.rank_code, profile?.role, activeSection]);
   async function loadRankChat456Messages() {
@@ -1599,7 +1599,7 @@ export default function App() {
     };
     fetchMessages();
     const channel = supabase.channel("webkas-p4-p4-p5-p6-chat-" + session.user.id).on("postgres_changes", { event: "*", schema: "public", table: "p4_p5_p6_chat_messages" }, fetchMessages).subscribe();
-    const timer = window.setInterval(() => { if (document.visibilityState === "visible" && activeSection === "p4-p4-p5-p6-chat") fetchMessages(); }, 15000);
+    const timer = window.setInterval(() => { if (document.visibilityState === "visible" && activeSection === "p4-p4-p5-p6-chat") fetchMessages(); }, 60000);
     return () => { alive = false; window.clearInterval(timer); supabase.removeChannel(channel); };
   }, [session?.user?.id, profile?.status, profile?.rank_code, profile?.role, activeSection]);
   async function loadPrivateConversations() {
@@ -1710,7 +1710,7 @@ export default function App() {
     refreshPrivateData();
     const refreshTimer = window.setInterval(() => {
       if (alive && document.visibilityState === "visible" && activeSection === "private-chat") refreshPrivateData();
-    }, 15000);
+    }, 60000);
     return () => { alive = false; window.clearInterval(refreshTimer); };
   }, [profile?.id, profile?.status, activeSection, privateActiveConversation?.id, memberDirectory.length]);
 
