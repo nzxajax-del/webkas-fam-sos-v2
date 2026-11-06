@@ -5,6 +5,7 @@ const withTimeout = (promise, ms, label) => new Promise((resolve, reject) => {
   const timeoutId = window.setTimeout(() => reject(new Error(label + " melewati batas waktu. Periksa koneksi internet lalu coba lagi.")), ms);
   Promise.resolve(promise).then(resolve, reject).finally(() => window.clearTimeout(timeoutId));
 });
+const signedProfilePhotoCache = new Map();
 const compressImageForUpload = async (file, maxDimension = 1440, quality = 0.76) => {
   if (!file || !String(file.type || "").startsWith("image/")) return file;
   try {
@@ -475,9 +476,21 @@ export default function App() {
   async function withPhotoUrls(rows) {
     const paths = [...new Set((rows || []).map((row) => row.profile_photo_path).filter(Boolean))];
     if (!paths.length) return (rows || []).map((row) => ({ ...row, profile_photo_url: null }));
-    const { data, error: urlError } = await supabase.storage.from("profile-photos").createSignedUrls(paths, 3600);
-    const urls = new Map((data || []).map((item) => [item.path, item.signedUrl]));
-    return (rows || []).map((row) => ({ ...row, profile_photo_url: urlError ? null : (urls.get(row.profile_photo_path) || null) }));
+    const now = Date.now();
+    const missingPaths = paths.filter((path) => {
+      const cached = signedProfilePhotoCache.get(path);
+      return !cached || cached.expiresAt <= now;
+    });
+    if (missingPaths.length) {
+      const { data, error: urlError } = await supabase.storage.from("profile-photos").createSignedUrls(missingPaths, 3600);
+      if (!urlError) {
+        for (const item of data || []) {
+          if (item.path && item.signedUrl) signedProfilePhotoCache.set(item.path, { url: item.signedUrl, expiresAt: now + 50 * 60 * 1000 });
+        }
+        while (signedProfilePhotoCache.size > 500) signedProfilePhotoCache.delete(signedProfilePhotoCache.keys().next().value);
+      }
+    }
+    return (rows || []).map((row) => ({ ...row, profile_photo_url: signedProfilePhotoCache.get(row.profile_photo_path)?.url || null }));
   }
 
   async function saveMyDisplayName() {
