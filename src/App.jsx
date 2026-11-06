@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { supabase, supabaseConfigured, createTemporarySupabaseClient } from "./lib/supabase.js";
 
+const withTimeout = (promise, ms, label) => new Promise((resolve, reject) => {
+  const timeoutId = window.setTimeout(() => reject(new Error(label + " melewati batas waktu. Periksa koneksi internet lalu coba lagi.")), ms);
+  Promise.resolve(promise).then(resolve, reject).finally(() => window.clearTimeout(timeoutId));
+});
 const money = (value) => new Intl.NumberFormat("id-ID", { maximumFractionDigits: 2 }).format(Number(value || 0)) + " UIC";
 const treasuryMoney = (value) => { const amount = Number(value || 0); return Math.abs(amount) >= 1000 ? (amount / 1000).toLocaleString("id-ID", { maximumFractionDigits: 2 }) + "K" : amount.toLocaleString("id-ID", { maximumFractionDigits: 2 }); };
 const parseTreasuryInput = (value) => { const text = String(value ?? "").trim().replace(",", "."); if (!text) return 0; const amount = Number(text); return Number.isFinite(amount) ? amount * 1000 : NaN; };
@@ -152,6 +156,8 @@ export default function App() {
   const [approvePaymentTarget, setApprovePaymentTarget] = useState(null);
   const [bootstrapToken, setBootstrapToken] = useState("");
   const [loading, setLoading] = useState(true);
+  const [bootstrapError, setBootstrapError] = useState("");
+  const [authRetry, setAuthRetry] = useState(0);
   const [refreshVersion, setRefreshVersion] = useState(0);
   const [activeSection, setActiveSection] = useState("information");
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -181,17 +187,24 @@ export default function App() {
   useEffect(() => {
     if (!supabase) { setLoading(false); return; }
     let alive = true;
-    supabase.auth.getSession().then(({ data }) => {
-      if (alive) setSession(data.session);
-    }).finally(() => { if (alive) setLoading(false); });
+    setLoading(true);
+    setBootstrapError("");
     const { data: listener } = supabase.auth.onAuthStateChange((_event, nextSession) => {
       setSession(nextSession);
       if (!nextSession) {
         setProfile(null); setWallet(null); setSettings(null); setPayments([]); setPendingPayments([]); setPendingMembers([]); setAdminMembers([]); setMemberDirectory([]); setAssistantAccounts([]); setAdminTransactions([]);
       }
     });
+    withTimeout(supabase.auth.getSession(), 15000, "Pemeriksaan sesi login")
+      .then(({ data, error: sessionError }) => {
+        if (!alive) return;
+        if (sessionError) throw sessionError;
+        setSession(data.session);
+      })
+      .catch((err) => { if (alive) setBootstrapError(err?.message || "Sesi login belum dapat diperiksa."); })
+      .finally(() => { if (alive) setLoading(false); });
     return () => { alive = false; listener.subscription.unsubscribe(); };
-  }, []);
+  }, [authRetry]);
 
   useEffect(() => {
     if (!supabase) return;
@@ -206,7 +219,8 @@ export default function App() {
     if (!supabase || !session?.user) return;
     let alive = true;
     if (!profile || !wallet) setLoading(true);
-    (async () => {
+    setBootstrapError("");
+    withTimeout((async () => {
       const [profileRes, walletRes, settingsRes, paymentsRes] = await Promise.all([
         supabase.from("member_profiles").select("id,display_name,login_username,role,status,rank_code,profile_photo_path,phone_number,created_at").eq("id", session.user.id).maybeSingle(),
         supabase.from("member_wallets").select("balance,arrears,unpaid_from,exempt_kas").eq("member_id", session.user.id).maybeSingle(),
@@ -270,8 +284,9 @@ export default function App() {
       setPayments(paymentsRes.data || []);
       setPendingPayments(pendingRows);
       setPendingMembers(pendingMemberRows);
-      setLoading(false);
-    })();
+    })(), 25000, "Pemuatan data Webkas")
+      .catch((err) => { if (alive) setBootstrapError(err?.message || "Data akun belum dapat dimuat. Coba ulangi."); })
+      .finally(() => { if (alive) setLoading(false); });
     return () => { alive = false; };
   }, [session?.user?.id, refreshVersion]);
 
@@ -1804,7 +1819,11 @@ export default function App() {
     return <main className="page-shell"><section className="panel"><Brand branding={branding} /><h1>Hampir siap.</h1><p className="intro">Koneksi Supabase belum dikonfigurasi di environment Netlify.</p><div className="notice"><strong>Konfigurasi yang dibutuhkan</strong><p>Tambahkan <code>VITE_SUPABASE_URL</code> dan <code>VITE_SUPABASE_ANON_KEY</code> di pengaturan environment Netlify, lalu deploy ulang. Gunakan hanya publishable/anon key; jangan pernah menaruh service-role key di website.</p></div><footer>©Designed by Vergil D Ajax</footer></section></main>;
   }
 
-  if (loading) return <main className="page-shell"><section className="panel"><Brand branding={branding} /><p className="intro">Memuat akun dengan aman…</p></section></main>;
+  if (loading) return <main className="page-shell"><section className="panel"><Brand branding={branding} /><p className="intro">Memuat akun dengan aman…</p><p className="muted">Mohon tunggu. Jika jaringan lambat, Webkas akan menampilkan pilihan untuk mencoba kembali.</p></section></main>;
+
+  if (bootstrapError && !session?.user) return <main className="page-shell"><section className="panel"><Brand branding={branding} /><h1>Koneksi belum siap</h1><p className="intro">Webkas belum berhasil memeriksa sesi login. Akun dan data Anda tidak diubah.</p><div className="alert error" role="alert">{bootstrapError}</div><button className="primary full" onClick={() => { setBootstrapError(""); setAuthRetry((value) => value + 1); }}>COBA LAGI</button><footer>©Designed by Vergil D Ajax</footer></section></main>;
+
+  if (bootstrapError && session?.user && (!profile || !wallet)) return <main className="page-shell"><section className="panel"><Brand branding={branding} /><h1>Data belum berhasil dimuat</h1><p className="intro">Periksa koneksi internet, lalu coba lagi. Saldo, tunggakan, dan riwayat tidak diubah oleh proses ini.</p><div className="alert error" role="alert">{bootstrapError}</div><button className="primary full" onClick={() => { setBootstrapError(""); setRefreshVersion((value) => value + 1); }}>COBA MUAT ULANG</button><button className="secondary full" onClick={signOut}>KELUAR</button><footer>©Designed by Vergil D Ajax</footer></section></main>;
 
   if (session && profile) {
     const isAdmin = ["admin", "admin_assistant"].includes(profile.role) && profile.status === "active";
