@@ -5,6 +5,30 @@ const withTimeout = (promise, ms, label) => new Promise((resolve, reject) => {
   const timeoutId = window.setTimeout(() => reject(new Error(label + " melewati batas waktu. Periksa koneksi internet lalu coba lagi.")), ms);
   Promise.resolve(promise).then(resolve, reject).finally(() => window.clearTimeout(timeoutId));
 });
+const compressImageForUpload = async (file, maxDimension = 1440, quality = 0.76) => {
+  if (!file || !String(file.type || "").startsWith("image/")) return file;
+  try {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, maxDimension / Math.max(bitmap.width, bitmap.height));
+    const width = Math.max(1, Math.round(bitmap.width * scale));
+    const height = Math.max(1, Math.round(bitmap.height * scale));
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext("2d");
+    if (!context) { bitmap.close?.(); return file; }
+    context.fillStyle = "#fff";
+    context.fillRect(0, 0, width, height);
+    context.drawImage(bitmap, 0, 0, width, height);
+    bitmap.close?.();
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", quality));
+    if (!blob || blob.size >= file.size) return file;
+    const baseName = String(file.name || "upload").replace(/\.[^.]+$/, "");
+    return new File([blob], baseName + ".jpg", { type: "image/jpeg", lastModified: Date.now() });
+  } catch {
+    return file;
+  }
+};
 const money = (value) => new Intl.NumberFormat("id-ID", { maximumFractionDigits: 2 }).format(Number(value || 0)) + " UIC";
 const treasuryMoney = (value) => { const amount = Number(value || 0); return Math.abs(amount) >= 1000 ? (amount / 1000).toLocaleString("id-ID", { maximumFractionDigits: 2 }) + "K" : amount.toLocaleString("id-ID", { maximumFractionDigits: 2 }); };
 const parseTreasuryInput = (value) => { const text = String(value ?? "").trim().replace(",", "."); if (!text) return 0; const amount = Number(text); return Number.isFinite(amount) ? amount * 1000 : NaN; };
@@ -408,7 +432,7 @@ export default function App() {
     // Poll counts if Realtime events are delayed or unavailable.
     const notificationPoll = window.setInterval(() => {
       if (document.visibilityState === "visible") refreshNotificationCounts();
-    }, 30000);
+    }, 120000);
     const channel = supabase.channel("webkas-notifications-" + session.user.id)
       .on("postgres_changes", { event: "*", schema: "public", table: "member_profiles" }, () => refreshNotificationCounts("member_profiles"))
       .on("postgres_changes", { event: "*", schema: "public", table: "payment_submissions" }, () => refreshNotificationCounts("payment_submissions"))
@@ -517,11 +541,11 @@ export default function App() {
     setBusy(true); setError(""); setMessage("");
     if (!["image/jpeg", "image/png", "image/webp"].includes(profilePhotoFile.type)) { setError("Foto profil harus JPG, PNG, atau WEBP."); setBusy(false); return; }
     if (profilePhotoFile.size > 3 * 1024 * 1024) { setError("Ukuran foto profil maksimal 3 MB."); setBusy(false); return; }
-    const ext = profilePhotoFile.type === "image/jpeg" ? "jpg" : profilePhotoFile.type === "image/png" ? "png" : "webp";
     const oldPath = profile.profile_photo_path || null;
-    const newPath = session.user.id + "/" + crypto.randomUUID() + "." + ext;
     try {
-      const { error: uploadError } = await supabase.storage.from("profile-photos").upload(newPath, profilePhotoFile, { upsert: false, contentType: profilePhotoFile.type, cacheControl: "0" });
+      const uploadFile = await compressImageForUpload(profilePhotoFile, 1024, 0.72);
+      const newPath = session.user.id + "/" + crypto.randomUUID() + ".jpg";
+      const { error: uploadError } = await supabase.storage.from("profile-photos").upload(newPath, uploadFile, { upsert: false, contentType: uploadFile.type, cacheControl: "86400" });
       if (uploadError) throw new Error("Unggah foto profil gagal: " + uploadError.message);
       const { error: saveError } = await supabase.rpc("set_my_profile_photo_path", { p_path: newPath });
       if (saveError) {
@@ -573,18 +597,19 @@ export default function App() {
     if (registrationProofFile.size > 2 * 1024 * 1024) { setError("Ukuran screenshot administrasi maksimal 2 MB."); setBusy(false); return; }
     if (registrationNote.trim().length > 500) { setError("Keterangan maksimal 500 karakter."); setBusy(false); return; }
     try {
+      const compressedRegistrationProof = await compressImageForUpload(registrationProofFile, 1440, 0.76);
       const proofDataUrl = await new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => resolve(String(reader.result || ""));
         reader.onerror = () => reject(new Error("Screenshot tidak dapat dibaca."));
-        reader.readAsDataURL(registrationProofFile);
+        reader.readAsDataURL(compressedRegistrationProof);
       });
       const comma = proofDataUrl.indexOf(",");
       if (comma < 0) throw new Error("Format screenshot tidak valid.");
       const { data, error: invokeError } = await supabase.functions.invoke("member-register", {
         body: { displayName: displayName.trim(), username: normalized, confirmUsername: confirmUsername.trim().toLowerCase(), password, confirmPassword, phoneNumber: normalizedPhone,
           registrationProofBase64: proofDataUrl.slice(comma + 1),
-          registrationProofMime: registrationProofFile.type,
+          registrationProofMime: compressedRegistrationProof.type,
           registrationNote: registrationNote.trim() },
       });
       if (invokeError) {
@@ -686,10 +711,10 @@ export default function App() {
         setError(pendingMessage);
         return;
       }
-      const ext = proofFile.type === "image/jpeg" ? "jpg" : proofFile.type === "image/png" ? "png" : "webp";
-      const path = session.user.id + "/" + crypto.randomUUID() + "." + ext;
-      const { error: uploadError } = await supabase.storage.from("payment-proofs").upload(path, proofFile, {
-        upsert: false, contentType: proofFile.type, cacheControl: "3600",
+      const uploadFile = await compressImageForUpload(proofFile, 1440, 0.76);
+      const path = session.user.id + "/" + crypto.randomUUID() + ".jpg";
+      const { error: uploadError } = await supabase.storage.from("payment-proofs").upload(path, uploadFile, {
+        upsert: false, contentType: uploadFile.type, cacheControl: "86400",
       });
       if (uploadError) throw new Error("Unggah bukti gagal: " + uploadError.message);
       const { error: insertError } = await supabase.from("payment_submissions").insert({
@@ -1145,7 +1170,7 @@ export default function App() {
     // Keep the conversation fresh even if a realtime event is missed or the connection reconnects.
     const refreshTimer = window.setInterval(() => {
       if (document.visibilityState === "visible" && activeSection === "chat") fetchMessages();
-    }, 15000);
+    }, 60000);
     return () => { alive = false; window.clearInterval(refreshTimer); supabase.removeChannel(channel); };
   }, [session?.user?.id, profile?.status, activeSection]);
   useEffect(() => {
@@ -1187,7 +1212,7 @@ export default function App() {
     loadTreasuryRecords();
     const timer = window.setInterval(() => {
       if (document.visibilityState === "visible") loadTreasuryRecords();
-    }, 20000);
+    }, 60000);
     return () => { alive = false; window.clearInterval(timer); };
   }, [session?.user?.id, profile?.status, activeSection]);
 
