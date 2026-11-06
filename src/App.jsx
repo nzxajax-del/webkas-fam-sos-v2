@@ -202,7 +202,7 @@ export default function App() {
         setSession(data.session);
       })
       .catch((err) => { if (alive) { alive = false; setBootstrapError(err?.message || "Sesi login belum dapat diperiksa."); } })
-      .finally(() => { if (alive) setLoading(false); });
+      .finally(() => { setLoading(false); });
     return () => { alive = false; listener.subscription.unsubscribe(); };
   }, [authRetry]);
 
@@ -288,7 +288,7 @@ export default function App() {
       setPendingMembers(pendingMemberRows);
     })(), 25000, "Pemuatan data Webkas")
       .catch((err) => { if (alive) { alive = false; setBootstrapError(err?.message || "Data akun belum dapat dimuat. Coba ulangi."); } })
-      .finally(() => { if (alive) setLoading(false); });
+      .finally(() => { setLoading(false); });
     return () => { alive = false; };
   }, [session?.user?.id, refreshVersion]);
 
