@@ -10,6 +10,7 @@ on:
       - "src/lib/supabase.js"
       - ".env.example"
       - ".github/workflows/migration-audit-checks.yml"
+      - ".github/workflows/webkas-supabase-migration.yml"
 
 permissions:
   contents: read
