@@ -94,3 +94,11 @@ Source application table counts at this checkpoint:
 These counts are a checkpoint, not hardcoded assumptions for final validation; the source may continue to receive legitimate activity before cutover.
 
 The target already has the standard `supabase_realtime` publication, but currently no application tables. The source has 11 application tables in that publication. The guarded restore script is at `supabase/migration-audit/restore-realtime-publication.sql`; it deliberately excludes platform-managed Realtime message partitions/publications.
+
+## Vault/encryption check
+The source and target both have `supabase_vault 0.3.1` installed. The source contains 0 rows in `vault.secrets`, and no public/private function definitions reference Vault or pgsodium. No Vault root-key copy is currently indicated by the observed application state. This check did not inspect secret contents or any encryption key material.
+
+## Prepared execution utilities (not run)
+- `scripts/restore-supabase-database.sh`: guarded restore plan using Supabase CLI dumps for `public,private`, a targeted data-only dump of `auth.users` and `auth.identities`, one transactional PSQL restore, and row-content checksum verification. It refuses to overwrite a non-empty target, checks source stability during export/restore, and deletes temporary dump files on exit. It has not been executed or syntax-validated yet.
+- `scripts/migrate-storage.mjs`: idempotent private-bucket transfer utility with per-object SHA-256 verification, path/byte inventory comparison, and no source deletion. It has not been executed or runtime-validated yet.
+- Restore SQL files for Auth trigger, Storage policies, and Realtime publication are prepared but not applied.
