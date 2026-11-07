@@ -1,0 +1,60 @@
+{
+  "captured_at_utc": "2026-11-07T02:50:00Z",
+  "project_ref": "lzciyzibqbujshoizlbu",
+  "window": "latest 24 hours available to Supabase unified logs at query time",
+  "mode": "read_only",
+  "observations": {
+    "edge_logs": {
+      "total_requests": 5747,
+      "status_200": 5494,
+      "status_402": 122,
+      "first_seen": "2026-11-06T03:14:41.497Z",
+      "last_seen": "2026-11-07T02:34:06.439Z"
+    },
+    "function_edge_logs": {
+      "total_requests": 47,
+      "status_200": 28,
+      "status_402": 17,
+      "first_seen": "2026-11-06T06:14:41.298Z",
+      "last_seen": "2026-11-07T01:43:17.750Z"
+    },
+    "confirmed_402_services": [
+      "Auth password token endpoint",
+      "Auth refresh token endpoint",
+      "REST API reads for app_branding_settings",
+      "REST API reads for private_chat_hidden and private_conversations",
+      "REST API HEAD checks for chat and information message tables",
+      "Edge Function preflight OPTIONS for member-register"
+    ],
+    "successful_auth_log_examples": [
+      "2026-11-06T22:25:44Z token refresh completed with status 200",
+      "2026-11-06T18:22:39Z token refresh completed with status 200",
+      "2026-11-06T17:43:30Z token refresh completed with status 200"
+    ],
+    "important_interpretation": [
+      "The 402 responses are not limited to a single SQL table, one RPC, or one Edge Function.",
+      "Auth audit logs include successful token activity, while edge gateway logs also show 402 responses for Auth and REST; the behavior is intermittent in the captured window.",
+      "The 402 responses on OPTIONS for member-register are especially notable because preflight requests normally do not execute the function handler.",
+      "The available log messages show status and route but do not expose the gateway's explanatory response body or a definitive billing/quota reason."
+    ]
+  },
+  "working_hypothesis": "The failure is occurring at or in front of the Supabase API gateway/service routing layer rather than being caused solely by an application table policy or one database function. This is a hypothesis based on cross-service 402s, not a confirmed root cause.",
+  "next_diagnostic_steps": [
+    "Check Supabase project usage, service restrictions, and organization/project billing/limit notices without upgrading or adding payment details.",
+    "Capture response body/request identifiers from a controlled client reproduction, without collecting credentials.",
+    "Correlate exact edge request IDs with platform-level support diagnostics if available.",
+    "Keep production endpoint and project unchanged until root cause and backup path are established."
+  ],
+  "actions_taken": {
+    "database_modified": false,
+    "auth_settings_changed": false,
+    "edge_functions_deployed": false,
+    "frontend_changed": false,
+    "billing_plan_changed": false
+  },
+  "limitations": [
+    "Unified logs do not prove whether the cause is quota, metering, account restriction, or a transient platform issue.",
+    "No billing settings, secrets, or credential values were read or changed.",
+    "This report is not a restorable backup."
+  ]
+}
