@@ -73,7 +73,7 @@ jobs:
         run: |
           docker run --rm --network host \
             -e SOURCE_DB_URL="$SOURCE_DB_URL" \
-            -e TARGET_DB_URL="$TARGET_DB_URL" \\
+            -e TARGET_DB_URL="$TARGET_DB_URL" \
             -e STORAGE_TRANSFER_OUTCOME="$STORAGE_TRANSFER_OUTCOME" postgres:17 sh -ec '
               for query in \
                 "SELECT count(*) FROM auth.users" \
