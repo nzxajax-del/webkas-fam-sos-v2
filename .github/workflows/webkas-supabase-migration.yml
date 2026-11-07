@@ -60,6 +60,8 @@ jobs:
               psql "$DB_URL" -X --single-transaction -v ON_ERROR_STOP=1 \
                 -f /migrations/20261107090531_retire_chat_features_and_preserve_legacy_proofs.sql
               psql "$DB_URL" -X --single-transaction -v ON_ERROR_STOP=1 \
+                -f /migrations/20261107092227_preserve_legacy_proofs_on_member_delete.sql
+              psql "$DB_URL" -X --single-transaction -v ON_ERROR_STOP=1 \
                 -f /migrations/20261107090715_harden_authenticated_rpc_search_paths.sql \
                 -f /migrations/20261107091446_optimize_leave_rls_and_fk_indexes.sql
             '
