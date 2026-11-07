@@ -46,6 +46,27 @@ jobs:
         with:
           node-version: 22
 
+      - name: Check required secrets exist without printing values
+        id: secret-preflight
+        env:
+          SOURCE_DB_URL: ${{ secrets.SOURCE_DB_URL }}
+          TARGET_DB_URL: ${{ secrets.TARGET_DB_URL }}
+          SOURCE_SERVICE_ROLE_KEY: ${{ secrets.SOURCE_SERVICE_ROLE_KEY }}
+          TARGET_SERVICE_ROLE_KEY: ${{ secrets.TARGET_SERVICE_ROLE_KEY }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKENV2 || secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          missing=0
+          for name in SOURCE_DB_URL TARGET_DB_URL SOURCE_SERVICE_ROLE_KEY TARGET_SERVICE_ROLE_KEY CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID; do
+            if [ -n "${!name:-}" ]; then
+              echo "$name configured"
+            else
+              echo "::warning::$name is missing"
+              missing=1
+            fi
+          done
+          echo "missing=$missing" >> "$GITHUB_OUTPUT"
+
       - name: Check database restore shell syntax
         run: bash -n scripts/restore-supabase-database.sh
 
