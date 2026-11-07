@@ -1,0 +1,68 @@
+{
+  "project": "WEBKAS FAM SOS V2",
+  "audited_at": "2026-11-07",
+  "objective": "Recover service on the new free Supabase project while preserving every member account and financial record.",
+  "source": {
+    "ref": "lzciyzibqbujshoizlbu",
+    "organization_plan": "free",
+    "status": "ACTIVE_HEALTHY"
+  },
+  "target": {
+    "ref": "cdqmeenrwsbkcpclitgh",
+    "organization_plan": "free",
+    "status": "ACTIVE_HEALTHY",
+    "application_database": "empty"
+  },
+  "completed_this_stage": [
+    "Read-only review of daily dues processor and arrears-first accounting",
+    "Read-only review of atomic payment review, one-pending constraint and rejection-note requirement",
+    "Read-only review of Developer/Admin Assistant authorization boundaries and RLS",
+    "Read-only review of treasury-history role permissions and discrepancy against earlier user requirement",
+    "Read-only review of scheduled cron jobs and Realtime publication",
+    "Read-only review of frontend polling, signed-photo cache and image upload compression",
+    "Saved and verified new audit reports on supabase-migration-audit branch"
+  ],
+  "blockers": [
+    {
+      "blocker": "No complete restorable database export/backup through currently exposed connectors.",
+      "impact": "Cannot safely populate target or guarantee rollback."
+    },
+    {
+      "blocker": "No complete Auth export preserving password hashes and identity records through currently exposed connectors.",
+      "impact": "Cannot safely guarantee all 84 member logins survive migration."
+    },
+    {
+      "blocker": "No Storage object binary export/restore workflow exposed.",
+      "impact": "Cannot guarantee all 63 proof/profile objects survive."
+    },
+    {
+      "blocker": "No Edge Function secrets export or secure transfer workflow exposed.",
+      "impact": "Cannot deploy all 7 functions safely to target."
+    },
+    {
+      "blocker": "No terminal/SSH execution action exposed to ChatGPT for Railway sandbox.",
+      "impact": "Cannot run pg_dump, Supabase CLI backup/restore, or build/test scripts autonomously from the connected tools."
+    },
+    {
+      "blocker": "Source has 104 applied migrations while repo contains 68 migration files.",
+      "impact": "Blind migration replay is unsafe; must reconstruct exact schema and function state from live source."
+    }
+  ],
+  "unresolved_rule_reconciliation": [
+    "P4 effective rate is 600 UIC from 2026-11-07; user-defined rate is 500 UIC when base is 1000.",
+    "Treasury-history RLS and UI currently allow Admin Assistant insert/edit/delete, while earlier user requirement described Developer/Admin only; confirm policy before changing."
+  ],
+  "cutover_gates": [
+    "Verified database dump and tested restore",
+    "Auth users and credentials preserved",
+    "Storage buckets, objects and policies restored",
+    "All 7 Edge Functions and required secrets restored",
+    "RLS, grants, triggers, indexes, Realtime and cron parity verified",
+    "Accounting regression tests pass, including arrears-first, date catch-up, no duplicate dues and payment approval/rejection",
+    "Frontend build and role-specific smoke tests pass",
+    "Target usage remains within free-tier quotas",
+    "Only then switch frontend environment to target and retain old project as rollback source"
+  ],
+  "current_status": "Migration is not yet safe to execute. No production or target changes were made in this stage.",
+  "next_required_capability": "A secure execution environment with PostgreSQL/Supabase CLI and access to the source and target projects, without exposing secrets in chat."
+}
