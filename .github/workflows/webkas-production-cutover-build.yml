@@ -10,6 +10,8 @@ on:
       - "package-lock.json"
       - "vite.config.*"
       - "wrangler.jsonc"
+      - "supabase/functions/**"
+      - "supabase/migrations/**"
       - ".github/workflows/webkas-production-cutover-build.yml"
   workflow_dispatch:
 
