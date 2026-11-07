@@ -1,0 +1,48 @@
+{
+  "audit": "WEBKAS FAM SOS V2 frontend egress and Supabase endpoint review",
+  "audited_at": "2026-11-07",
+  "repository": "nzxajax-del/webkas-fam-sos-v2",
+  "branch": "main",
+  "mode": "read_only",
+  "findings": {
+    "supabase_endpoint": {
+      "file": "src/lib/supabase.js",
+      "behavior": "Client uses VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY, but falls back to old production project URL if env URL is missing.",
+      "implication": "Do not update frontend endpoint until target DB, Auth, Storage, functions and smoke tests are ready; fallback could silently reconnect to old source."
+    },
+    "polling": {
+      "interval_count": 8,
+      "intervals_ms": [
+        60000,
+        120000
+      ],
+      "observations": [
+        "Notification counts poll every 120 seconds while page is visible; Realtime listeners are also subscribed.",
+        "Main chat, information, treasury-history, rank chats and private chat each have 60-second fallback polling while their section is active.",
+        "Some section polling has Realtime event listeners, creating fallback read traffic."
+      ],
+      "recommendation": "After migration, measure query sizes and Realtime reliability; consider longer adaptive fallback intervals and only refresh on active section/visibility. Do not disable fallback without reconnect testing."
+    },
+    "profile_photos": {
+      "current_controls": [
+        "Signed profile photo URLs are cached in memory for about 50 minutes.",
+        "Cache is bounded to 500 entries.",
+        "Profile photo uploads are compressed to 1024 px and quality 0.72.",
+        "Upload content cacheControl is 86400 seconds."
+      ],
+      "remaining_risk": "Other public/member directory loads may request many signed URLs in a batch; confirm image dimensions, browser cache behavior and list rendering before further optimization."
+    },
+    "source_code_size": {
+      "app_jsx_bytes": 208533,
+      "note": "Large component file; not itself evidence of egress consumption."
+    }
+  },
+  "migration_readiness": {
+    "target_project_still_empty": true,
+    "complete_restorable_backup": false,
+    "auth_storage_function_secrets_not_fully_exported": true,
+    "frontend_endpoint_not_changed": true,
+    "production_deployment_not_performed": true
+  },
+  "safety": "No source files changed, no production database writes, no deployment, no URL cutover."
+}
