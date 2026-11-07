@@ -191,6 +191,11 @@ export default function App() {
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const [showAdminRecovery, setShowAdminRecovery] = useState(false);
+  const [adminRecoverySending, setAdminRecoverySending] = useState(false);
+  const [adminPasswordRecovery, setAdminPasswordRecovery] = useState(false);
+  const [adminRecoveryPassword, setAdminRecoveryPassword] = useState("");
+  const [adminRecoveryConfirmPassword, setAdminRecoveryConfirmPassword] = useState("");
 
   useEffect(() => {
     if (!error && !message) return undefined;
@@ -203,7 +208,13 @@ export default function App() {
     let alive = true;
     setLoading(true);
     setBootstrapError("");
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+    const { data: listener } = supabase.auth.onAuthStateChange((event, nextSession) => {
+      if (event === "PASSWORD_RECOVERY") {
+        setAdminPasswordRecovery(true);
+        setShowAdminRecovery(false);
+        setError("");
+        setMessage("");
+      }
       setSession(nextSession);
       if (!nextSession) {
         setProfile(null); setWallet(null); setSettings(null); setPayments([]); setPendingPayments([]); setPendingMembers([]); setAdminMembers([]); setMemberDirectory([]); setAssistantAccounts([]); setAdminTransactions([]);
@@ -476,6 +487,56 @@ export default function App() {
     }
     const { error: authError } = await supabase.auth.signInWithPassword({ email: authEmail(normalized), password });
     if (authError) setError("Login gagal. Periksa username dan kata sandi.");
+    setBusy(false);
+  }
+
+  async function requestAdminPasswordRecovery() {
+    if (!supabase || adminRecoverySending) return;
+    setAdminRecoverySending(true); setError(""); setMessage("");
+    try {
+      const { data, error: invokeError } = await supabase.functions.invoke("admin-account-recovery", { body: {} });
+      if (invokeError || !data?.success) {
+        let detail = "";
+        try {
+          const response = invokeError?.context;
+          if (response && typeof response.json === "function") {
+            const payload = await response.json();
+            if (typeof payload?.error === "string") detail = payload.error;
+          }
+        } catch {}
+        throw new Error(detail || data?.error || "Permintaan reset belum berhasil diproses. Coba lagi beberapa saat.");
+      }
+      setMessage("Permintaan tautan reset berhasil diproses. Periksa nzxajax@gmail.com, termasuk folder Spam.");
+      setShowAdminRecovery(false);
+    } catch (err) {
+      setError(err?.message || "Permintaan reset belum berhasil diproses.");
+    } finally {
+      setAdminRecoverySending(false);
+    }
+  }
+
+  async function finishAdminPasswordRecovery(event) {
+    event.preventDefault();
+    setError(""); setMessage("");
+    if (adminRecoveryPassword.length < 8 || adminRecoveryPassword.length > 72) {
+      setError("Kata sandi baru harus 8–72 karakter."); return;
+    }
+    if (adminRecoveryPassword !== adminRecoveryConfirmPassword) {
+      setError("Konfirmasi kata sandi baru tidak sama."); return;
+    }
+    setBusy(true);
+    const { error: updateError } = await supabase.auth.updateUser({ password: adminRecoveryPassword });
+    if (updateError) {
+      setError(updateError.message || "Kata sandi belum berhasil diperbarui.");
+    } else {
+      setAdminPasswordRecovery(false);
+      setAdminRecoveryPassword("");
+      setAdminRecoveryConfirmPassword("");
+      setMode("login");
+      setPassword("");
+      setMessage("Password Admin Utama berhasil diperbarui. Silakan masuk kembali.");
+      await supabase.auth.signOut();
+    }
     setBusy(false);
   }
 
@@ -1261,6 +1322,8 @@ export default function App() {
     return <main className="page-shell"><section className="panel"><Brand branding={branding} /><h1>Hampir siap.</h1><p className="intro">Koneksi Supabase belum dikonfigurasi di environment Netlify.</p><div className="notice"><strong>Konfigurasi yang dibutuhkan</strong><p>Tambahkan <code>VITE_SUPABASE_URL</code> dan <code>VITE_SUPABASE_ANON_KEY</code> di pengaturan environment Netlify, lalu deploy ulang. Gunakan hanya publishable/anon key; jangan pernah menaruh service-role key di website.</p></div><footer>©Designed by Vergil D Ajax</footer></section></main>;
   }
 
+  if (adminPasswordRecovery) return <main className="page-shell"><section className="panel auth-panel"><Brand branding={branding} /><div className="eyebrow"><span className="status-dot" /> PEMULIHAN AKUN ADMIN</div><h1>Buat password <span>baru</span></h1><p className="intro">Tautan pemulihan valid. Buat kata sandi baru untuk akun Developer.</p>{error && <div className="alert error" role="alert">{error}</div>}<form className="auth-form" onSubmit={finishAdminPasswordRecovery}><label>Password baru<input type="password" value={adminRecoveryPassword} onChange={(e)=>setAdminRecoveryPassword(e.target.value)} minLength={8} maxLength={72} autoComplete="new-password" required placeholder="Minimal 8 karakter" /></label><label>Ulangi password baru<input type="password" value={adminRecoveryConfirmPassword} onChange={(e)=>setAdminRecoveryConfirmPassword(e.target.value)} minLength={8} maxLength={72} autoComplete="new-password" required placeholder="Ketik ulang password baru" /></label><button className="primary full" disabled={busy}>{busy ? "Menyimpan…" : "SIMPAN PASSWORD BARU"}</button></form><footer>©Designed by Vergil D Ajax</footer></section></main>;
+
   if (loading) return <main className="page-shell"><section className="panel"><Brand branding={branding} /><p className="intro">Memuat akun dengan aman…</p><p className="muted">Mohon tunggu. Jika jaringan lambat, Webkas akan menampilkan pilihan untuk mencoba kembali.</p></section></main>;
 
   if (bootstrapError && !session?.user) return <main className="page-shell"><section className="panel"><Brand branding={branding} /><h1>Koneksi belum siap</h1><p className="intro">Webkas belum berhasil memeriksa sesi login. Akun dan data Anda tidak diubah.</p><div className="alert error" role="alert">{bootstrapError}</div><button className="primary full" onClick={() => { setBootstrapError(""); setAuthRetry((value) => value + 1); }}>COBA LAGI</button><footer>©Designed by Vergil D Ajax</footer></section></main>;
@@ -1287,7 +1350,7 @@ export default function App() {
     return <main className="page-shell"><section className="panel"><Brand branding={branding} /><h1>Profil belum tersedia</h1><p className="intro">Sesi login aktif, tetapi profil anggota belum ditemukan. Keluar dan hubungi admin utama; jangan membuat akun ulang dengan username yang sama.</p><button className="secondary full" onClick={signOut}>Keluar</button><footer>©Designed by Vergil D Ajax</footer></section></main>;
   }
 
-  return <main className="page-shell"><section className="panel auth-panel"><Brand branding={branding} /><div className="eyebrow"><span className="status-dot" /> WEBKAS FAM SOS V2</div><h1>{mode === "login" ? <>Masuk ke <span>WEBKAS</span></> : <>Daftar <span>anggota</span></>}</h1><p className="intro">{mode === "login" ? "Gunakan username dan kata sandi akun kas kamu." : "Buat akun anggota. Akses baru aktif setelah disetujui admin utama."}</p>{error && <div className="alert error" role="alert">{error}</div>}{message && <div className="alert success" role="status">{message}</div>}<form onSubmit={mode === "login" ? signIn : register} className="auth-form">{mode === "register" && <div className="registration-steps"><strong>Urutan pendaftaran</strong><ol><li>Buat username untuk login</li><li>Buat kata sandi</li><li>Isi nama karakter / nama IC</li><li>Unggah screenshot bukti administrasi di bagian paling bawah</li></ol></div>}<label>Username<input value={username} onChange={(e)=>setUsername(e.target.value)} minLength={3} maxLength={30} autoCapitalize="none" autoCorrect="off" spellCheck={false} autoComplete="username" required placeholder="username_kamu" /><small className="muted">{mode === "register" ? "Username ini akan dipakai untuk login. Gunakan 3–30 karakter: huruf kecil, angka, titik, _ atau -. Username tidak boleh sama dengan anggota lain." : "Masukkan username yang kamu gunakan saat mendaftar."}</small></label>{mode === "register" && <label>Ulangi username<input value={confirmUsername} onChange={(e)=>setConfirmUsername(e.target.value)} minLength={3} maxLength={30} autoCapitalize="none" autoCorrect="off" spellCheck={false} autoComplete="off" required placeholder="Ketik ulang username dengan tepat" /><small className="muted">Pastikan ejaan sama dengan username di atas.</small></label>}<label>Kata sandi<input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} minLength={8} maxLength={72} autoComplete={mode === "login" ? "current-password" : "new-password"} required placeholder="Minimal 8 karakter" /></label>{mode === "register" && <label>Ulangi kata sandi<input type="password" value={confirmPassword} onChange={(e)=>setConfirmPassword(e.target.value)} minLength={8} maxLength={72} autoComplete="new-password" required placeholder="Ketik ulang kata sandi" /><small className="muted">Minimal 8 karakter; kedua kata sandi harus sama.</small></label>}{mode === "register" && <><label>Nama karakter / nama IC<input value={displayName} onChange={(e)=>setDisplayName(e.target.value)} minLength={2} maxLength={80} autoComplete="nickname" required placeholder="Nama karakter di dalam game" /></label><label>Nomor HP / WhatsApp<input type="tel" inputMode="tel" autoComplete="tel" value={registrationPhone} onChange={(e)=>setRegistrationPhone(e.target.value)} maxLength={24} required placeholder="Contoh: 081234567890" /><small className="muted">Wajib diisi untuk kontak admin. Tidak ada verifikasi OTP.</small></label><label>Screenshot bukti administrasi<input type="file" accept="image/jpeg,image/png,image/webp" required onChange={(e)=>setRegistrationProofFile(e.target.files?.[0] || null)} /><small className="muted">Letakkan bukti administrasi di langkah terakhir. Format JPG, PNG, atau WEBP, maksimal 2 MB. Jika gagal, perkecil ukuran gambar lalu pilih kembali.</small></label><label>Keterangan bukti (opsional)<textarea value={registrationNote} onChange={(e)=>setRegistrationNote(e.target.value)} maxLength={500} rows={3} placeholder="Boleh dikosongkan. Contoh: keterangan pembayaran." /></label><div className="notice registration-proof-notice"><strong>Sebelum mengirim</strong><p>Periksa kembali username dan kata sandi untuk login. Pendaftaran baru aktif setelah disetujui admin. Screenshot hanya untuk pemeriksaan administrasi dan bukan otomatis saldo atau pembayaran tercatat.</p></div></>}<button className="primary full" disabled={busy}>{busy ? (mode === "login" ? "Memeriksa login…" : "Mengirim pendaftaran…") : mode === "login" ? "MASUK" : "KIRIM PENDAFTARAN"}</button></form><div className="auth-switch">{mode === "login" ? "Belum punya akun?" : "Sudah punya akun?"} <button className="text-button" onClick={()=>{setMode(mode === "login" ? "register" : "login");setError("");setMessage("");}}>{mode === "login" ? "Daftar anggota" : "Kembali masuk"}</button></div><div className="small-note">Akun baru berstatus menunggu sampai disetujui admin utama. Jangan bagikan kata sandi kepada siapa pun.</div><footer>©Designed by Vergil D Ajax</footer></section></main>;
+  return <main className="page-shell"><section className="panel auth-panel"><div className="auth-panel-topbar"><Brand branding={branding} />{mode === "login" && <button type="button" className="auth-admin-recovery-button" onClick={()=>{setShowAdminRecovery(true);setError("");setMessage("");}} aria-label="Pemulihan password Admin Utama" title="Pemulihan password Admin Utama"><AdminSkull /><span>ADMIN</span></button>}</div><div className="eyebrow"><span className="status-dot" /> WEBKAS FAM SOS V2</div><h1>{mode === "login" ? <>Masuk ke <span>WEBKAS</span></> : <>Daftar <span>anggota</span></>}</h1><p className="intro">{mode === "login" ? "Gunakan username dan kata sandi akun kas kamu." : "Buat akun anggota. Akses baru aktif setelah disetujui admin utama."}</p>{error && <div className="alert error" role="alert">{error}</div>}{message && <div className="alert success" role="status">{message}</div>}<form onSubmit={mode === "login" ? signIn : register} className="auth-form">{mode === "register" && <div className="registration-steps"><strong>Urutan pendaftaran</strong><ol><li>Buat username untuk login</li><li>Buat kata sandi</li><li>Isi nama karakter / nama IC</li><li>Unggah screenshot bukti administrasi di bagian paling bawah</li></ol></div>}<label>Username<input value={username} onChange={(e)=>setUsername(e.target.value)} minLength={3} maxLength={30} autoCapitalize="none" autoCorrect="off" spellCheck={false} autoComplete="username" required placeholder="username_kamu" /><small className="muted">{mode === "register" ? "Username ini akan dipakai untuk login. Gunakan 3–30 karakter: huruf kecil, angka, titik, _ atau -. Username tidak boleh sama dengan anggota lain." : "Masukkan username yang kamu gunakan saat mendaftar."}</small></label>{mode === "register" && <label>Ulangi username<input value={confirmUsername} onChange={(e)=>setConfirmUsername(e.target.value)} minLength={3} maxLength={30} autoCapitalize="none" autoCorrect="off" spellCheck={false} autoComplete="off" required placeholder="Ketik ulang username dengan tepat" /><small className="muted">Pastikan ejaan sama dengan username di atas.</small></label>}<label>Kata sandi<input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} minLength={8} maxLength={72} autoComplete={mode === "login" ? "current-password" : "new-password"} required placeholder="Minimal 8 karakter" /></label>{mode === "register" && <label>Ulangi kata sandi<input type="password" value={confirmPassword} onChange={(e)=>setConfirmPassword(e.target.value)} minLength={8} maxLength={72} autoComplete="new-password" required placeholder="Ketik ulang kata sandi" /><small className="muted">Minimal 8 karakter; kedua kata sandi harus sama.</small></label>}{mode === "register" && <><label>Nama karakter / nama IC<input value={displayName} onChange={(e)=>setDisplayName(e.target.value)} minLength={2} maxLength={80} autoComplete="nickname" required placeholder="Nama karakter di dalam game" /></label><label>Nomor HP / WhatsApp<input type="tel" inputMode="tel" autoComplete="tel" value={registrationPhone} onChange={(e)=>setRegistrationPhone(e.target.value)} maxLength={24} required placeholder="Contoh: 081234567890" /><small className="muted">Wajib diisi untuk kontak admin. Tidak ada verifikasi OTP.</small></label><label>Screenshot bukti administrasi<input type="file" accept="image/jpeg,image/png,image/webp" required onChange={(e)=>setRegistrationProofFile(e.target.files?.[0] || null)} /><small className="muted">Letakkan bukti administrasi di langkah terakhir. Format JPG, PNG, atau WEBP, maksimal 2 MB. Jika gagal, perkecil ukuran gambar lalu pilih kembali.</small></label><label>Keterangan bukti (opsional)<textarea value={registrationNote} onChange={(e)=>setRegistrationNote(e.target.value)} maxLength={500} rows={3} placeholder="Boleh dikosongkan. Contoh: keterangan pembayaran." /></label><div className="notice registration-proof-notice"><strong>Sebelum mengirim</strong><p>Periksa kembali username dan kata sandi untuk login. Pendaftaran baru aktif setelah disetujui admin. Screenshot hanya untuk pemeriksaan administrasi dan bukan otomatis saldo atau pembayaran tercatat.</p></div></>}<button className="primary full" disabled={busy}>{busy ? (mode === "login" ? "Memeriksa login…" : "Mengirim pendaftaran…") : mode === "login" ? "MASUK" : "KIRIM PENDAFTARAN"}</button></form><div className="auth-switch">{mode === "login" ? "Belum punya akun?" : "Sudah punya akun?"} <button className="text-button" onClick={()=>{setMode(mode === "login" ? "register" : "login");setError("");setMessage("");}}>{mode === "login" ? "Daftar anggota" : "Kembali masuk"}</button></div><div className="small-note">Akun baru berstatus menunggu sampai disetujui admin utama. Jangan bagikan kata sandi kepada siapa pun.</div>{showAdminRecovery && mode === "login" && <div className="admin-recovery-overlay" role="presentation" onMouseDown={(e)=>{if(e.target===e.currentTarget)setShowAdminRecovery(false);}}><section className="admin-recovery-dialog" role="dialog" aria-modal="true" aria-labelledby="admin-recovery-title"><button type="button" className="admin-recovery-close" onClick={()=>setShowAdminRecovery(false)} aria-label="Tutup">×</button><div className="admin-recovery-mark"><AdminSkull /></div><div className="eyebrow">AKSES KHUSUS</div><h2 id="admin-recovery-title">Reset Admin Utama</h2><p className="muted">Tautan pemulihan hanya dikirim ke email pemulihan yang telah ditetapkan untuk akun Developer.</p><div className="admin-recovery-email"><span>Email pemulihan</span><strong>nzxajax@gmail.com</strong></div><button type="button" className="primary full" onClick={requestAdminPasswordRecovery} disabled={adminRecoverySending}>{adminRecoverySending ? "MEMPROSES…" : "KIRIM TAUTAN RESET"}</button><p className="admin-recovery-footnote">Tidak mengubah saldo, transaksi, atau data anggota.</p></section></div>}<footer>©Designed by Vergil D Ajax</footer></section></main>;
 }
 
 
