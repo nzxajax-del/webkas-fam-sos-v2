@@ -1,0 +1,104 @@
+{
+  "project": "WEBKAS FAM SOS V2",
+  "created_at": "2026-11-07",
+  "source_project_ref": "lzciyzibqbujshoizlbu",
+  "target_project_ref": "cdqmeenrwsbkcpclitgh",
+  "objective": "Restore WEBKAS on the new free Supabase project without losing member identities, wallet balances, dues, payment history, proof files, permissions, or scheduled behavior.",
+  "execution_mode": "staged; read-only until verified backup and restore path are proven",
+  "phases": [
+    {
+      "id": 1,
+      "name": "Secure execution and preflight",
+      "actions": [
+        "Obtain an authenticated execution environment with Supabase CLI, PostgreSQL client tools, and secure access to both projects.",
+        "Confirm source and target project refs, region, Free plan status, and current health.",
+        "Check available disk space and network egress; keep credentials in the environment secret store only."
+      ],
+      "gate": "No production writes; source and target identity verified."
+    },
+    {
+      "id": 2,
+      "name": "Immutable source backups",
+      "actions": [
+        "Create schema-only and data backups with PostgreSQL tooling using a documented, version-compatible procedure.",
+        "Capture migration history, extensions, grants, policies, triggers, indexes, functions, publication membership, and cron definitions.",
+        "Determine and validate a supported Auth migration procedure that preserves user UUIDs and password hashes; do not assume an ordinary Auth user-list export preserves passwords.",
+        "Download all objects from payment-proofs, profile-photos, and registration-proofs; record object paths, sizes, and checksums.",
+        "Capture all seven Edge Function source files and record their deployed versions and hashes.",
+        "Record source row counts and accounting control totals."
+      ],
+      "gate": "Every backup artifact exists, is readable, has checksums, and is stored outside the source project."
+    },
+    {
+      "id": 3,
+      "name": "Restore into target without cutover",
+      "actions": [
+        "Restore schema and required extensions in dependency order, resolving migration drift without replaying the incomplete repository migration folder blindly.",
+        "Restore data while preserving UUIDs and foreign-key relationships.",
+        "Restore and validate Auth identities using the approved method.",
+        "Create private Storage buckets and restore objects with matching paths and metadata.",
+        "Restore RLS, grants, triggers, functions, Realtime publication, and cron jobs; keep cash-changing scheduled jobs disabled until validation is complete.",
+        "Deploy Edge Functions with target URL, anon key, and service-role secret provisioned only through a secure secret channel."
+      ],
+      "gate": "Target structure, identities, object counts, function versions, policies, and scheduler configuration match the signed-off source snapshot."
+    },
+    {
+      "id": 4,
+      "name": "Data integrity and application tests",
+      "actions": [
+        "Compare row counts and deterministic checksums for financial and membership tables.",
+        "Compare each member wallet balance and arrears total; verify aggregate totals match source snapshot.",
+        "Test dues start-date catch-up, no duplicate daily dues, arrears-first payments, rank-rate effective dates, and pending-payment uniqueness on isolated test fixtures.",
+        "Test login with preserved identity, role-specific access, registration, payment approval/rejection, Storage reads, and Edge Function CORS.",
+        "Run frontend build and mobile smoke tests against target only."
+      ],
+      "gate": "All critical tests pass and financial control totals match exactly."
+    },
+    {
+      "id": 5,
+      "name": "Controlled cutover and rollback",
+      "actions": [
+        "Take a final source delta backup during a planned maintenance window.",
+        "Apply and verify the final delta on target; prevent concurrent writes during the final synchronization window.",
+        "Update frontend environment to target and deploy only after explicit release approval.",
+        "Verify live login, wallet display, payment workflow, dues, chat, and Storage from production.",
+        "Keep source project intact as rollback source; document exact frontend rollback procedure."
+      ],
+      "gate": "Production operates on target, key flows verified, and rollback remains possible."
+    }
+  ],
+  "non_negotiable_controls": [
+    "Do not paste credentials, service-role keys, database passwords, or OTPs into chat.",
+    "Do not delete, pause, reset, or modify the source project during preparation.",
+    "Do not point the frontend at the empty target.",
+    "Do not replay all repository migrations blindly: source has 104 applied migrations but only 68 migration files in the repo.",
+    "Do not alter the P4 effective rate discrepancy (600 vs expected 500 UIC) during migration; reconcile separately with a financial backfill plan.",
+    "Do not alter treasury-history Admin Assistant permissions until the current rule is confirmed.",
+    "Do not enable cash-changing cron jobs on target before data integrity checks pass.",
+    "Do not claim success until the final live smoke tests and accounting comparisons pass."
+  ],
+  "known_inventory": {
+    "source_public_tables": 19,
+    "auth_users": 84,
+    "member_profiles": 84,
+    "wallets": 84,
+    "wallet_transactions": 1201,
+    "daily_dues_rows": 1082,
+    "payment_submissions": 235,
+    "storage_buckets": [
+      "payment-proofs",
+      "profile-photos",
+      "registration-proofs"
+    ],
+    "storage_objects": 63,
+    "edge_functions": 7,
+    "applied_migrations": 104,
+    "repository_migration_files": 68
+  },
+  "known_follow_up_findings": [
+    "cleanup-payment-proofs currently omits the production Cloudflare Workers origin from its allowlist.",
+    "The target project is currently empty.",
+    "A secure Railway sandbox terminal execution action is not exposed in the current ChatGPT tool session even though Railway Chat Sandbox is enabled."
+  ],
+  "current_status": "Runbook prepared; no backup, restore, production write, target write, deployment, or cutover has been performed."
+}
