@@ -1,0 +1,24 @@
+{
+  "captured_at_utc":"2026-11-07T02:51:00Z",
+  "project_ref":"lzciyzibqbujshoizlbu",
+  "mode":"read_only",
+  "observed_database_values":{
+    "dues_settings_base_daily_amount":"1000.00",
+    "rank_dues_rate_history":[
+      {"rank_code":"P4","daily_amount":"600.00","effective_from":"2026-11-07"}
+    ],
+    "no_explicit_history_rows_returned_for":["P1","P2","P3"]
+  },
+  "comparison_to_user_defined_rule":{
+    "user_rule":"P4 is 50% of the 1000 UIC base, therefore 500 UIC/day.",
+    "database_scheduled_value":"600 UIC/day effective 2026-11-07",
+    "mismatch":"600 versus 500 UIC/day"
+  },
+  "risk":"The scheduled P4 rate conflicts with the user's stated accounting rule and could change member dues/arrears if the daily dues processor uses this history row.",
+  "actions_taken":{
+    "database_modified":false,
+    "rate_history_changed":false,
+    "daily_dues_processor_run":false
+  },
+  "required_before_change":"Confirm the intended P4 rate and inspect daily dues processor behavior/affected member ledgers before making any correction. No automatic rewrite or retroactive adjustment is authorized by this audit."
+}
