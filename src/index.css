@@ -1574,3 +1574,18 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 /* Fixed, visible rejection dialog: keep it in the viewport on mobile and desktop. */
 .payment-review-overlay{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;padding:16px;background:rgba(0,0,0,.78);backdrop-filter:blur(3px)}
 .payment-review-dialog{width:min(640px,100%);max-height:calc(100dvh - 32px);margin:0;overflow-y:auto;overscroll-behavior:contain;box-shadow:0 24px 90px #000c}
+
+
+/* Indikator kuota Supabase bergaya RPM, khusus Beranda Developer. */
+.quota-rpm-panel{display:flex;align-items:center;justify-content:flex-start;gap:8px;width:max-content;max-width:100%;margin:-7px 0 14px;padding:7px 10px;border:1px solid #34432b;border-radius:13px;background:linear-gradient(145deg,#141b11,#0d120c);box-shadow:inset 0 1px 0 #ffffff08}
+.quota-rpm-gauge{display:grid;justify-items:center;gap:0;width:106px;min-width:0}
+.quota-rpm-gauge svg{display:block;width:100%;height:auto;overflow:visible}
+.quota-rpm-track,.quota-rpm-progress{fill:none;stroke-width:7;stroke-linecap:round}
+.quota-rpm-track{stroke:#394333}
+.quota-rpm-progress{transition:stroke-dashoffset .45s ease}
+.quota-rpm-needle{fill:none;stroke:#f1f4e9;stroke-width:2.6;stroke-linecap:round;filter:drop-shadow(0 0 2px #000)}
+.quota-rpm-hub{fill:#f1f4e9;stroke:#69775d;stroke-width:1.5}
+.quota-rpm-value{fill:#f3f6ec;font-size:12px;font-weight:900;paint-order:stroke;stroke:#10150e;stroke-width:2px}
+.quota-rpm-gauge>strong{margin-top:-2px;color:#cbd6bf;font-size:9px;font-weight:900;letter-spacing:.12em;line-height:1.2}
+@media(max-width:420px){.quota-rpm-panel{gap:5px;padding:6px 8px}.quota-rpm-gauge{width:96px}}
+@media(prefers-reduced-motion:reduce){.quota-rpm-progress{transition:none}}
