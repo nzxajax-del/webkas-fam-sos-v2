@@ -113,3 +113,5 @@ Before export, the workflow opens a temporary PostgreSQL transaction and acquire
 The static audit workflow has completed successfully on the audit branch: shell syntax, Storage JavaScript syntax, frontend build, and the three restore SQL files applied to an isolated temporary PostgreSQL test schema all passed. These checks do not connect to or write to either Supabase project.
 
 At the latest read-only check, the target still has 0 public application tables, 0 Auth users, 0 Auth identities, 0 Storage buckets, and 0 Storage objects. The production `main` branch still points to the old source project; only the audit branch has the target client configuration staged.
+
+The gated workflow also repeats the full application-row and Auth checksum comparison after Storage transfer and immediately before releasing the source write-lock. This catches source changes that occur during the Storage copy; if any mismatch is detected, the workflow stops and does not perform production cutover.
