@@ -136,8 +136,8 @@ mkdir -p "$TMP_DIR/cli-project"
   cd "$TMP_DIR/cli-project"
   npx --yes supabase@latest init >/dev/null
   npx --yes supabase@latest db dump --db-url "$SOURCE_DB_URL" -f "$TMP_DIR/roles.sql" --role-only
-  npx --yes supabase@latest db dump --db-url "$SOURCE_DB_URL" -f "$TMP_DIR/schema.sql" --schema public,private
-  npx --yes supabase@latest db dump --db-url "$SOURCE_DB_URL" -f "$TMP_DIR/data.sql" --use-copy --data-only --schema public,private -x "storage.buckets_vectors" -x "storage.vector_indexes"
+  npx --yes supabase@latest db dump --db-url "$SOURCE_DB_URL" -f "$TMP_DIR/schema.sql" --schema public,private -x "public.chat_messages" -x "public.p4_p5_p6_chat_messages" -x "public.p5_p6_chat_messages" -x "public.private_chat_hidden" -x "public.private_conversations" -x "public.private_messages"
+  npx --yes supabase@latest db dump --db-url "$SOURCE_DB_URL" -f "$TMP_DIR/data.sql" --use-copy --data-only --schema public,private -x "storage.buckets_vectors" -x "storage.vector_indexes" -x "public.chat_messages" -x "public.p4_p5_p6_chat_messages" -x "public.p5_p6_chat_messages" -x "public.private_chat_hidden" -x "public.private_conversations" -x "public.private_messages"
 )
 
 docker run --rm --network host \
