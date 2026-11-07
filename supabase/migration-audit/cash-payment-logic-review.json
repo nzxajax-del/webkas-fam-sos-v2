@@ -1,0 +1,58 @@
+{
+  "audit": "WEBKAS FAM SOS V2 cash and payment logic review",
+  "audited_at": "2026-11-07",
+  "source_project_ref": "lzciyzibqbujshoizlbu",
+  "target_project_ref": "cdqmeenrwsbkcpclitgh",
+  "mode": "read_only",
+  "production_changes": false,
+  "findings": {
+    "dues_settings": {
+      "daily_amount_uic": 1000,
+      "report_date": "2026-11-07",
+      "cash_operations_enabled": true,
+      "note": "Current database value is true. The daily processor and payment approval guard both consult this flag; no change was made."
+    },
+    "daily_dues_processor": {
+      "behavior": [
+        "Processes active members from dues_start_date through requested date",
+        "Uses unique member_id + due_date to prevent duplicate daily dues",
+        "Stops on a historical gap if a later daily-dues row already exists",
+        "Deducts available prepaid balance first and adds the remainder to arrears",
+        "Uses effective-dated base and rank rates",
+        "P5/P6/P7 and exempt_kas members are logged as exempt"
+      ],
+      "test_status": "Function source reviewed; no live write/test invocation performed."
+    },
+    "payment_workflow": {
+      "counts": {
+        "approved": 211,
+        "pending": 3,
+        "rejected": 21
+      },
+      "one_pending_per_member": "Enforced by unique partial index payment_submissions_one_pending_per_member_idx WHERE status='pending'.",
+      "approval": "private.review_payment locks the submission, validates active admin/admin_assistant, limits Admin Assistant to P1-P4, requires cash report_date to equal WIB today, catches up daily dues through yesterday, then clears arrears before crediting remaining amount to balance.",
+      "rejection": "A non-empty review_note is required by trigger when changing status to rejected.",
+      "deletion": "Completed-history deletion rejects pending submissions and records wallet_balances_changed=false; removes linked payment_credit transaction history but does not alter wallet balances.",
+      "approval_guard": "guard_cash_approval blocks approval only when cash_operations_enabled is false."
+    },
+    "tariff_discrepancy": {
+      "base_uic_per_day": 1000,
+      "p4_history": {
+        "effective_from": "2026-11-07",
+        "daily_amount_uic": 600
+      },
+      "expected_by_user_rule": 500,
+      "action": "No tariff change made; needs reconciliation before migration/cash regression sign-off."
+    }
+  },
+  "migration_readiness": {
+    "schema_and_logic_review": "in progress",
+    "complete_restorable_backup": false,
+    "auth_export": false,
+    "storage_objects_backup": false,
+    "edge_function_secrets_export": false,
+    "target_project_populated": false,
+    "production_cutover": false
+  },
+  "safety": "No production database writes, no target database writes, no storage changes, no auth changes, no secrets accessed, no deployment."
+}
