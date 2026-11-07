@@ -191,11 +191,13 @@ docker run --rm --network host \
 echo "Verifying restored application rows..."
 TARGET_APP_SIGNATURE="$(db_query "$TARGET_DB_URL" "$APP_SIGNATURE_SQL")"
 TARGET_APP_COUNTS="$(db_query "$TARGET_DB_URL" "$APP_COUNTS_SQL")"
+SOURCE_APP_SIGNATURE_FINAL="$(db_query "$SOURCE_DB_URL" "$APP_SIGNATURE_SQL")"
+SOURCE_APP_COUNTS_FINAL="$(db_query "$SOURCE_DB_URL" "$APP_COUNTS_SQL")"
 TARGET_AUTH_SIGNATURE="$(db_query "$TARGET_DB_URL" "SELECT md5((SELECT md5(coalesce(string_agg(row_to_json(t)::text, E'\\n' ORDER BY row_to_json(t)::text), '')) FROM auth.users t) || '|' || (SELECT md5(coalesce(string_agg(row_to_json(t)::text, E'\\n' ORDER BY row_to_json(t)::text), '')) FROM auth.identities t))")"
 SOURCE_AUTH_SIGNATURE="$(db_query "$SOURCE_DB_URL" "SELECT md5((SELECT md5(coalesce(string_agg(row_to_json(t)::text, E'\\n' ORDER BY row_to_json(t)::text), '')) FROM auth.users t) || '|' || (SELECT md5(coalesce(string_agg(row_to_json(t)::text, E'\\n' ORDER BY row_to_json(t)::text), '')) FROM auth.identities t))")"
 
-if [[ "$TARGET_APP_SIGNATURE" != "$SOURCE_APP_SIGNATURE_AFTER" || "$TARGET_AUTH_SIGNATURE" != "$SOURCE_AUTH_SIGNATURE" ]]; then
-  echo "Post-restore checksum mismatch. Do not cut over or enable scheduled jobs."
+if [[ "$TARGET_APP_SIGNATURE" != "$SOURCE_APP_SIGNATURE_FINAL" || "$TARGET_APP_COUNTS" != "$SOURCE_APP_COUNTS_FINAL" || "$TARGET_AUTH_SIGNATURE" != "$SOURCE_AUTH_SIGNATURE" ]]; then
+  echo "Post-restore checksum mismatch or source changed during restore. Do not cut over or enable scheduled jobs."
   exit 1
 fi
 
