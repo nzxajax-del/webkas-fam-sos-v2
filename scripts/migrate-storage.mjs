@@ -15,9 +15,11 @@ for (const [name, value] of Object.entries({
   if (!value) throw new Error(`Missing required environment variable: ${name}`);
 }
 
+// Profile photos have been retired in the app and are intentionally excluded.
+// Keep the legacy source/target bucket untouched as a non-production archive; only
+// payment and registration evidence are required for the target cutover.
 const bucketConfig = [
   { name: "payment-proofs", fileSizeLimit: 5 * 1024 * 1024 },
-  { name: "profile-photos", fileSizeLimit: 3 * 1024 * 1024 },
   { name: "registration-proofs", fileSizeLimit: 2 * 1024 * 1024 },
 ];
 const allowedMimeTypes = ["image/jpeg", "image/png", "image/webp"];
