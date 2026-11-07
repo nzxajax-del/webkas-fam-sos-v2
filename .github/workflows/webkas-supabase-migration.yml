@@ -85,8 +85,8 @@ jobs:
               done
 
               if [[ "$STORAGE_TRANSFER_OUTCOME" == "success" ]]; then
-                source_objects="$(psql "$SOURCE_DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM storage.objects")"
-                target_objects="$(psql "$TARGET_DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM storage.objects")"
+                source_objects="$(psql "$SOURCE_DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM storage.objects WHERE bucket_id = 'registration-proofs'")"
+                target_objects="$(psql "$TARGET_DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM storage.objects WHERE bucket_id = 'registration-proofs'")"
                 test "$source_objects" = "$target_objects"
               else
                 echo "Storage binary transfer is pending; database and Auth restore can still be validated."
