@@ -36,14 +36,80 @@ jobs:
         shell: bash
         run: |
           set +x
-          result="$(PGCONNECT_TIMEOUT=15 psql -X -A -t -v ON_ERROR_STOP=1 -c 'SELECT current_database();' "$SOURCE_DB_URL")"
-          test "$result" = "postgres"
-          echo "Source database connection succeeded; SELECT-only check passed."
+          python3 - <<'PY'
+          import os
+          import subprocess
+          from urllib.parse import urlsplit, unquote
+
+          raw = os.environ["SOURCE_DB_URL"].strip()
+          parsed = urlsplit(raw)
+          if parsed.scheme not in ("postgres", "postgresql") or not parsed.hostname:
+              raise SystemExit("SOURCE_DB_URL format check failed (scheme/host).")
+          try:
+              port = parsed.port or 5432
+          except ValueError:
+              raise SystemExit("SOURCE_DB_URL port format check failed.")
+          env = os.environ.copy()
+          env.update({
+              "PGHOST": parsed.hostname,
+              "PGPORT": str(port),
+              "PGUSER": unquote(parsed.username or ""),
+              "PGPASSWORD": unquote(parsed.password or ""),
+              "PGDATABASE": unquote(parsed.path.lstrip("/")),
+              "PGCONNECT_TIMEOUT": "15",
+          })
+          if not all((env["PGUSER"], env["PGPASSWORD"], env["PGDATABASE"])):
+              raise SystemExit("SOURCE_DB_URL is missing username, password, or database.")
+          result = subprocess.run(
+              ["psql", "-X", "-A", "-t", "-v", "ON_ERROR_STOP=1", "-c", "SELECT current_database();"],
+              env=env, text=True, capture_output=True
+          )
+          if result.returncode:
+              print("Source database connection failed; psql returned an error without exposing connection credentials.")
+              print(result.stderr.strip())
+              raise SystemExit(result.returncode)
+          if result.stdout.strip() != "postgres":
+              raise SystemExit("Source database connected but returned an unexpected database name.")
+          print("Source database connection succeeded; SELECT-only check passed.")
+          PY
 
       - name: Test target database with a read-only query
         shell: bash
         run: |
           set +x
-          result="$(PGCONNECT_TIMEOUT=15 psql -X -A -t -v ON_ERROR_STOP=1 -c 'SELECT current_database();' "$TARGET_DB_URL")"
-          test "$result" = "postgres"
-          echo "Target database connection succeeded; SELECT-only check passed."
+          python3 - <<'PY'
+          import os
+          import subprocess
+          from urllib.parse import urlsplit, unquote
+
+          raw = os.environ["TARGET_DB_URL"].strip()
+          parsed = urlsplit(raw)
+          if parsed.scheme not in ("postgres", "postgresql") or not parsed.hostname:
+              raise SystemExit("TARGET_DB_URL format check failed (scheme/host).")
+          try:
+              port = parsed.port or 5432
+          except ValueError:
+              raise SystemExit("TARGET_DB_URL port format check failed.")
+          env = os.environ.copy()
+          env.update({
+              "PGHOST": parsed.hostname,
+              "PGPORT": str(port),
+              "PGUSER": unquote(parsed.username or ""),
+              "PGPASSWORD": unquote(parsed.password or ""),
+              "PGDATABASE": unquote(parsed.path.lstrip("/")),
+              "PGCONNECT_TIMEOUT": "15",
+          })
+          if not all((env["PGUSER"], env["PGPASSWORD"], env["PGDATABASE"])):
+              raise SystemExit("TARGET_DB_URL is missing username, password, or database.")
+          result = subprocess.run(
+              ["psql", "-X", "-A", "-t", "-v", "ON_ERROR_STOP=1", "-c", "SELECT current_database();"],
+              env=env, text=True, capture_output=True
+          )
+          if result.returncode:
+              print("Target database connection failed; psql returned an error without exposing connection credentials.")
+              print(result.stderr.strip())
+              raise SystemExit(result.returncode)
+          if result.stdout.strip() != "postgres":
+              raise SystemExit("Target database connected but returned an unexpected database name.")
+          print("Target database connection succeeded; SELECT-only check passed.")
+          PY
