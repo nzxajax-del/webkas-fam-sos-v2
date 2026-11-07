@@ -1,0 +1,39 @@
+name: Prepare WEBKAS target Storage buckets
+
+on:
+  push:
+    branches:
+      - supabase-migration-audit
+    paths:
+      - "scripts/prepare-target-storage-buckets.mjs"
+      - ".github/workflows/prepare-target-storage.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  prepare-target-storage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      TARGET_SUPABASE_URL: https://cdqmeenrwsbkcpclitgh.supabase.co
+      TARGET_SERVICE_ROLE_KEY: ${{ secrets.TARGET_SERVICE_ROLE_KEY }}
+
+    steps:
+      - name: Checkout isolated audit branch
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Confirm target secret exists without displaying it
+        shell: bash
+        run: test -n "$TARGET_SERVICE_ROLE_KEY" || { echo "Missing TARGET_SERVICE_ROLE_KEY repository secret."; exit 1; }
+
+      - name: Install application dependencies
+        run: npm install
+
+      - name: Create and verify private target buckets only
+        run: node scripts/prepare-target-storage-buckets.mjs
