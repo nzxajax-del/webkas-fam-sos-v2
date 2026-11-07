@@ -1,0 +1,74 @@
+{
+  "audit": "WEBKAS FAM SOS V2 role, RLS, scheduler and migration-readiness review",
+  "audited_at": "2026-11-07",
+  "source_project_ref": "lzciyzibqbujshoizlbu",
+  "target_project_ref": "cdqmeenrwsbkcpclitgh",
+  "mode": "read_only",
+  "findings": {
+    "role_helpers": {
+      "is_admin": "Returns true for active role admin OR admin_assistant.",
+      "is_developer": "Returns true only for active role admin.",
+      "is_admin_master": "Returns true only for the protected master UUID with active role admin.",
+      "is_admin_assistant": "Returns true only for active role admin_assistant."
+    },
+    "assistant_boundaries": {
+      "role_change": "Only Admin Master can promote/demote assistants; master account is protected.",
+      "member_rank": "Trigger limits assistant member management/rank changes to P1-P3.",
+      "wallet": "Assistant wallet access is limited to active member targets P1-P4.",
+      "payment": "Separate payment review routine is restricted to P1-P4.",
+      "note": "These boundaries match most of the user's prior role rules; no role changes made."
+    },
+    "treasury_history": {
+      "observed_rls": "INSERT, UPDATE and DELETE currently permit both active admin and admin_assistant.",
+      "discrepancy": "Earlier user requirement described Developer/Admin only for treasury history. Repository migration history explicitly added Admin Assistant treasury management on 2026-11-03. Confirm intended policy before any modification; no policy changed.",
+      "member_read": "All active members may read."
+    },
+    "scheduled_jobs": [
+      {
+        "jobid": 2,
+        "schedule": "1 17 * * *",
+        "active": true,
+        "command": "Runs process_daily_dues when cash_operations_enabled is true."
+      },
+      {
+        "jobid": 4,
+        "schedule": "*/15 * * * *",
+        "active": true,
+        "command": "Runs automatic database-threshold cleanup."
+      }
+    ],
+    "realtime_publication": [
+      "admin_audit_log",
+      "chat_messages",
+      "dues_settings",
+      "information_messages",
+      "member_profiles",
+      "member_wallets",
+      "p4_p5_p6_chat_messages",
+      "p5_p6_chat_messages",
+      "payment_submissions",
+      "private_messages",
+      "wallet_transactions"
+    ],
+    "members": {
+      "active": 84,
+      "pending": 0,
+      "rejected": 0
+    },
+    "migration_source": {
+      "repo_main_contains_supabase_migrations": true,
+      "migration_history_gap": "Previously identified 104 applied migrations versus 68 repository migration files; do not replay the repository set blindly.",
+      "target_project": "Still empty; no application tables or Edge Functions were provisioned."
+    }
+  },
+  "migration_readiness": {
+    "schema_and_policy_review": "in progress",
+    "complete_restorable_backup": false,
+    "auth_export": false,
+    "storage_objects_backup": false,
+    "edge_function_secrets_export": false,
+    "target_project_populated": false,
+    "cutover": false
+  },
+  "safety": "No production or target database writes, no policies changed, no scheduler changes, no Auth/Storage changes, no deployment."
+}
