@@ -1,0 +1,321 @@
+{
+  "captured_at": "2026-11-07T02:30:31.115Z",
+  "source_project_ref": "lzciyzibqbujshoizlbu",
+  "target_project_ref": "cdqmeenrwsbkcpclitgh",
+  "source_migration_count": 104,
+  "repository_migration_file_count": 68,
+  "missing_applied_migrations": [
+    {
+      "version": "20261021073221",
+      "name": "uic_daily_dues_registration_date"
+    },
+    {
+      "version": "20261021073307",
+      "name": "fix_historical_rate_fallback"
+    },
+    {
+      "version": "20261021074145",
+      "name": "add_private_member_profile_photos"
+    },
+    {
+      "version": "20261021074409",
+      "name": "guarded_member_account_deletion"
+    },
+    {
+      "version": "20261021074452",
+      "name": "allow_admin_cleanup_deleted_member_proofs"
+    },
+    {
+      "version": "20261021080958",
+      "name": "member_self_edit_display_name"
+    },
+    {
+      "version": "20261021092256",
+      "name": "p4_half_daily_dues_rate"
+    },
+    {
+      "version": "20261021092759",
+      "name": "admin_delete_completed_payment_history"
+    },
+    {
+      "version": "20261021093143",
+      "name": "member_group_chat"
+    },
+    {
+      "version": "20261021093333",
+      "name": "chat_sender_display_metadata"
+    },
+    {
+      "version": "20261021093546",
+      "name": "chat_auto_cleanup_12_hours"
+    },
+    {
+      "version": "20261021093554",
+      "name": "chat_clear_every_12_hours"
+    },
+    {
+      "version": "20261021093559",
+      "name": "admin_clear_chat_history"
+    },
+    {
+      "version": "20261021093903",
+      "name": "admin_database_storage_metrics"
+    },
+    {
+      "version": "20261021093908",
+      "name": "secure_admin_database_storage_metrics_wrapper"
+    },
+    {
+      "version": "20261021094244",
+      "name": "replace_chat_12h_cleanup_with_80pct_quota_cleanup"
+    },
+    {
+      "version": "20261021094301",
+      "name": "expose_verified_free_database_quota_and_cleanup_status"
+    },
+    {
+      "version": "20261021101240",
+      "name": "add_member_phone_and_chat_profile_summary"
+    },
+    {
+      "version": "20261021105112",
+      "name": "allow_zero_daily_rate"
+    },
+    {
+      "version": "20261021111222",
+      "name": "admin_master_assistant_role_boundaries"
+    },
+    {
+      "version": "20261021111755",
+      "name": "admin_assistant_rate_history_hardening"
+    },
+    {
+      "version": "20261021115543",
+      "name": "fix_chat_rank_and_profile_photo_access"
+    },
+    {
+      "version": "20261021115642",
+      "name": "harden_chat_profile_photo_visibility"
+    },
+    {
+      "version": "20261021115718",
+      "name": "use_invoker_for_chat_sender_rpc"
+    },
+    {
+      "version": "20261021122428",
+      "name": "admin_assistant_chat_notifications"
+    },
+    {
+      "version": "20261021123506",
+      "name": "admin_assistant_profile_photos"
+    },
+    {
+      "version": "20261021123947",
+      "name": "admin_assistant_self_display_name"
+    },
+    {
+      "version": "20261021124334",
+      "name": "admin_assistant_self_name_guard_exception"
+    },
+    {
+      "version": "20261021125042",
+      "name": "admin_hide_transaction_report_history"
+    },
+    {
+      "version": "20261021155732",
+      "name": "fix_admin_assistant_chat_profile_popup"
+    },
+    {
+      "version": "20261021233313",
+      "name": "restrict_bulk_chat_clear_to_super_admin"
+    },
+    {
+      "version": "20261021233849",
+      "name": "fix_bulk_chat_clear_where_clause"
+    },
+    {
+      "version": "20261022103128",
+      "name": "enable_private_chat_realtime_notifications"
+    },
+    {
+      "version": "20261022111732",
+      "name": "clear_reviewed_registration_proof_path"
+    },
+    {
+      "version": "20261022111841",
+      "name": "remove_unused_registration_proof_path_rpc"
+    },
+    {
+      "version": "20261023074022",
+      "name": "allow_permanent_member_deletion_with_financial_archive"
+    },
+    {
+      "version": "20261023082430",
+      "name": "include_phone_in_member_directory"
+    },
+    {
+      "version": "20261023092946",
+      "name": "create_p5_p6_private_rank_chat"
+    },
+    {
+      "version": "20261023093717",
+      "name": "create_p4_p5_p6_private_rank_chat"
+    },
+    {
+      "version": "20261023093729",
+      "name": "create_p4_p5_p6_private_rank_chat"
+    },
+    {
+      "version": "20261023095002",
+      "name": "add_p4_p5_p6_chat_history_clear"
+    },
+    {
+      "version": "20261023095156",
+      "name": "add_p5_p6_chat_history_clear"
+    },
+    {
+      "version": "20261025010136",
+      "name": "rank_based_daily_dues"
+    },
+    {
+      "version": "20261025110242",
+      "name": "information_announcements"
+    },
+    {
+      "version": "20261025110946",
+      "name": "information_message_deletion"
+    },
+    {
+      "version": "20261025111314",
+      "name": "admin_delete_information_message_rpc"
+    },
+    {
+      "version": "20261028114943",
+      "name": "member_leave_requests"
+    },
+    {
+      "version": "20261028115530",
+      "name": "shared_member_leave_chat"
+    },
+    {
+      "version": "20261028120533",
+      "name": "admin_delete_member_leave_request"
+    },
+    {
+      "version": "20261031170742",
+      "name": "apply_arrears_first_to_admin_balance_adjustments"
+    },
+    {
+      "version": "20261102130849",
+      "name": "allow_admin_delete_leave_requests"
+    },
+    {
+      "version": "20261103090913",
+      "name": "create_public_vault_history"
+    },
+    {
+      "version": "20261103090928",
+      "name": "allow_all_admins_manage_vault_entries"
+    },
+    {
+      "version": "20261103091022",
+      "name": "refine_vault_history_rls_and_indexes"
+    },
+    {
+      "version": "20261103091453",
+      "name": "restrict_assistant_payment_review_to_p1_p4"
+    },
+    {
+      "version": "20261103092254",
+      "name": "enable_vault_history_realtime_and_lock_anon_access"
+    },
+    {
+      "version": "20261103092327",
+      "name": "tighten_vault_history_authenticated_grants"
+    },
+    {
+      "version": "20261103094016",
+      "name": "add_safe_vault_entry_author_lookup"
+    },
+    {
+      "version": "20261103102559",
+      "name": "remove_vault_history_feature"
+    },
+    {
+      "version": "20261103110522",
+      "name": "create_treasury_history"
+    },
+    {
+      "version": "20261103110623",
+      "name": "allow_admin_assistant_treasury_posting"
+    },
+    {
+      "version": "20261103110752",
+      "name": "restrict_treasury_history_privileges"
+    },
+    {
+      "version": "20261103111206",
+      "name": "allow_admin_assistant_manage_treasury_history"
+    },
+    {
+      "version": "20261103142328",
+      "name": "require_payment_rejection_note"
+    },
+    {
+      "version": "20261103153349",
+      "name": "fix_admin_assistant_payment_review_access"
+    },
+    {
+      "version": "20261103153440",
+      "name": "limit_assistant_payment_data_scope"
+    },
+    {
+      "version": "20261103154959",
+      "name": "align_assistant_wallet_guard_with_payment_scope"
+    },
+    {
+      "version": "20261106115922",
+      "name": "schedule_p4_daily_dues_600_from_2026_11_07"
+    },
+    {
+      "version": "20261106120126",
+      "name": "add_rank_specific_dues_settings_menu_support"
+    }
+  ],
+  "repository_files_not_applied": [
+    "20261021060000_add_member_ranks_p1_p6.sql",
+    "20261021070000_registration_admin_proof_and_disable_adm.sql",
+    "20261021080000_uic_daily_dues_registration_date.sql",
+    "20261021081000_fix_historical_rate_fallback.sql",
+    "20261021110000_add_member_phone_and_chat_profile_summary.sql",
+    "20261021122300_admin_assistant_chat_notifications.sql",
+    "20261021140000_add_private_member_profile_photos.sql",
+    "20261021141000_guarded_member_account_deletion.sql",
+    "20261021142000_allow_admin_cleanup_deleted_member_proofs.sql",
+    "20261021150000_member_self_edit_display_name.sql",
+    "20261021190000_admin_assistant_profile_photos.sql",
+    "20261021190000_fix_chat_rank_and_profile_photo_access.sql",
+    "20261021190500_harden_chat_profile_photo_visibility.sql",
+    "20261021191000_use_invoker_for_chat_sender_rpc.sql",
+    "20261021200000_fix_admin_assistant_chat_profile_popup.sql",
+    "20261022070500_enable_private_chat_realtime_notifications.sql",
+    "20261022170000_restrict_bulk_chat_clear_to_super_admin.sql",
+    "20261022173000_fix_bulk_chat_clear_where_clause.sql",
+    "20261023170000_add_p4_p5_p6_chat_history_clear.sql",
+    "20261025120000_rank_based_daily_dues.sql",
+    "20261025123000_information_message_deletion.sql",
+    "20261025130000_information_announcements.sql",
+    "20261028120000_member_leave_requests.sql",
+    "20261101090000_apply_arrears_first_to_admin_balance_adjustments.sql",
+    "20261103000100_create_treasury_history.sql",
+    "20261103000200_allow_admin_developer_treasury_posts.sql",
+    "20261103000300_restrict_treasury_history_privileges.sql",
+    "20261103000400_set_treasury_sender_identity.sql",
+    "20261103000500_allow_admin_assistant_manage_treasury_history.sql",
+    "20261103010000_restrict_assistant_payment_review_to_p1_p4.sql",
+    "20261103020000_require_payment_rejection_note.sql",
+    "20261103030000_fix_admin_assistant_payment_review_access.sql",
+    "20261103040000_limit_assistant_payment_data_scope.sql"
+  ],
+  "note": "Audit-only inventory; NOT a restorable database backup. No member rows, Auth credentials, Storage file bytes, Edge Function secrets, or complete DDL."
+}
