@@ -55,3 +55,12 @@ Supabase's newer “Restore to a new project” clone feature would preserve Aut
 
 ## Auth migration feasibility note
 Supabase's Auth migration guidance confirms that user accounts and password hashes can be migrated through a full database backup or targeted SQL export/import (for example, pg_dump/psql), but it does not provide a one-size-fits-all auth-only script. The normal Supabase CLI `db dump` intentionally excludes managed `auth` and `storage` schemas. Any targeted Auth-schema dump must therefore be tested against the exact source/target Auth schema versions and target-managed objects before any target write. Never copy active sessions or refresh tokens blindly; the target JWT signing secret differs unless deliberately migrated, and copying signing secrets changes/regenerates API keys. Existing users may need to sign in again even when password hashes are preserved.
+
+## Additional read-only Auth compatibility audit
+Source and target Auth schema signatures match exactly at the catalog level: 27 tables, 271 columns, 110 constraints, and 111 indexes; the column signature, constraint signature, and index signature are identical. This materially improves the prospects of a controlled Auth data-only transfer, but does not replace a tested dump/restore rehearsal.
+
+Source Auth row counts (counts only; no credential contents were read): 84 users, 84 identities, 135 sessions, 762 refresh tokens, 0 MFA factors, and 0 MFA recovery-code sets. Target counts are all zero.
+
+One source-specific customization is missing from target: the source has a single non-internal trigger `auth.users.on_auth_user_created`, calling `public.handle_new_auth_user()`; target has no non-internal Auth trigger. The function creates `public.member_profiles` and `public.member_wallets` on new Auth-user insertion, sets pending/member defaults, and does not create ADM debt. A guarded, non-executed restore SQL file has been recorded at `supabase/migration-audit/restore-auth-customizations.sql`. Recreate this trigger only after the public schema/tables are restored and before enabling registration on target.
+
+The source also has 135 active Auth session rows and 762 refresh-token rows. These are not required to preserve password-based account credentials and should not be copied blindly; plan for users to authenticate again after cutover unless a separate token/JWT continuity design is explicitly validated. The source and target JWT secrets/API keys are not assumed to match.
