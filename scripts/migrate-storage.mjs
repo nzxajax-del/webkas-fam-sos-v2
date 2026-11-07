@@ -181,10 +181,14 @@ async function runPool(items, concurrency, worker) {
   return results;
 }
 
+// Prepare every private target bucket before inspecting the source Storage API.
+ // This leaves the target structurally ready even if the source project is quota-restricted.
 for (const bucket of bucketConfig) {
-  // Prepare the target buckets first so the database-only cutover can proceed
-  // even if the restricted source Storage API rejects binary downloads.
   await ensurePrivateBucket(bucket);
+}
+
+// Verify all source bucket settings only after target preparation is complete.
+for (const bucket of bucketConfig) {
   await verifySourceBucket(bucket);
 }
 
