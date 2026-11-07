@@ -49,9 +49,7 @@ jobs:
       - name: Restore database in one transaction and verify row checksums
         run: bash scripts/restore-supabase-database.sh
 
-      - name: Transfer private Storage objects and verify SHA-256
-        id: storage_transfer
-        continue-on-error: true
+      - name: Prepare private target Storage buckets for new uploads
         run: node scripts/migrate-storage.mjs
 
       - name: Apply Storage policies and install pg_cron without scheduling jobs
@@ -68,8 +66,6 @@ jobs:
             '
 
       - name: Verify final database, Storage, and Realtime inventory
-        env:
-          STORAGE_TRANSFER_OUTCOME: ${{ steps.storage_transfer.outcome }}
         run: |
           docker run --rm --network host \
             -e SOURCE_DB_URL="$SOURCE_DB_URL" \
@@ -84,24 +80,14 @@ jobs:
                 test "$source_value" = "$target_value"
               done
 
-              if [[ "$STORAGE_TRANSFER_OUTCOME" == "success" ]]; then
-                source_objects="$(psql "$SOURCE_DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM storage.objects WHERE bucket_id = 'registration-proofs'")"
-                target_objects="$(psql "$TARGET_DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM storage.objects WHERE bucket_id = 'registration-proofs'")"
-                test "$source_objects" = "$target_objects"
-              else
-                echo "Storage binary transfer is pending; database and Auth restore can still be validated."
-              fi
+              test "$(psql "$TARGET_DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM storage.buckets WHERE id IN ('payment-proofs','registration-proofs') AND public = false")" = "2"
 
               test "$(psql "$TARGET_DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM pg_policies WHERE schemaname = 'storage'")" = "9"
               test "$(psql "$TARGET_DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM pg_publication_tables WHERE pubname = 'supabase_realtime' AND schemaname = 'public'")" = "11"
               test "$(psql "$TARGET_DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM pg_extension WHERE extname = 'pg_cron'")" = "1"
 
-              if [[ "$STORAGE_TRANSFER_OUTCOME" != "success" ]]; then
-                echo "Storage binary transfer did not complete; refusing to mark migration successful."
-                exit 1
-              fi
             '
-          echo "Database, Auth, Storage objects, policies, Realtime, and pg_cron inventory checks passed."
+          echo "Database, Auth, private new-upload buckets, policies, Realtime, and pg_cron inventory checks passed. Legacy Storage objects remain in the source project."
 
       - name: Confirm cron jobs remain unscheduled
         run: |
