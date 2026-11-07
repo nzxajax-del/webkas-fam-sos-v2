@@ -157,6 +157,9 @@ jobs:
             test "$jobs" = "0" || { echo "Unexpected cron jobs exist; do not cut over."; exit 1; }
           '
 
+      - name: Final source-to-target row parity while source remains write-locked
+        run: bash scripts/restore-supabase-database.sh
+
       - name: Release source write-freeze
         if: always()
         run: docker rm -f webkas-source-write-freeze >/dev/null 2>&1 || true
