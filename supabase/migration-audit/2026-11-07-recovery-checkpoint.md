@@ -19,9 +19,10 @@
   - `payment-proofs`: 3 objects
   - `profile-photos`: 29 objects
   - `registration-proofs`: 31 objects
-- Target inventory at last verification: 1 private bucket and 0 objects.
+- Target inventory after isolated bucket-preparation workflow: all 3 private buckets created and verified with matching size/MIME restrictions; object count remains 0.
 - Source Storage API returned `exceed_egress_quota`; the migration script cannot inspect or download source objects while this platform restriction remains.
-- The Storage migration script was adjusted on this audit branch to prepare all target buckets before it checks source Storage access. This change has not been run against production and does not claim object transfer completion.
+- The Storage migration script was adjusted on this audit branch to prepare all target buckets before it checks source Storage access.
+- A separate target-only GitHub Actions workflow created and verified the three private buckets successfully; it did not read or modify source Storage objects.
 - Do not cut over until every source object has been copied and SHA-256 verified.
 
 ## Edge Functions
@@ -46,6 +47,7 @@
   - `private.storage_cleanup_state`
 - Verified `anon` and `authenticated` have no direct SELECT/INSERT privileges on those private tables.
 - Added migration `revoke_anon_execute_guarded_webkas_rpcs`; verified anonymous EXECUTE is false and authenticated EXECUTE remains true for five guarded RPCs:
+- Added migration `revoke_anon_select_member_leave_requests`; verified anonymous SELECT is false while authenticated SELECT remains true. Public branding remains readable anonymously by design.
   - `admin_delete_information_message(uuid)`
   - `admin_delete_member_leave_request(uuid)`
   - `admin_get_rank_dues_rates()`
