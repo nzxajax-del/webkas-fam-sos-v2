@@ -63,7 +63,7 @@ Deno.serve(async (req: Request) => {
   }
 
   const { data: submission, error: submissionError } = await admin
-    .from("payment_submissions").select("id,member_id,proof_path,status").eq("id", submissionId).maybeSingle();
+    .from("payment_submissions").select("id,member_id,proof_path,proof_storage_source,status").eq("id", submissionId).maybeSingle();
   if (submissionError) return json({ error: "Pengajuan pembayaran tidak dapat dibaca." }, 500, origin);
   if (!submission) return json({ error: "Pengajuan pembayaran tidak ditemukan." }, 404, origin);
   if (submission.status !== "pending") return json({ error: "Pengajuan ini sudah diproses." }, 409, origin);
@@ -76,6 +76,7 @@ Deno.serve(async (req: Request) => {
     }
   }
   const proofPath = typeof submission.proof_path === "string" ? submission.proof_path : null;
+  const proofStorageSource = submission.proof_storage_source === "current" ? "current" : "legacy";
 
   // Run the existing database transaction first; it atomically updates the wallet,
   // records the payment decision and preserves the financial ledger.
@@ -89,6 +90,17 @@ Deno.serve(async (req: Request) => {
   }
 
   if (!proofPath) return json({ success: true, proof_deleted: true, already_without_proof: true, status: decision }, 200, origin);
+
+  // Legacy evidence belongs to the source project. Never remove it from this target bucket.
+  if (proofStorageSource === "legacy") {
+    return json({
+      success: true,
+      proof_deleted: false,
+      legacy_proof_preserved: true,
+      status: decision,
+      message: "Keputusan pembayaran berhasil. Bukti lama tetap dipertahankan di Storage lama dan tidak disentuh.",
+    }, 200, origin);
+  }
 
   // Retry once for transient Storage failures. Keep proof_path if Storage rejects
   // deletion so the file remains traceable for a later cleanup; it is not shown in
