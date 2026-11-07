@@ -1,5 +1,5 @@
 -- WEBKAS application Realtime publication membership.
--- Audit/restore aid only; do not execute until all 11 public tables exist
+-- Audit/restore aid only; do not execute until all 7 non-chat public tables exist
 -- and the target database restore has been verified.
 -- This intentionally excludes Supabase-managed realtime.messages partitions.
 
@@ -15,15 +15,11 @@ BEGIN
 
   FOREACH table_name IN ARRAY ARRAY[
     'admin_audit_log',
-    'chat_messages',
     'dues_settings',
     'information_messages',
     'member_profiles',
     'member_wallets',
-    'p4_p5_p6_chat_messages',
-    'p5_p6_chat_messages',
     'payment_submissions',
-    'private_messages',
     'wallet_transactions'
   ]
   LOOP
