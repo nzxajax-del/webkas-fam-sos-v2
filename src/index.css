@@ -1589,3 +1589,25 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .quota-rpm-gauge>strong{margin-top:-2px;color:#cbd6bf;font-size:9px;font-weight:900;letter-spacing:.12em;line-height:1.2}
 @media(max-width:420px){.quota-rpm-panel{gap:5px;padding:6px 8px}.quota-rpm-gauge{width:96px}}
 @media(prefers-reduced-motion:reduce){.quota-rpm-progress{transition:none}}
+
+
+/* Ikon dan dialog pemulihan khusus akun Developer pada halaman login. */
+.auth-panel-topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.auth-panel-topbar .brand-mark{min-width:0;flex:1}
+.auth-admin-recovery-button{display:grid;justify-items:center;align-content:center;gap:2px;flex:0 0 54px;min-width:54px;min-height:54px;padding:5px;border:1px solid #586744;border-radius:13px;background:linear-gradient(145deg,#252f1d,#10150e);color:#c1f45a}
+.auth-admin-recovery-button .admin-skull-icon{width:27px;height:27px}
+.auth-admin-recovery-button span{font-size:8px;font-weight:950;letter-spacing:.12em}
+.auth-admin-recovery-button:focus-visible,.admin-recovery-close:focus-visible{outline:2px solid var(--lime);outline-offset:3px}
+.admin-recovery-overlay{position:fixed;inset:0;z-index:11000;display:grid;place-items:center;padding:16px;background:#000c;backdrop-filter:blur(4px)}
+.admin-recovery-dialog{position:relative;width:min(420px,100%);padding:28px 22px 20px;border:1px solid #536640;border-radius:20px;background:linear-gradient(155deg,#1a2414,#10140e);box-shadow:0 24px 90px #000d}
+.admin-recovery-close{position:absolute;top:10px;right:12px;width:34px;height:34px;border:1px solid #45523a;border-radius:10px;background:#0d120b;color:#e8efdf;font-size:23px;line-height:1}
+.admin-recovery-mark{display:grid;place-items:center;width:48px;height:48px;margin-bottom:14px;border:1px solid #536640;border-radius:14px;background:#11180e;color:var(--lime)}
+.admin-recovery-mark .admin-skull-icon{width:32px;height:32px}
+.admin-recovery-dialog h2{margin:8px 0}
+.admin-recovery-email{display:grid;gap:5px;margin:18px 0;padding:13px;border:1px solid #3c4c2f;border-radius:12px;background:#0d120b}
+.admin-recovery-email span{color:#9eaa91;font-size:11px}
+.admin-recovery-email strong{color:#dff7b7;font-size:14px;overflow-wrap:anywhere}
+.admin-recovery-footnote{margin:13px 0 0;color:#87917a;font-size:11px;line-height:1.5;text-align:center}
+@media(max-width:380px){.auth-panel-topbar{gap:8px}.auth-panel-topbar .brand-mark{gap:8px}.auth-panel-topbar .brand-mark strong{font-size:11px}.auth-admin-recovery-button{flex-basis:49px;min-width:49px;min-height:49px}}
+
+.admin-recovery-dashboard-link{display:block;margin:0 0 14px;color:#c1f45a;font-size:12px;font-weight:800;text-align:center;text-decoration:underline;text-underline-offset:3px}
