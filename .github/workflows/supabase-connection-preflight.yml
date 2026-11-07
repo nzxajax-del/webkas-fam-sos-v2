@@ -57,11 +57,13 @@ jobs:
 
               if not scheme_ok or not host:
                   # Safe diagnostics only: never print the secret or any URI component.
+                  has_linebreak = ("\\n" in raw or "\\r" in raw)
+                  wrapped_in_quotes = (len(raw) >= 2 and raw[0] == raw[-1] and raw[0] in ("'", '"'))
                   print(f"{label}: URI format invalid; scheme_ok={scheme_ok}, host_present={bool(host)}, "
                         f"starts_with_postgresql={raw.lower().startswith('postgresql://')}, "
                         f"starts_with_postgres={raw.lower().startswith('postgres://')}, "
-                        f"has_at_sign={'@' in raw}, has_linebreak=({'\\n' in raw or '\\r' in raw}), "
-                        f"wrapped_in_quotes={len(raw) >= 2 and raw[0] == raw[-1] and raw[0] in chr(34) + chr(39)}.")
+                        f"has_at_sign={'@' in raw}, has_linebreak={has_linebreak}, "
+                        f"wrapped_in_quotes={wrapped_in_quotes}.")
                   raise SystemExit(1)
 
               try:
