@@ -1,0 +1,77 @@
+{
+  "captured_at_utc": "2026-11-07T02:46:00Z",
+  "scope": {
+    "source_project_ref": "lzciyzibqbujshoizlbu",
+    "target_project_ref": "cdqmeenrwsbkcpclitgh",
+    "mode": "read_only"
+  },
+  "security_advisor": {
+    "source": {
+      "rls_enabled_no_policy": {
+        "count": 2,
+        "findings": [
+          "private.rank_dues_rate_history",
+          "public.member_rank_rate_history"
+        ],
+        "assessment": "No policy means ordinary role access is blocked by RLS; verify intended server-only access and avoid adding broad policies."
+      },
+      "security_definer_callable_by_anon": {
+        "count": 5,
+        "functions": [
+          "public.admin_delete_information_message(uuid)",
+          "public.admin_delete_member_leave_request(uuid)",
+          "public.admin_get_rank_dues_rates()",
+          "public.admin_schedule_rank_dues_rate(text,numeric)",
+          "public.get_rank_daily_rate(text)"
+        ],
+        "assessment": "Catalog inspection confirms anon EXECUTE grants. Function bodies inspected for all five and each checks auth.uid() / active member role before privileged action or data return. This reduces immediate exploitability for anonymous sessions but does not remove unnecessary anon exposure. Review client call patterns, then revoke anon EXECUTE and retain authenticated grants only if verified safe."
+      },
+      "security_definer_callable_by_authenticated": {
+        "count": 15,
+        "assessment": "Advisor warning is not proof of a vulnerability. These functions may intentionally use SECURITY DEFINER to perform controlled operations under RLS. Review authorization checks, search_path pinning, and grants individually before changing."
+      },
+      "leaked_password_protection_disabled": {
+        "count": 1,
+        "assessment": "Auth password breach screening is disabled. This is a security hardening recommendation, not evidence that existing password hashes or user accounts are compromised."
+      }
+    },
+    "target": {
+      "security_advisor_findings": 0,
+      "public_application_tables": 0,
+      "edge_functions": 0
+    }
+  },
+  "additional_catalog_verification": {
+    "anon_execute_grants_confirmed": 5,
+    "authenticated_execute_grants_confirmed": 15,
+    "functions_inspected": 5,
+    "authorization_checks_observed": [
+      "admin_delete_information_message checks auth.uid(), active status, and admin role",
+      "admin_delete_member_leave_request checks auth.uid(), active status, and admin/admin_assistant role",
+      "admin_get_rank_dues_rates checks active admin role",
+      "admin_schedule_rank_dues_rate checks active admin role before writing",
+      "get_rank_daily_rate checks active member and restricts non-admins to their own rank"
+    ],
+    "no_production_changes": true
+  },
+  "actions_taken": {
+    "source_database_modified": false,
+    "target_database_modified": false,
+    "permissions_changed": false,
+    "frontend_changed": false,
+    "deployment_performed": false
+  },
+  "recommended_next_steps": [
+    "Review all SECURITY DEFINER function bodies, grants, and search_path settings against actual frontend call paths.",
+    "Resolve whether the two RLS-without-policy tables are intentionally server-only.",
+    "Evaluate enabling leaked-password protection with care for its effect on future password changes; do not reset existing member passwords.",
+    "Obtain complete restorable database, Auth, Storage, Edge Function source and secrets backups before migration.",
+    "Reconcile source migration history with repository SQL files before rebuilding target."
+  ],
+  "limitations": [
+    "This is a read-only security review, not a penetration test.",
+    "No authorization grants were changed.",
+    "No user passwords, hashes, tokens, or secret values were exported.",
+    "The existing migration gap report and restore-readiness report remain applicable."
+  ]
+}
