@@ -32,7 +32,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install --yes postgresql-client
 
-      - name: Test source database with a read-only query
+      - name: Test source and target databases with read-only queries
         shell: bash
         run: |
           set +x
@@ -41,75 +41,62 @@ jobs:
           import subprocess
           from urllib.parse import urlsplit, unquote
 
-          raw = os.environ["SOURCE_DB_URL"].strip()
-          parsed = urlsplit(raw)
-          if parsed.scheme not in ("postgres", "postgresql") or not parsed.hostname:
-              raise SystemExit("SOURCE_DB_URL format check failed (scheme/host).")
-          try:
-              port = parsed.port or 5432
-          except ValueError:
-              raise SystemExit("SOURCE_DB_URL port format check failed.")
-          env = os.environ.copy()
-          env.update({
-              "PGHOST": parsed.hostname,
-              "PGPORT": str(port),
-              "PGUSER": unquote(parsed.username or ""),
-              "PGPASSWORD": unquote(parsed.password or ""),
-              "PGDATABASE": unquote(parsed.path.lstrip("/")),
-              "PGCONNECT_TIMEOUT": "15",
-          })
-          if not all((env["PGUSER"], env["PGPASSWORD"], env["PGDATABASE"])):
-              raise SystemExit("SOURCE_DB_URL is missing username, password, or database.")
-          result = subprocess.run(
-              ["psql", "-X", "-A", "-t", "-v", "ON_ERROR_STOP=1", "-c", "SELECT current_database();"],
-              env=env, text=True, capture_output=True
-          )
-          if result.returncode:
-              print("Source database connection failed; psql returned an error without exposing connection credentials.")
-              print(result.stderr.strip())
-              raise SystemExit(result.returncode)
-          if result.stdout.strip() != "postgres":
-              raise SystemExit("Source database connected but returned an unexpected database name.")
-          print("Source database connection succeeded; SELECT-only check passed.")
-          PY
+          def check(label, variable):
+              raw = os.environ[variable].strip().lstrip("\\ufeff")
+              # GitHub secrets are sometimes pasted with surrounding quote marks.
+              if len(raw) >= 2 and raw[0] == raw[-1] and raw[0] in ("'", '"'):
+                  raw = raw[1:-1].strip()
+              try:
+                  parsed = urlsplit(raw)
+                  scheme_ok = parsed.scheme in ("postgres", "postgresql")
+                  host = parsed.hostname
+              except ValueError:
+                  scheme_ok = False
+                  host = None
+                  parsed = None
 
-      - name: Test target database with a read-only query
-        shell: bash
-        run: |
-          set +x
-          python3 - <<'PY'
-          import os
-          import subprocess
-          from urllib.parse import urlsplit, unquote
+              if not scheme_ok or not host:
+                  # Safe diagnostics only: never print the secret or any URI component.
+                  print(f"{label}: URI format invalid; scheme_ok={scheme_ok}, host_present={bool(host)}, "
+                        f"starts_with_postgresql={raw.lower().startswith('postgresql://')}, "
+                        f"starts_with_postgres={raw.lower().startswith('postgres://')}, "
+                        f"has_at_sign={'@' in raw}, has_linebreak=({'\\n' in raw or '\\r' in raw}), "
+                        f"wrapped_in_quotes={len(raw) >= 2 and raw[0] == raw[-1] and raw[0] in chr(34) + chr(39)}.")
+                  raise SystemExit(1)
 
-          raw = os.environ["TARGET_DB_URL"].strip()
-          parsed = urlsplit(raw)
-          if parsed.scheme not in ("postgres", "postgresql") or not parsed.hostname:
-              raise SystemExit("TARGET_DB_URL format check failed (scheme/host).")
-          try:
-              port = parsed.port or 5432
-          except ValueError:
-              raise SystemExit("TARGET_DB_URL port format check failed.")
-          env = os.environ.copy()
-          env.update({
-              "PGHOST": parsed.hostname,
-              "PGPORT": str(port),
-              "PGUSER": unquote(parsed.username or ""),
-              "PGPASSWORD": unquote(parsed.password or ""),
-              "PGDATABASE": unquote(parsed.path.lstrip("/")),
-              "PGCONNECT_TIMEOUT": "15",
-          })
-          if not all((env["PGUSER"], env["PGPASSWORD"], env["PGDATABASE"])):
-              raise SystemExit("TARGET_DB_URL is missing username, password, or database.")
-          result = subprocess.run(
-              ["psql", "-X", "-A", "-t", "-v", "ON_ERROR_STOP=1", "-c", "SELECT current_database();"],
-              env=env, text=True, capture_output=True
-          )
-          if result.returncode:
-              print("Target database connection failed; psql returned an error without exposing connection credentials.")
-              print(result.stderr.strip())
-              raise SystemExit(result.returncode)
-          if result.stdout.strip() != "postgres":
-              raise SystemExit("Target database connected but returned an unexpected database name.")
-          print("Target database connection succeeded; SELECT-only check passed.")
+              try:
+                  port = parsed.port or 5432
+              except ValueError:
+                  print(f"{label}: URI port format invalid.")
+                  raise SystemExit(1)
+
+              env = os.environ.copy()
+              env.update({
+                  "PGHOST": host,
+                  "PGPORT": str(port),
+                  "PGUSER": unquote(parsed.username or ""),
+                  "PGPASSWORD": unquote(parsed.password or ""),
+                  "PGDATABASE": unquote(parsed.path.lstrip("/")),
+                  "PGCONNECT_TIMEOUT": "15",
+              })
+              if not all((env["PGUSER"], env["PGPASSWORD"], env["PGDATABASE"])):
+                  print(f"{label}: URI is missing username, password, or database.")
+                  raise SystemExit(1)
+
+              result = subprocess.run(
+                  ["psql", "-X", "-A", "-t", "-v", "ON_ERROR_STOP=1",
+                   "-c", "SELECT current_database();"],
+                  env=env, text=True, capture_output=True
+              )
+              if result.returncode:
+                  print(f"{label}: database connection failed; PostgreSQL returned:")
+                  print(result.stderr.strip())
+                  raise SystemExit(result.returncode)
+              if result.stdout.strip() != "postgres":
+                  print(f"{label}: connected, but returned an unexpected database name.")
+                  raise SystemExit(1)
+              print(f"{label}: connection succeeded; SELECT-only check passed.")
+
+          check("SOURCE_DB_URL", "SOURCE_DB_URL")
+          check("TARGET_DB_URL", "TARGET_DB_URL")
           PY
