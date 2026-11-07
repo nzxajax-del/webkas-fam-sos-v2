@@ -67,22 +67,28 @@ jobs:
 
       - name: Verify final database, Storage, and Realtime inventory
         run: |
-          docker run --rm --network host -e DB_URL="$TARGET_DB_URL" postgres:17 sh -ec '
-            test "$(psql "$DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM auth.users")" = "84"
-            test "$(psql "$DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM auth.identities")" = "84"
-            test "$(psql "$DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM storage.buckets")" = "3"
-            test "$(psql "$DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM storage.objects")" = "63"
-            test "$(psql "$DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM pg_policies WHERE schemaname = '''storage'''")" = "9"
-            test "$(psql "$DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM pg_publication_tables WHERE pubname = '''supabase_realtime''' AND schemaname = '''public'''")" = "11"
-            test "$(psql "$DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM pg_extension WHERE extname = '''pg_cron'''")" = "1"
-          '
+          docker run --rm --network host \
+            -e SOURCE_DB_URL="$SOURCE_DB_URL" \
+            -e TARGET_DB_URL="$TARGET_DB_URL" postgres:17 sh -ec '
+              for query in \
+                "SELECT count(*) FROM auth.users" \
+                "SELECT count(*) FROM auth.identities" \
+                "SELECT count(*) FROM storage.buckets" \
+                "SELECT count(*) FROM storage.objects"; do
+                source_value="$(psql "$SOURCE_DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "$query")"
+                target_value="$(psql "$TARGET_DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "$query")"
+                test "$source_value" = "$target_value"
+              done
+
+              test "$(psql "$TARGET_DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM pg_policies WHERE schemaname = '''storage'''")" = "9"
+              test "$(psql "$TARGET_DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM pg_publication_tables WHERE pubname = '''supabase_realtime''' AND schemaname = '''public'''")" = "11"
+              test "$(psql "$TARGET_DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT extversion FROM pg_extension WHERE extname = '''pg_cron'''")" = "1.6.4"
+            '
           echo "Database, Auth, Storage, policies, Realtime, and pg_cron inventory checks passed."
 
       - name: Confirm cron jobs remain unscheduled
         run: |
           docker run --rm --network host -e DB_URL="$TARGET_DB_URL" postgres:17 sh -ec '
-            if psql "$DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM cron.job" | grep -qv "^0$"; then
-              echo "Unexpected cron jobs exist; do not cut over."
-              exit 1
-            fi
+            jobs="$(psql "$DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM cron.job")"
+            test "$jobs" = "0" || { echo "Unexpected cron jobs exist; do not cut over."; exit 1; }
           '
