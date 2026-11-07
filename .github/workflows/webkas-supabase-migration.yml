@@ -46,70 +46,6 @@ jobs:
       - name: Install application dependencies for Storage transfer
         run: npm install
 
-      - name: Temporarily freeze source writes for a consistent snapshot
-        shell: bash
-        run: |
-          cat > "$RUNNER_TEMP/source-freeze.sql" <<'SQL'
-          SET lock_timeout = '30s';
-          BEGIN;
-          LOCK TABLE
-            public.admin_audit_log,
-            public.chat_messages,
-            public.dues_settings,
-            public.information_messages,
-            public.member_profiles,
-            public.member_wallets,
-            public.p4_p5_p6_chat_messages,
-            public.p5_p6_chat_messages,
-            public.payment_submissions,
-            public.private_conversations,
-            public.private_chat_hidden,
-            public.private_messages,
-            public.wallet_transactions,
-            public.daily_dues_log,
-            public.dues_rate_history,
-            public.app_branding_settings,
-            public.member_rank_rate_history,
-            public.member_leave_requests,
-            public.treasury_history,
-            private.admin_bootstrap_tokens,
-            private.admin_transaction_report_state,
-            private.rank_dues_rate_history,
-            private.storage_cleanup_state,
-            auth.users,
-            auth.identities,
-            storage.buckets,
-            storage.objects
-          IN SHARE MODE;
-          SELECT 'WEBKAS_SOURCE_LOCK_ACQUIRED';
-          SELECT pg_sleep(2400);
-          COMMIT;
-          SQL
-
-          docker run -d --name webkas-source-write-freeze --network host \
-            -e DB_URL="$SOURCE_DB_URL" \
-            -v "$RUNNER_TEMP/source-freeze.sql:/tmp/source-freeze.sql:ro" \
-            postgres:17 sh -ec 'psql "$DB_URL" -X -v ON_ERROR_STOP=1 -f /tmp/source-freeze.sql' >/dev/null
-
-          acquired=false
-          for attempt in $(seq 1 45); do
-            if docker logs webkas-source-write-freeze 2>&1 | grep -q "WEBKAS_SOURCE_LOCK_ACQUIRED"; then
-              acquired=true
-              break
-            fi
-            if [[ "$(docker inspect -f '{{.State.Running}}' webkas-source-write-freeze 2>/dev/null || echo false)" != "true" ]]; then
-              docker logs webkas-source-write-freeze || true
-              echo "Could not acquire the source write-freeze; no migration has started."
-              exit 1
-            fi
-            sleep 1
-          done
-          if [[ "$acquired" != "true" ]]; then
-            echo "Timed out waiting for the source write-freeze; no migration has started."
-            exit 1
-          fi
-          echo "Source writes are temporarily locked; reads remain available during the migration snapshot."
-
       - name: Restore database in one transaction and verify row checksums
         run: bash scripts/restore-supabase-database.sh
 
@@ -168,9 +104,6 @@ jobs:
             test "$jobs" = "0" || { echo "Unexpected cron jobs exist; do not cut over."; exit 1; }
           '
 
-      - name: Final source-to-target row parity while source remains write-locked
+      - name: Final source-to-target row parity (read-only source; fail closed on changes)
         run: bash scripts/restore-supabase-database.sh
 
-      - name: Release source write-freeze
-        if: always()
-        run: docker rm -f webkas-source-write-freeze >/dev/null 2>&1 || true
