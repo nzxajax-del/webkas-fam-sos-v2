@@ -30,6 +30,9 @@ jobs:
       - name: Check database restore shell syntax
         run: bash -n scripts/restore-supabase-database.sh
 
+      - name: Parse gated migration workflow YAML
+        run: ruby -e 'require "yaml"; YAML.load_file(".github/workflows/webkas-supabase-migration.yml")'
+
       - name: Check Storage transfer JavaScript syntax
         run: node --check scripts/migrate-storage.mjs
 
