@@ -84,3 +84,13 @@ The installed extension sets are almost identical. Both projects have `pg_stat_s
 
 ## Cloudflare cutover guard
 The production GitHub workflow `.github/workflows/deploy-cloudflare.yml` deploys to Cloudflare Workers on every push to `main`. The frontend currently resolves its Supabase URL and publishable key from `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY`, with source-project fallbacks in `src/lib/supabase.js`. On this audit branch only, the fallback URL and publishable key have been staged for target project `cdqmeenrwsbkcpclitgh`, and `.env.example` now references the target URL. This is not deployed. Do not merge or push this branch to `main` until database, Auth, Storage, Realtime, and Edge Function verification is complete; doing so triggers the production Worker deployment automatically.
+
+## Application table and RLS checkpoint
+The source application inventory currently contains 23 tables: 19 in `public` and 4 in `private`. All 19 public tables have RLS enabled. Three private tables (`private.admin_bootstrap_tokens`, `private.storage_cleanup_state`, and `private.admin_transaction_report_state`) have RLS disabled; the fourth private table (`private.rank_dues_rate_history`) has RLS enabled but no policy. The source grants no table privileges on these private tables to `anon`, `authenticated`, or `service_role`. Do not auto-enable RLS on these private tables: doing so without designed policies could break server-side functions, and the private schema is not assumed to be API-exposed. Recheck schema exposure and function access before any security remediation.
+
+Source application table counts at this checkpoint:
+- Public: `member_profiles` 84; `dues_settings` 1; `member_wallets` 84; `wallet_transactions` 1,201; `daily_dues_log` 1,082; `payment_submissions` 235; `admin_audit_log` 626; `dues_rate_history` 1; `app_branding_settings` 1; `chat_messages` 12; `private_conversations` 6; `private_messages` 16; `private_chat_hidden` 3; `p5_p6_chat_messages` 2; `p4_p5_p6_chat_messages` 6; `member_rank_rate_history` 109; `information_messages` 2; `member_leave_requests` 7; `treasury_history` 8.
+- Private: `admin_bootstrap_tokens` 1; `storage_cleanup_state` 1; `admin_transaction_report_state` 1; `rank_dues_rate_history` 1.
+These counts are a checkpoint, not hardcoded assumptions for final validation; the source may continue to receive legitimate activity before cutover.
+
+The target already has the standard `supabase_realtime` publication, but currently no application tables. The source has 11 application tables in that publication. The guarded restore script is at `supabase/migration-audit/restore-realtime-publication.sql`; it deliberately excludes platform-managed Realtime message partitions/publications.
