@@ -19,7 +19,9 @@ for (const [name, value] of Object.entries({
 // Keep the legacy source/target bucket untouched as a non-production archive; only
 // payment and registration evidence are required for the target cutover.
 const bucketConfig = [
-  { name: "payment-proofs", fileSizeLimit: 5 * 1024 * 1024 },
+  // Existing payment evidence is intentionally archived in the source project.
+  // New payments upload directly to the private target payment-proofs bucket.
+  // Registration evidence remains in scope for migration.
   { name: "registration-proofs", fileSizeLimit: 2 * 1024 * 1024 },
 ];
 const allowedMimeTypes = ["image/jpeg", "image/png", "image/webp"];
