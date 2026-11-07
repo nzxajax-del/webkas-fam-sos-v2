@@ -1609,3 +1609,5 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 .admin-recovery-email strong{color:#dff7b7;font-size:14px;overflow-wrap:anywhere}
 .admin-recovery-footnote{margin:13px 0 0;color:#87917a;font-size:11px;line-height:1.5;text-align:center}
 @media(max-width:380px){.auth-panel-topbar{gap:8px}.auth-panel-topbar .brand-mark{gap:8px}.auth-panel-topbar .brand-mark strong{font-size:11px}.auth-admin-recovery-button{flex-basis:49px;min-width:49px;min-height:49px}}
+
+.admin-recovery-dashboard-link{display:block;margin:0 0 14px;color:#c1f45a;font-size:12px;font-weight:800;text-align:center;text-decoration:underline;text-underline-offset:3px}
