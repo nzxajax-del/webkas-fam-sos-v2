@@ -64,3 +64,15 @@ Source Auth row counts (counts only; no credential contents were read): 84 users
 One source-specific customization is missing from target: the source has a single non-internal trigger `auth.users.on_auth_user_created`, calling `public.handle_new_auth_user()`; target has no non-internal Auth trigger. The function creates `public.member_profiles` and `public.member_wallets` on new Auth-user insertion, sets pending/member defaults, and does not create ADM debt. A guarded, non-executed restore SQL file has been recorded at `supabase/migration-audit/restore-auth-customizations.sql`. Recreate this trigger only after the public schema/tables are restored and before enabling registration on target.
 
 The source also has 135 active Auth session rows and 762 refresh-token rows. These are not required to preserve password-based account credentials and should not be copied blindly; plan for users to authenticate again after cutover unless a separate token/JWT continuity design is explicitly validated. The source and target JWT secrets/API keys are not assumed to match.
+
+## Additional Storage audit
+The source has three private buckets, all restricted to image uploads:
+- `payment-proofs`: 5 MiB limit; 3 objects; 5,570,882 bytes.
+- `profile-photos`: 3 MiB limit; 29 objects; 24,540,765 bytes.
+- `registration-proofs`: 2 MiB limit; 31 objects; 26,212,302 bytes.
+Total: 63 objects, 56,323,949 bytes (about 56.3 MB). All three buckets are private and allow JPEG, PNG, and WEBP.
+
+Source has 9 custom policies on `storage.objects`; target currently has 0. A non-executed restore file has been captured at `supabase/migration-audit/restore-storage-policies.sql`. Recreate buckets through the Storage API (not by assuming a database dump transfers S3 binaries), transfer the object paths, then apply policies only after the required `public`/`private` helper functions and member tables are restored. Verify every object count and byte size; keep all buckets private.
+
+## Edge Function deployment readiness
+The seven deployed function entrypoint files are byte-for-byte identical to the existing GitHub backups on this audit branch. The functions only reference Supabase's standard runtime variables (`SUPABASE_URL`, `SUPABASE_ANON_KEY`, and/or `SUPABASE_SERVICE_ROLE_KEY`); no additional custom environment variable names were found. No secrets were read. Before deploying, verify the target project injects the standard variables and review the `cleanup-payment-proofs` CORS allowlist because it does not currently include the production Cloudflare Worker origin.
