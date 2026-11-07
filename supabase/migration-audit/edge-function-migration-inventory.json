@@ -1,0 +1,142 @@
+{
+  "audit": "WEBKAS FAM SOS V2 Edge Function migration inventory",
+  "audited_at": "2026-11-07",
+  "source_project_ref": "lzciyzibqbujshoizlbu",
+  "target_project_ref": "cdqmeenrwsbkcpclitgh",
+  "mode": "read_only",
+  "production_changes": false,
+  "functions": [
+    {
+      "slug": "member-register",
+      "version": 6,
+      "status": "ACTIVE",
+      "verify_jwt": false,
+      "sha256": "cac7d15e29bd2a553813f74808badf2ee3377de8644d514e2d1a035d0498c1ff",
+      "env_vars": [
+        "SUPABASE_SERVICE_ROLE_KEY",
+        "SUPABASE_URL"
+      ],
+      "allowed_frontend_origins": [
+        "https://webkas-fam-sos-v2.netlify.app",
+        "https://webkas-fam-sos-v2.nzxajax.workers.dev"
+      ],
+      "source_file_count": 1
+    },
+    {
+      "slug": "cleanup-payment-proofs",
+      "version": 2,
+      "status": "ACTIVE",
+      "verify_jwt": true,
+      "sha256": "8f2e3e5c57359b84306f6f014d7035cd82b3b238bc9e3d32109934be1f25e368",
+      "env_vars": [
+        "SUPABASE_ANON_KEY",
+        "SUPABASE_SERVICE_ROLE_KEY",
+        "SUPABASE_URL"
+      ],
+      "allowed_frontend_origins": [
+        "https://webkas-fam-sos-v2.netlify.app"
+      ],
+      "source_file_count": 1
+    },
+    {
+      "slug": "account-settings",
+      "version": 2,
+      "status": "ACTIVE",
+      "verify_jwt": false,
+      "sha256": "1cf93a054b51d5f1663ef46e7d37c7729fc478a8927207f7e24a0b5678cc8bc8",
+      "env_vars": [
+        "SUPABASE_ANON_KEY",
+        "SUPABASE_SERVICE_ROLE_KEY",
+        "SUPABASE_URL"
+      ],
+      "allowed_frontend_origins": [
+        "https://webkas-fam-sos-v2.netlify.app",
+        "https://webkas-fam-sos-v2.nzxajax.workers.dev"
+      ],
+      "source_file_count": 1
+    },
+    {
+      "slug": "review-payment",
+      "version": 6,
+      "status": "ACTIVE",
+      "verify_jwt": true,
+      "sha256": "749d2e61f5a32ebbce94f87d6a04565249665e658945b0f42a597b2c5182e13f",
+      "env_vars": [
+        "SUPABASE_ANON_KEY",
+        "SUPABASE_SERVICE_ROLE_KEY",
+        "SUPABASE_URL"
+      ],
+      "allowed_frontend_origins": [
+        "https://webkas-fam-sos-v2.netlify.app",
+        "https://webkas-fam-sos-v2.nzxajax.workers.dev"
+      ],
+      "source_file_count": 1
+    },
+    {
+      "slug": "delete-completed-payment-history",
+      "version": 1,
+      "status": "ACTIVE",
+      "verify_jwt": true,
+      "sha256": "56e343ec125f24d02289e3b22be3ca662676284a207af939fb6424934f917ea0",
+      "env_vars": [
+        "SUPABASE_ANON_KEY",
+        "SUPABASE_SERVICE_ROLE_KEY",
+        "SUPABASE_URL"
+      ],
+      "allowed_frontend_origins": [
+        "https://webkas-fam-sos-v2.netlify.app",
+        "https://webkas-fam-sos-v2.nzxajax.workers.dev"
+      ],
+      "source_file_count": 1
+    },
+    {
+      "slug": "admin-reset-member-password",
+      "version": 1,
+      "status": "ACTIVE",
+      "verify_jwt": false,
+      "sha256": "93796869150e60eedd4371ae1d12c15e13cf6d34aab8149f0f7c1f9336cb3d82",
+      "env_vars": [
+        "SUPABASE_ANON_KEY",
+        "SUPABASE_SERVICE_ROLE_KEY",
+        "SUPABASE_URL"
+      ],
+      "allowed_frontend_origins": [
+        "https://webkas-fam-sos-v2.netlify.app",
+        "https://webkas-fam-sos-v2.nzxajax.workers.dev"
+      ],
+      "source_file_count": 1
+    },
+    {
+      "slug": "review-member-registration",
+      "version": 2,
+      "status": "ACTIVE",
+      "verify_jwt": true,
+      "sha256": "49eb3830134bffe8e94e3722b8039631d77ca21f73427f771825668cc1ea62b1",
+      "env_vars": [
+        "SUPABASE_ANON_KEY",
+        "SUPABASE_SERVICE_ROLE_KEY",
+        "SUPABASE_URL"
+      ],
+      "allowed_frontend_origins": [
+        "https://webkas-fam-sos-v2.netlify.app",
+        "https://webkas-fam-sos-v2.nzxajax.workers.dev"
+      ],
+      "source_file_count": 1
+    }
+  ],
+  "findings": [
+    "All 7 deployed functions are active and each exposes one index.ts source file in the connector.",
+    "Each function requires SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY; functions using authenticated user context also require SUPABASE_ANON_KEY.",
+    "The currently inspected source uses runtime environment lookups; no secret values were read or copied.",
+    "cleanup-payment-proofs allows the Netlify origin but does not list the current Cloudflare Workers origin; this may block browser calls from the live Workers site.",
+    "The other six functions include the Cloudflare Workers origin in their allowed-origin sets.",
+    "Function source can be reconstructed from this read-only inspection, but required secret values still need secure provisioning on the target."
+  ],
+  "migration_requirements": [
+    "Provision target project function secrets through a secure secret manager/CLI session, never through chat.",
+    "Deploy exact source versions only after database schema/RPCs and Storage buckets exist.",
+    "Verify CORS origins against the actual production frontend domain before deployment.",
+    "Run function-level smoke tests using test accounts, including registration, account settings, payment review, payment-history deletion, password reset, and registration review."
+  ],
+  "safety": "No function deployed, modified, invoked, or had secrets accessed."
+}
