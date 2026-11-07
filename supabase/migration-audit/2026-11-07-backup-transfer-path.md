@@ -104,3 +104,12 @@ The source and target both have `supabase_vault 0.3.1` installed. The source con
 - Restore SQL files for Auth trigger, Storage policies, and Realtime publication are prepared but not applied.
 
 Storage object metadata audit found only standard fields on all 63 files: `cacheControl`, `contentLength`, `eTag`, `httpStatusCode`, `lastModified`, `mimetype`, and `size`. There are no custom object metadata keys. The transfer utility preserves object path, binary content, MIME type, cache control, and byte size, then verifies content with SHA-256. Storage-generated ETags and last-modified timestamps will naturally be regenerated on upload; no application logic was found to depend on those generated values.
+
+## Gated execution workflow status
+The execution workflow is prepared at `.github/workflows/webkas-supabase-migration.yml`. It is triggered only by a one-time marker file `supabase/migration-audit/EXECUTE_MIGRATION` on the audit branch; that marker has not been created, so no migration run has started. The workflow uses four GitHub Repository Secrets documented in `supabase/migration-audit/SECRETS-SETUP.md`.
+
+Before export, the workflow opens a temporary PostgreSQL transaction and acquires SHARE locks on all 23 application tables plus Auth users/identities and Storage buckets/objects. This briefly blocks writes while allowing reads, and an unconditional cleanup step releases the lock even on failure. It then performs the database restore, Storage transfer, applies the Storage policies, installs pg_cron without scheduling jobs, and verifies source/target inventories. It does not deploy Edge Functions or modify Cloudflare/production.
+
+The static audit workflow has completed successfully on the audit branch: shell syntax, Storage JavaScript syntax, frontend build, and the three restore SQL files applied to an isolated temporary PostgreSQL test schema all passed. These checks do not connect to or write to either Supabase project.
+
+At the latest read-only check, the target still has 0 public application tables, 0 Auth users, 0 Auth identities, 0 Storage buckets, and 0 Storage objects. The production `main` branch still points to the old source project; only the audit branch has the target client configuration staged.
