@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - supabase-migration-audit
+      - fix/rank-emblem-avatar-no-profile-storage-20261107
     paths:
       - "scripts/**"
       - "supabase/migration-audit/**"
