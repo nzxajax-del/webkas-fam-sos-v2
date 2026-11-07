@@ -33,6 +33,12 @@ jobs:
       - name: Check Storage transfer JavaScript syntax
         run: node --check scripts/migrate-storage.mjs
 
+      - name: Confirm audit client points to the target project
+        run: |
+          grep -q "https://cdqmeenrwsbkcpclitgh.supabase.co" src/lib/supabase.js
+          grep -q "sb_publishable_um2IJ0PsPMFk3oIHuY8L_g_N_oQymfP" src/lib/supabase.js
+          ! grep -q "lzciyzibqbujshoizlbu.supabase.co" src/lib/supabase.js
+
       - name: Install app dependencies
         run: npm install
 
