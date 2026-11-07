@@ -1,0 +1,64 @@
+name: WEBKAS safe preflight (read-only)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: webkas-safe-preflight
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    name: Repository and build preflight
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout audit branch
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Record repository inventory
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p preflight-report
+          {
+            echo "# WEBKAS safe preflight"
+            echo
+            echo "- Commit: $(git rev-parse HEAD)"
+            echo "- Branch/ref: ${GITHUB_REF}"
+            echo "- Node: $(node --version)"
+            echo "- npm: $(npm --version)"
+            echo "- Package lock: $(if [ -f package-lock.json ]; then echo present; else echo MISSING; fi)"
+            echo "- Supabase config: $(if [ -f supabase/config.toml ]; then echo present; else echo MISSING; fi)"
+            echo "- Migration files: $(find supabase/migrations -maxdepth 1 -type f 2>/dev/null | wc -l | tr -d ' ')"
+            echo "- Edge Function directories: $(find supabase/functions -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l | tr -d ' ')"
+            echo
+            echo "## Migration file inventory"
+            find supabase/migrations -maxdepth 1 -type f -printf '%f\n' 2>/dev/null | sort || true
+            echo
+            echo "## Edge Function inventory"
+            find supabase/functions -mindepth 1 -maxdepth 1 -type d -printf '%f\n' 2>/dev/null | sort || true
+          } > preflight-report/report.md
+
+      - name: Install dependencies in ephemeral runner
+        run: npm install --ignore-scripts --no-audit --no-fund
+
+      - name: Build frontend (no deployment)
+        run: npm run build
+
+      - name: Upload preflight report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: webkas-safe-preflight-report
+          path: preflight-report/report.md
+          if-no-files-found: warn
+          retention-days: 7
