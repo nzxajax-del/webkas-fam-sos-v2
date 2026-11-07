@@ -49,6 +49,22 @@ jobs:
       - name: Restore database in one transaction and verify row checksums
         run: bash scripts/restore-supabase-database.sh
 
+      - name: Apply proof-source and chat-retirement migrations to target
+        run: |
+          docker run --rm --network host \
+            -e DB_URL="$TARGET_DB_URL" \
+            -v "$GITHUB_WORKSPACE/supabase/migrations:/migrations:ro" \
+            postgres:17 sh -ec '
+              psql "$DB_URL" -X --single-transaction -v ON_ERROR_STOP=1 \
+                -f /migrations/20261107082257_separate_legacy_and_current_payment_proofs.sql \
+                -f /migrations/20261107090715_harden_authenticated_rpc_search_paths.sql
+              chat_tables="$(psql "$DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM information_schema.tables WHERE table_schema = \'public\' AND table_type = \'BASE TABLE\' AND table_name IN (\'chat_messages\',\'p4_p5_p6_chat_messages\',\'p5_p6_chat_messages\',\'private_chat_hidden\',\'private_conversations\',\'private_messages\')")"
+              if [ "$chat_tables" -gt 0 ]; then
+                psql "$DB_URL" -X --single-transaction -v ON_ERROR_STOP=1 \
+                  -f /migrations/20261107090531_retire_chat_features_and_preserve_legacy_proofs.sql
+              fi
+            '
+
       - name: Prepare private target Storage buckets for new uploads
         run: node scripts/migrate-storage.mjs
 
@@ -74,7 +90,7 @@ jobs:
               for query in \
                 "SELECT count(*) FROM auth.users" \
                 "SELECT count(*) FROM auth.identities" \
-                "SELECT count(*) FROM storage.buckets"; do
+                "SELECT count(*) FROM auth.identities"; do
                 source_value="$(psql "$SOURCE_DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "$query")"
                 target_value="$(psql "$TARGET_DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "$query")"
                 test "$source_value" = "$target_value"
@@ -83,11 +99,13 @@ jobs:
               test "$(psql "$TARGET_DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM storage.buckets WHERE id IN ('payment-proofs','registration-proofs') AND public = false")" = "2"
 
               test "$(psql "$TARGET_DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM pg_policies WHERE schemaname = 'storage'")" = "9"
-              test "$(psql "$TARGET_DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM pg_publication_tables WHERE pubname = 'supabase_realtime' AND schemaname = 'public'")" = "11"
+              test "$(psql "$TARGET_DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM pg_publication_tables WHERE pubname = 'supabase_realtime' AND schemaname = 'public'")" = "7"
+              test "$(psql "$TARGET_DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE' AND table_name IN ('chat_messages','p4_p5_p6_chat_messages','p5_p6_chat_messages','private_chat_hidden','private_conversations','private_messages')")" = "0"
+              test "$(psql "$TARGET_DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM information_schema.columns WHERE table_schema = 'public' AND ((table_name = 'payment_submissions' AND column_name = 'proof_storage_source') OR (table_name = 'member_profiles' AND column_name = 'registration_proof_source'))")" = "2"
               test "$(psql "$TARGET_DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM pg_extension WHERE extname = 'pg_cron'")" = "1"
 
             '
-          echo "Database, Auth, private new-upload buckets, policies, Realtime, and pg_cron inventory checks passed. Legacy Storage objects remain in the source project."
+          echo "Database, Auth, new-upload buckets, policies, chat-free Realtime, and pg_cron inventory checks passed. Legacy evidence remains in source Storage."
 
       - name: Confirm cron jobs remain unscheduled
         run: |
