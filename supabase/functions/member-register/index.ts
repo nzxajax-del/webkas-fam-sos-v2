@@ -87,6 +87,7 @@ Deno.serve(async (req: Request) => {
   }
   const { error: profileUpdateError } = await admin.from("member_profiles").update({
     registration_proof_path: proofPath,
+    registration_proof_source: "current",
     registration_note: registrationNote || null,
     phone_number: phoneNumber,
   }).eq("id", data.user.id);

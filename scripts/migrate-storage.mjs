@@ -15,9 +15,13 @@ for (const [name, value] of Object.entries({
   if (!value) throw new Error(`Missing required environment variable: ${name}`);
 }
 
+// Profile photos have been retired in the app and are intentionally excluded.
+// Keep the legacy source/target bucket untouched as a non-production archive; only
+// payment and registration evidence are required for the target cutover.
 const bucketConfig = [
+  // Legacy payment and registration evidence remains in the source project.
+  // These private target buckets are prepared exclusively for new uploads.
   { name: "payment-proofs", fileSizeLimit: 5 * 1024 * 1024 },
-  { name: "profile-photos", fileSizeLimit: 3 * 1024 * 1024 },
   { name: "registration-proofs", fileSizeLimit: 2 * 1024 * 1024 },
 ];
 const allowedMimeTypes = ["image/jpeg", "image/png", "image/webp"];
@@ -181,43 +185,16 @@ async function runPool(items, concurrency, worker) {
   return results;
 }
 
-// Prepare every private target bucket before inspecting the source Storage API.
- // This leaves the target structurally ready even if the source project is quota-restricted.
-for (const bucket of bucketConfig) {
-  await ensurePrivateBucket(bucket);
-}
-
-// Verify all source bucket settings only after target preparation is complete.
-for (const bucket of bucketConfig) {
-  await verifySourceBucket(bucket);
-}
-
+// Prepare private buckets for new uploads only. Legacy source files are intentionally
+// left in place; no source Storage API request, download, or deletion is performed.
 const report = [];
 for (const bucket of bucketConfig) {
-  const files = await listAllObjects(source, bucket.name);
-  const results = await runPool(files, 3, (file) => copyOne(bucket.name, file));
+  await ensurePrivateBucket(bucket);
   const targetFiles = await listAllObjects(target, bucket.name);
-  const sourceInventory = files
-    .map((file) => ({ path: file.path, size: file.size, mimeType: file.mimeType, cacheControl: file.cacheControl }))
-    .sort((a, b) => a.path.localeCompare(b.path));
-  const targetInventory = targetFiles
-    .map((file) => ({ path: file.path, size: file.size, mimeType: file.mimeType, cacheControl: file.cacheControl }))
-    .sort((a, b) => a.path.localeCompare(b.path));
-  if (JSON.stringify(sourceInventory) !== JSON.stringify(targetInventory)) {
-    throw new Error(`Object path/metadata inventory mismatch in bucket ${bucket.name}; refusing to mark transfer complete.`);
-  }
-
-  const bytes = results.reduce((sum, item) => sum + item.bytes, 0);
-  const targetBytes = targetFiles.reduce((sum, file) => sum + file.size, 0);
-  if (bytes !== targetBytes) {
-    throw new Error(`Object byte-count mismatch in bucket ${bucket.name}: source ${bytes}, target ${targetBytes}.`);
-  }
-
-  const existing = results.filter((item) => item.alreadyPresent).length;
-  report.push({ bucket: bucket.name, objects: files.length, bytes, alreadyPresent: existing });
+  report.push({ bucket: bucket.name, existing_target_objects: targetFiles.length, private: true });
 }
 
 for (const row of report) {
-  process.stdout.write(`Verified ${row.bucket}: ${row.objects} objects, ${row.bytes} bytes, ${row.alreadyPresent} already present.\n`);
+  process.stdout.write(`Prepared ${row.bucket}: ${row.existing_target_objects} existing target objects; private bucket ready for new uploads.\n`);
 }
-process.stdout.write("Storage transfer finished. All copied objects passed SHA-256 verification; no source objects were modified.\n");
+process.stdout.write("Target Storage preparation finished. All legacy source Storage objects were left untouched.\n");

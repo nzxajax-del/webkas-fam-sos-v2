@@ -54,21 +54,15 @@ SQL
 
 APP_SIGNATURE_SQL=$(cat <<'SQL'
 SELECT md5(
-  (SELECT md5(coalesce(string_agg(row_to_json(t)::text, E'\n' ORDER BY row_to_json(t)::text), '')) FROM public.member_profiles t)
+  (SELECT md5(coalesce(string_agg((to_jsonb(t) - 'registration_proof_source')::text, E'\n' ORDER BY (to_jsonb(t) - 'registration_proof_source')::text), '')) FROM public.member_profiles t)
   || '|' || (SELECT md5(coalesce(string_agg(row_to_json(t)::text, E'\n' ORDER BY row_to_json(t)::text), '')) FROM public.dues_settings t)
   || '|' || (SELECT md5(coalesce(string_agg(row_to_json(t)::text, E'\n' ORDER BY row_to_json(t)::text), '')) FROM public.member_wallets t)
   || '|' || (SELECT md5(coalesce(string_agg(row_to_json(t)::text, E'\n' ORDER BY row_to_json(t)::text), '')) FROM public.wallet_transactions t)
   || '|' || (SELECT md5(coalesce(string_agg(row_to_json(t)::text, E'\n' ORDER BY row_to_json(t)::text), '')) FROM public.daily_dues_log t)
-  || '|' || (SELECT md5(coalesce(string_agg(row_to_json(t)::text, E'\n' ORDER BY row_to_json(t)::text), '')) FROM public.payment_submissions t)
+  || '|' || (SELECT md5(coalesce(string_agg((to_jsonb(t) - 'proof_storage_source')::text, E'\n' ORDER BY (to_jsonb(t) - 'proof_storage_source')::text), '')) FROM public.payment_submissions t)
   || '|' || (SELECT md5(coalesce(string_agg(row_to_json(t)::text, E'\n' ORDER BY row_to_json(t)::text), '')) FROM public.admin_audit_log t)
   || '|' || (SELECT md5(coalesce(string_agg(row_to_json(t)::text, E'\n' ORDER BY row_to_json(t)::text), '')) FROM public.dues_rate_history t)
   || '|' || (SELECT md5(coalesce(string_agg(row_to_json(t)::text, E'\n' ORDER BY row_to_json(t)::text), '')) FROM public.app_branding_settings t)
-  || '|' || (SELECT md5(coalesce(string_agg(row_to_json(t)::text, E'\n' ORDER BY row_to_json(t)::text), '')) FROM public.chat_messages t)
-  || '|' || (SELECT md5(coalesce(string_agg(row_to_json(t)::text, E'\n' ORDER BY row_to_json(t)::text), '')) FROM public.private_conversations t)
-  || '|' || (SELECT md5(coalesce(string_agg(row_to_json(t)::text, E'\n' ORDER BY row_to_json(t)::text), '')) FROM public.private_messages t)
-  || '|' || (SELECT md5(coalesce(string_agg(row_to_json(t)::text, E'\n' ORDER BY row_to_json(t)::text), '')) FROM public.private_chat_hidden t)
-  || '|' || (SELECT md5(coalesce(string_agg(row_to_json(t)::text, E'\n' ORDER BY row_to_json(t)::text), '')) FROM public.p5_p6_chat_messages t)
-  || '|' || (SELECT md5(coalesce(string_agg(row_to_json(t)::text, E'\n' ORDER BY row_to_json(t)::text), '')) FROM public.p4_p5_p6_chat_messages t)
   || '|' || (SELECT md5(coalesce(string_agg(row_to_json(t)::text, E'\n' ORDER BY row_to_json(t)::text), '')) FROM public.member_rank_rate_history t)
   || '|' || (SELECT md5(coalesce(string_agg(row_to_json(t)::text, E'\n' ORDER BY row_to_json(t)::text), '')) FROM public.information_messages t)
   || '|' || (SELECT md5(coalesce(string_agg(row_to_json(t)::text, E'\n' ORDER BY row_to_json(t)::text), '')) FROM public.member_leave_requests t)
@@ -93,12 +87,6 @@ FROM (
   UNION ALL SELECT 'public.admin_audit_log',count(*) FROM public.admin_audit_log
   UNION ALL SELECT 'public.dues_rate_history',count(*) FROM public.dues_rate_history
   UNION ALL SELECT 'public.app_branding_settings',count(*) FROM public.app_branding_settings
-  UNION ALL SELECT 'public.chat_messages',count(*) FROM public.chat_messages
-  UNION ALL SELECT 'public.private_conversations',count(*) FROM public.private_conversations
-  UNION ALL SELECT 'public.private_messages',count(*) FROM public.private_messages
-  UNION ALL SELECT 'public.private_chat_hidden',count(*) FROM public.private_chat_hidden
-  UNION ALL SELECT 'public.p5_p6_chat_messages',count(*) FROM public.p5_p6_chat_messages
-  UNION ALL SELECT 'public.p4_p5_p6_chat_messages',count(*) FROM public.p4_p5_p6_chat_messages
   UNION ALL SELECT 'public.member_rank_rate_history',count(*) FROM public.member_rank_rate_history
   UNION ALL SELECT 'public.information_messages',count(*) FROM public.information_messages
   UNION ALL SELECT 'public.member_leave_requests',count(*) FROM public.member_leave_requests
@@ -123,7 +111,7 @@ echo "Checking source application snapshot..."
 SOURCE_APP_SIGNATURE_BEFORE="$(db_query "$SOURCE_DB_URL" "$APP_SIGNATURE_SQL")"
 SOURCE_APP_COUNTS_BEFORE="$(db_query "$SOURCE_DB_URL" "$APP_COUNTS_SQL")"
 
-TARGET_APP_TABLES="$(db_query "$TARGET_DB_URL" "SELECT count(*) FROM information_schema.tables WHERE table_schema IN ('public','private') AND table_type='BASE TABLE' AND table_name IN ('member_profiles','dues_settings','member_wallets','wallet_transactions','daily_dues_log','payment_submissions','admin_audit_log','dues_rate_history','app_branding_settings','chat_messages','private_conversations','private_messages','private_chat_hidden','p5_p6_chat_messages','p4_p5_p6_chat_messages','member_rank_rate_history','information_messages','member_leave_requests','treasury_history','admin_bootstrap_tokens','storage_cleanup_state','admin_transaction_report_state','rank_dues_rate_history')")"
+TARGET_APP_TABLES="$(db_query "$TARGET_DB_URL" "SELECT count(*) FROM information_schema.tables WHERE table_schema IN ('public','private') AND table_type='BASE TABLE' AND table_name IN ('member_profiles','dues_settings','member_wallets','wallet_transactions','daily_dues_log','payment_submissions','admin_audit_log','dues_rate_history','app_branding_settings','member_rank_rate_history','information_messages','member_leave_requests','treasury_history','admin_bootstrap_tokens','storage_cleanup_state','admin_transaction_report_state','rank_dues_rate_history')")"
 TARGET_AUTH_USERS="$(db_query "$TARGET_DB_URL" "SELECT count(*) FROM auth.users")"
 TARGET_AUTH_IDENTITIES="$(db_query "$TARGET_DB_URL" "SELECT count(*) FROM auth.identities")"
 TARGET_STORAGE_BUCKETS="$(db_query "$TARGET_DB_URL" "SELECT count(*) FROM storage.buckets")"
@@ -148,8 +136,8 @@ mkdir -p "$TMP_DIR/cli-project"
   cd "$TMP_DIR/cli-project"
   npx --yes supabase@latest init >/dev/null
   npx --yes supabase@latest db dump --db-url "$SOURCE_DB_URL" -f "$TMP_DIR/roles.sql" --role-only
-  npx --yes supabase@latest db dump --db-url "$SOURCE_DB_URL" -f "$TMP_DIR/schema.sql" --schema public,private
-  npx --yes supabase@latest db dump --db-url "$SOURCE_DB_URL" -f "$TMP_DIR/data.sql" --use-copy --data-only --schema public,private -x "storage.buckets_vectors" -x "storage.vector_indexes"
+  npx --yes supabase@latest db dump --db-url "$SOURCE_DB_URL" -f "$TMP_DIR/schema.sql" --schema public,private -x "public.chat_messages" -x "public.p4_p5_p6_chat_messages" -x "public.p5_p6_chat_messages" -x "public.private_chat_hidden" -x "public.private_conversations" -x "public.private_messages"
+  npx --yes supabase@latest db dump --db-url "$SOURCE_DB_URL" -f "$TMP_DIR/data.sql" --use-copy --data-only --schema public,private -x "storage.buckets_vectors" -x "storage.vector_indexes" -x "public.chat_messages" -x "public.p4_p5_p6_chat_messages" -x "public.p5_p6_chat_messages" -x "public.private_chat_hidden" -x "public.private_conversations" -x "public.private_messages"
 )
 
 docker run --rm --network host \

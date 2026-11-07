@@ -4,10 +4,28 @@ on:
   push:
     branches:
       - supabase-migration-audit
+      - fix/rank-emblem-avatar-no-profile-storage-20261107
     paths:
       - "scripts/**"
       - "supabase/migration-audit/**"
       - "src/lib/supabase.js"
+      - "src/App.jsx"
+      - "supabase/migrations/**"
+      - "supabase/functions/**"
+      - ".env.example"
+      - ".github/workflows/migration-audit-checks.yml"
+      - ".github/workflows/webkas-supabase-migration.yml"
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches:
+      - supabase-migration-audit
+    paths:
+      - "scripts/**"
+      - "supabase/migration-audit/**"
+      - "src/lib/supabase.js"
+      - "src/App.jsx"
+      - "supabase/migrations/**"
+      - "supabase/functions/**"
       - ".env.example"
       - ".github/workflows/migration-audit-checks.yml"
       - ".github/workflows/webkas-supabase-migration.yml"
@@ -27,6 +45,27 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+
+      - name: Check required secrets exist without printing values
+        id: secret-preflight
+        env:
+          SOURCE_DB_URL: ${{ secrets.SOURCE_DB_URL }}
+          TARGET_DB_URL: ${{ secrets.TARGET_DB_URL }}
+          SOURCE_SERVICE_ROLE_KEY: ${{ secrets.SOURCE_SERVICE_ROLE_KEY }}
+          TARGET_SERVICE_ROLE_KEY: ${{ secrets.TARGET_SERVICE_ROLE_KEY }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKENV2 || secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          missing=0
+          for name in SOURCE_DB_URL TARGET_DB_URL SOURCE_SERVICE_ROLE_KEY TARGET_SERVICE_ROLE_KEY CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID; do
+            if [ -n "${!name:-}" ]; then
+              echo "$name configured"
+            else
+              echo "::warning::$name is missing"
+              missing=1
+            fi
+          done
+          echo "missing=$missing" >> "$GITHUB_OUTPUT"
 
       - name: Check database restore shell syntax
         run: bash -n scripts/restore-supabase-database.sh
@@ -48,6 +87,9 @@ jobs:
 
       - name: Build frontend without deploying
         run: npm run build
+
+      - name: Check payment Edge Function TypeScript syntax
+        run: ./node_modules/.bin/esbuild supabase/functions/review-payment/index.ts supabase/functions/delete-completed-payment-history/index.ts supabase/functions/member-register/index.ts supabase/functions/review-member-registration/index.ts --bundle --outdir=/tmp/webkas-edge-check --platform=neutral --format=esm --external:https://*
 
       - name: Start temporary PostgreSQL for restore-SQL syntax checks
         run: |
@@ -81,13 +123,9 @@ jobs:
             CREATE TABLE public.member_profiles (id uuid, display_name text, login_username text, role text, status text, rank_code text);
             CREATE TABLE public.member_wallets (member_id uuid);
             CREATE TABLE public.admin_audit_log (id bigint);
-            CREATE TABLE public.chat_messages (id bigint);
             CREATE TABLE public.dues_settings (id bigint);
             CREATE TABLE public.information_messages (id bigint);
-            CREATE TABLE public.p4_p5_p6_chat_messages (id bigint);
-            CREATE TABLE public.p5_p6_chat_messages (id bigint);
             CREATE TABLE public.payment_submissions (id bigint);
-            CREATE TABLE public.private_messages (id bigint);
             CREATE TABLE public.wallet_transactions (id bigint);
             CREATE PUBLICATION supabase_realtime;
           "
@@ -105,7 +143,7 @@ jobs:
             SELECT
               (SELECT count(*) FROM pg_trigger WHERE tgname='on_auth_user_created' AND NOT tgisinternal) = 1
               AND (SELECT count(*) FROM pg_policies WHERE schemaname='storage') = 9
-              AND (SELECT count(*) FROM pg_publication_tables WHERE pubname='supabase_realtime' AND schemaname='public') = 11;
+              AND (SELECT count(*) FROM pg_publication_tables WHERE pubname='supabase_realtime' AND schemaname='public') = 7;
           " | grep -qx t
 
       - name: Stop temporary PostgreSQL

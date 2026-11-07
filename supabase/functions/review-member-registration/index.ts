@@ -54,7 +54,7 @@ Deno.serve(async (req: Request) => {
 
   const admin = createClient(url, serviceRoleKey, { auth: { autoRefreshToken: false, persistSession: false } });
   const { data: member, error: memberError } = await admin
-    .from("member_profiles").select("id,role,status,registration_proof_path")
+    .from("member_profiles").select("id,role,status,registration_proof_path,registration_proof_source")
     .eq("id", memberId).maybeSingle();
   if (memberError) return json({ error: "Data permohonan anggota tidak dapat dibaca." }, 500, origin);
   if (!member) return json({ error: "Permohonan anggota tidak ditemukan." }, 404, origin);
@@ -71,23 +71,27 @@ Deno.serve(async (req: Request) => {
   }
 
   const proofPath = typeof member.registration_proof_path === "string" ? member.registration_proof_path : null;
+  const proofSource = member.registration_proof_source === "current" ? "current" : "legacy";
+  const proofArchived = Boolean(proofPath && proofSource === "legacy");
   let proofDeleted = !proofPath;
 
-  if (proofPath) {
+  // Never try to delete a legacy proof from the new bucket. Its source object
+  // remains archived in the old Storage project and its database path is retained.
+  if (proofPath && proofSource === "current") {
     for (let attempt = 0; attempt < 2 && !proofDeleted; attempt++) {
       const { error } = await admin.storage.from("registration-proofs").remove([proofPath]);
       if (!error) proofDeleted = true;
     }
     if (!proofDeleted) {
       return json({ success: true, proof_deleted: false, cleanup_pending: true, account_deleted: false, status: decision,
-        message: "Keputusan tersimpan, tetapi screenshot belum dapat dihapus. Penghapusan akun ditunda agar bukti tidak menjadi berkas yatim." }, 200, origin);
+        message: "Keputusan tersimpan, tetapi screenshot baru belum dapat dihapus. Penghapusan akun ditunda agar bukti tidak menjadi berkas yatim." }, 200, origin);
     }
 
     const { error: clearPathError } = await admin.from("member_profiles")
       .update({ registration_proof_path: null }).eq("id", memberId).eq("status", decision);
     if (clearPathError && decision === "active") {
       return json({ success: true, proof_deleted: true, database_path_cleared: false, status: decision,
-        message: "Screenshot sudah dihapus, tetapi referensi berkas di database belum berhasil dikosongkan." }, 200, origin);
+        message: "Screenshot baru sudah dihapus, tetapi referensi berkas di database belum berhasil dikosongkan." }, 200, origin);
     }
   }
 
@@ -100,20 +104,21 @@ Deno.serve(async (req: Request) => {
       admin.from("daily_dues_log").select("id", { count: "exact", head: true }).eq("member_id", memberId),
     ]);
     if (transactions.error || payments.error || dues.error) {
-      return json({ success: true, proof_deleted: proofDeleted, account_deleted: false, status: decision,
+      return json({ success: true, proof_deleted: proofDeleted, proof_archived: proofArchived, account_deleted: false, status: decision,
         message: "Pendaftaran ditolak, tetapi pemeriksaan riwayat kas gagal. Akun dipertahankan demi keamanan data." }, 200, origin);
     }
     if ((transactions.count || 0) > 0 || (payments.count || 0) > 0 || (dues.count || 0) > 0) {
-      return json({ success: true, proof_deleted: proofDeleted, account_deleted: false, status: decision,
+      return json({ success: true, proof_deleted: proofDeleted, proof_archived: proofArchived, account_deleted: false, status: decision,
         message: "Pendaftaran ditolak. Akun dipertahankan karena memiliki riwayat kas yang harus dijaga." }, 200, origin);
     }
     const { error: deleteUserError } = await admin.auth.admin.deleteUser(memberId);
     if (deleteUserError) {
-      return json({ success: true, proof_deleted: proofDeleted, account_deleted: false, status: decision,
+      return json({ success: true, proof_deleted: proofDeleted, proof_archived: proofArchived, account_deleted: false, status: decision,
         message: "Pendaftaran ditolak, tetapi akun belum dapat dihapus otomatis: " + deleteUserError.message }, 200, origin);
     }
-    return json({ success: true, proof_deleted: proofDeleted, account_deleted: true, status: decision }, 200, origin);
+    return json({ success: true, proof_deleted: proofDeleted, proof_archived: proofArchived, account_deleted: true, status: decision }, 200, origin);
   }
 
-  return json({ success: true, proof_deleted: proofDeleted, database_path_cleared: true, status: decision }, 200, origin);
+  return json({ success: true, proof_deleted: proofDeleted, proof_archived: proofArchived, database_path_cleared: !proofArchived, status: decision,
+    message: proofArchived ? "Pendaftaran diterima. Bukti lama tetap tersimpan di Storage lama." : undefined }, 200, origin);
 });
