@@ -5,6 +5,7 @@
 - Production Cloudflare deployment and its database connection have not been changed.
 - Source Supabase project `lzciyzibqbujshoizlbu` has not been locked, paused, deleted, or modified by this checkpoint.
 - No member balances, arrears, payment statuses, dues rows, or source Storage objects were modified.
+- Source received only a narrow permission-hardening migration: anonymous EXECUTE was revoked from five guarded RPCs and anonymous SELECT from `public.member_leave_requests`; authenticated EXECUTE/SELECT privileges were verified to remain. No source member rows were changed.
 - Rollback remains available by leaving production on its existing source connection; target-only function/RPC changes do not affect the current production runtime.
 
 ## Verified database restore
@@ -48,6 +49,7 @@
 - Verified `anon` and `authenticated` have no direct SELECT/INSERT privileges on those private tables.
 - Added migration `revoke_anon_execute_guarded_webkas_rpcs`; verified anonymous EXECUTE is false and authenticated EXECUTE remains true for five guarded RPCs:
 - Added migration `revoke_anon_select_member_leave_requests`; verified anonymous SELECT is false while authenticated SELECT remains true. Public branding remains readable anonymously by design.
+- Applied equivalent anonymous-access revocations to the source project while preserving authenticated access, to protect the current production database during the migration window.
   - `admin_delete_information_message(uuid)`
   - `admin_delete_member_leave_request(uuid)`
   - `admin_get_rank_dues_rates()`
