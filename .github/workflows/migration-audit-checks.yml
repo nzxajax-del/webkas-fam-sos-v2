@@ -11,6 +11,7 @@ on:
       - "src/lib/supabase.js"
       - "src/App.jsx"
       - "supabase/migrations/**"
+      - "supabase/functions/**"
       - ".env.example"
       - ".github/workflows/migration-audit-checks.yml"
       - ".github/workflows/webkas-supabase-migration.yml"
@@ -51,6 +52,9 @@ jobs:
 
       - name: Build frontend without deploying
         run: npm run build
+
+      - name: Check payment Edge Function TypeScript syntax
+        run: ./node_modules/.bin/esbuild supabase/functions/review-payment/index.ts supabase/functions/delete-completed-payment-history/index.ts --outdir=/tmp/webkas-edge-check --platform=neutral --format=esm --external:https://*
 
       - name: Start temporary PostgreSQL for restore-SQL syntax checks
         run: |
