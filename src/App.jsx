@@ -386,46 +386,6 @@ export default function App() {
           if (alive && !countError) setPermissionsUnreadNotice(count || 0);
         }
       }
-      if (table === "chat_messages" || !table) {
-        if (activeSection === "chat") { if (alive) setChatUnreadNotice(0); }
-        else {
-          const { count, error: countError } = await supabase.from("chat_messages").select("id", { count: "exact", head: true }).gt("created_at", readLastSeen("webkas-chat-last-seen-")).neq("sender_id", session.user.id);
-          if (alive && !countError) setChatUnreadNotice(count || 0);
-        }
-      }
-      if (table === "p5_p6_chat_messages" || !table) {
-        if (activeSection === "p5-p6-chat") { if (alive) setLeadersUnreadNotice(0); }
-        else {
-          const { count, error: countError } = await supabase.from("p5_p6_chat_messages").select("id", { count: "exact", head: true }).gt("created_at", readLastSeen("webkas-leaders-chat-last-seen-")).neq("sender_id", session.user.id);
-          if (alive && !countError) setLeadersUnreadNotice(count || 0);
-        }
-      }
-      if (table === "p4_p5_p6_chat_messages" || !table) {
-        if (activeSection === "p4-p5-p6-chat") { if (alive) setStaffUnreadNotice(0); }
-        else {
-          const { count, error: countError } = await supabase.from("p4_p5_p6_chat_messages").select("id", { count: "exact", head: true }).gt("created_at", readLastSeen("webkas-staff-chat-last-seen-")).neq("sender_id", session.user.id);
-          if (alive && !countError) setStaffUnreadNotice(count || 0);
-        }
-      }
-      if (table === "private_messages" || !table) {
-        if (activeSection === "private-chat") { if (alive) setPrivateChatUnreadNotice(0); }
-        else {
-          const uid = session.user.id;
-          const [conversationsRes, hiddenRes] = await Promise.all([
-            supabase.from("private_conversations").select("id").or("participant_one_id.eq." + uid + ",participant_two_id.eq." + uid),
-            supabase.from("private_chat_hidden").select("conversation_id").eq("user_id", uid)
-          ]);
-          if (conversationsRes.error || hiddenRes.error) return;
-          const hiddenIds = new Set((hiddenRes.data || []).map((row) => row.conversation_id));
-          const visibleIds = (conversationsRes.data || []).map((row) => row.id).filter((id) => !hiddenIds.has(id));
-          if (!visibleIds.length) { if (alive) setPrivateChatUnreadNotice(0); return; }
-          const { count, error: countError } = await supabase.from("private_messages").select("id", { count: "exact", head: true })
-            .in("conversation_id", visibleIds)
-            .neq("sender_id", uid)
-            .gt("created_at", readLastSeen("webkas-private-chat-last-seen-"));
-          if (alive && !countError) setPrivateChatUnreadNotice(count || 0);
-        }
-      }
     };
     refreshNotificationCounts();
     // Poll counts if Realtime events are delayed or unavailable.
@@ -437,10 +397,6 @@ export default function App() {
       .on("postgres_changes", { event: "*", schema: "public", table: "payment_submissions" }, () => refreshNotificationCounts("payment_submissions"))
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "information_messages" }, () => refreshNotificationCounts("information_messages"))
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "treasury_history" }, () => refreshNotificationCounts("treasury_history"))
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "chat_messages" }, () => refreshNotificationCounts("chat_messages"))
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "p5_p6_chat_messages" }, () => refreshNotificationCounts("p5_p6_chat_messages"))
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "p4_p5_p6_chat_messages" }, () => refreshNotificationCounts("p4_p5_p6_chat_messages"))
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "private_messages" }, () => refreshNotificationCounts("private_messages"))
       .subscribe();
     return () => { alive = false; window.clearInterval(notificationPoll); supabase.removeChannel(channel); };
   }, [session?.user?.id, profile?.role, profile?.status, activeSection]);
@@ -463,12 +419,6 @@ export default function App() {
       try { localStorage.setItem("webkas-staff-chat-last-seen-" + session.user.id, new Date().toISOString()); } catch {}
       setStaffUnreadNotice(0);
     }
-  }, [activeSection, session?.user?.id]);
-
-  useEffect(() => {
-    if (activeSection !== "private-chat" || !session?.user?.id) return;
-    try { localStorage.setItem("webkas-private-chat-last-seen-" + session.user.id, new Date().toISOString()); } catch {}
-    setPrivateChatUnreadNotice(0);
   }, [activeSection, session?.user?.id]);
 
   async function withPhotoUrls(rows) {
@@ -1119,29 +1069,6 @@ export default function App() {
     }
   }
   useEffect(() => {
-    if (!supabase || !session?.user?.id || profile?.status !== "active" || activeSection !== "chat") return undefined;
-    let alive = true;
-    const fetchMessages = async () => {
-      const { data, error: chatError } = await supabase.from("chat_messages").select("id,sender_id,sender_display_name,sender_role,body,created_at").order("created_at", { ascending: true }).limit(200);
-      if (!alive) return;
-      if (chatError) setError("Pesan chat belum dapat dimuat: " + chatError.message);
-      else setChatMessages(await decorateChatMessages(data || []));
-    };
-    fetchMessages();
-    const channel = supabase.channel("webkas-chat-" + session.user.id).on("postgres_changes", { event: "*", schema: "public", table: "chat_messages" }, fetchMessages).subscribe();
-    // Keep the conversation fresh even if a realtime event is missed or the connection reconnects.
-    const refreshTimer = window.setInterval(() => {
-      if (document.visibilityState === "visible" && activeSection === "chat") fetchMessages();
-    }, 60000);
-    return () => { alive = false; window.clearInterval(refreshTimer); supabase.removeChannel(channel); };
-  }, [session?.user?.id, profile?.status, activeSection]);
-  useEffect(() => {
-    if (activeSection !== "chat") return;
-    try { localStorage.setItem("webkas-chat-last-seen-" + session.user.id, new Date().toISOString()); } catch {}
-    setChatUnreadNotice(0);
-    if (chatListRef.current) chatListRef.current.scrollTop = chatListRef.current.scrollHeight;
-  }, [activeSection, chatMessages.length, session?.user?.id]);
-  useEffect(() => {
     if (!supabase || !session?.user?.id || profile?.status !== "active" || activeSection !== "information") return undefined;
     let alive = true;
     const loadInformationMessages = async () => {
@@ -1396,40 +1323,6 @@ export default function App() {
     await loadRankChatMessages();
     setRankChatRefreshing(false);
   }
-  useEffect(() => {
-    if (!supabase || !session?.user?.id || profile?.status !== "active" || activeSection !== "p5-p6-chat" || !(["P5","P6"].includes(profile?.rank_code) || profile?.role === "admin")) return undefined;
-    let alive = true;
-    let initialized = false;
-    const seenIds = new Set();
-    const notifyIncoming = (row) => {
-      if (!row?.id || row.sender_id === session.user.id || seenIds.has(row.id)) return;
-      seenIds.add(row.id);
-      setLeadersUnreadNotice((count) => Math.min(99, count + 1));
-      setMessage("Pesan baru di Leaders" + (row.body ? ": " + String(row.body).slice(0, 90) : "."));
-    };
-    const fetchMessages = async () => {
-      const { data, error: chatError } = await supabase.from("p5_p6_chat_messages").select("id,sender_id,body,created_at").order("created_at", { ascending: false }).limit(200);
-      if (!alive) return;
-      if (chatError) { setError("Ruang chat P5/P6 gagal dimuat: " + chatError.message); return; }
-      const rows = (data || []).slice().reverse();
-      if (!initialized) {
-        rows.forEach((row) => seenIds.add(row.id));
-        initialized = true;
-      } else {
-        rows.forEach((row) => { if (!seenIds.has(row.id)) notifyIncoming(row); });
-      }
-      rows.forEach((row) => seenIds.add(row.id));
-      while (seenIds.size > 500) seenIds.delete(seenIds.values().next().value);
-      setRankChatMessages(await decorateChatMessages(rows));
-    };
-    const channel = supabase.channel("webkas-p5-p6-chat-" + session.user.id).on("postgres_changes", { event: "INSERT", schema: "public", table: "p5_p6_chat_messages" }, (payload) => {
-      notifyIncoming(payload?.new);
-      fetchMessages();
-    }).subscribe();
-    fetchMessages();
-    const timer = window.setInterval(() => { if (document.visibilityState === "visible" && activeSection === "p5-p6-chat") fetchMessages(); }, 60000);
-    return () => { alive = false; window.clearInterval(timer); supabase.removeChannel(channel); };
-  }, [session?.user?.id, profile?.status, profile?.rank_code, profile?.role, activeSection]);
   async function loadRankChat456Messages() {
     if (!supabase || !session?.user?.id || profile?.status !== "active" || !(["P4","P5","P6"].includes(profile?.rank_code) || profile?.role === "admin")) {
       setRankChat456Messages([]);
@@ -1482,40 +1375,6 @@ export default function App() {
     await loadRankChat456Messages();
     setRankChat456Refreshing(false);
   }
-  useEffect(() => {
-    if (!supabase || !session?.user?.id || profile?.status !== "active" || activeSection !== "p4-p5-p6-chat" || !(["P4","P5","P6"].includes(profile?.rank_code) || profile?.role === "admin")) return undefined;
-    let alive = true;
-    let initialized = false;
-    const seenIds = new Set();
-    const notifyIncoming = (row) => {
-      if (!row?.id || row.sender_id === session.user.id || seenIds.has(row.id)) return;
-      seenIds.add(row.id);
-      setStaffUnreadNotice((count) => Math.min(99, count + 1));
-      setMessage("Pesan baru di Ruang Chat Staff (P4)" + (row.body ? ": " + String(row.body).slice(0, 90) : "."));
-    };
-    const fetchMessages = async () => {
-      const { data, error: chatError } = await supabase.from("p4_p5_p6_chat_messages").select("id,sender_id,body,created_at").order("created_at", { ascending: false }).limit(200);
-      if (!alive) return;
-      if (chatError) { setError("Ruang chat P4/P5/P6 gagal dimuat: " + chatError.message); return; }
-      const rows = (data || []).slice().reverse();
-      if (!initialized) {
-        rows.forEach((row) => seenIds.add(row.id));
-        initialized = true;
-      } else {
-        rows.forEach((row) => { if (!seenIds.has(row.id)) notifyIncoming(row); });
-      }
-      rows.forEach((row) => seenIds.add(row.id));
-      while (seenIds.size > 500) seenIds.delete(seenIds.values().next().value);
-      setRankChat456Messages(await decorateChatMessages(rows));
-    };
-    const channel = supabase.channel("webkas-p4-p5-p6-chat-" + session.user.id).on("postgres_changes", { event: "INSERT", schema: "public", table: "p4_p5_p6_chat_messages" }, (payload) => {
-      notifyIncoming(payload?.new);
-      fetchMessages();
-    }).subscribe();
-    fetchMessages();
-    const timer = window.setInterval(() => { if (document.visibilityState === "visible" && activeSection === "p4-p5-p6-chat") fetchMessages(); }, 60000);
-    return () => { alive = false; window.clearInterval(timer); supabase.removeChannel(channel); };
-  }, [session?.user?.id, profile?.status, profile?.rank_code, profile?.role, activeSection]);
   async function loadRankChat456Messages() {
     if (!supabase || !session?.user?.id || profile?.status !== "active" || !(["P4","P5","P6"].includes(profile?.rank_code) || profile?.role === "admin")) {
       setRankChat456Messages([]);
@@ -1548,20 +1407,6 @@ export default function App() {
     await loadRankChat456Messages();
     setRankChat456Refreshing(false);
   }
-  useEffect(() => {
-    if (!supabase || !session?.user?.id || profile?.status !== "active" || activeSection !== "p4-p4-p5-p6-chat" || !(["P4","P5","P6"].includes(profile?.rank_code) || profile?.role === "admin")) return undefined;
-    let alive = true;
-    const fetchMessages = async () => {
-      const { data, error: chatError } = await supabase.from("p4_p5_p6_chat_messages").select("id,sender_id,body,created_at").order("created_at", { ascending: false }).limit(200);
-      if (!alive) return;
-      if (chatError) setError("Ruang chat P4/P4/P5/P6 gagal dimuat: " + chatError.message);
-      else setRankChat456Messages(await decorateChatMessages(data || []));
-    };
-    fetchMessages();
-    const channel = supabase.channel("webkas-p4-p4-p5-p6-chat-" + session.user.id).on("postgres_changes", { event: "*", schema: "public", table: "p4_p5_p6_chat_messages" }, fetchMessages).subscribe();
-    const timer = window.setInterval(() => { if (document.visibilityState === "visible" && activeSection === "p4-p4-p5-p6-chat") fetchMessages(); }, 60000);
-    return () => { alive = false; window.clearInterval(timer); supabase.removeChannel(channel); };
-  }, [session?.user?.id, profile?.status, profile?.rank_code, profile?.role, activeSection]);
   async function loadPrivateConversations() {
     if (!supabase || !profile?.id || profile.status !== "active") return;
     const uid = profile.id;
@@ -1598,35 +1443,8 @@ export default function App() {
     return true;
   }
 
-  async function openPrivateConversation(member) {
-    if (!supabase || !profile?.id || !member?.id || member.id === profile.id) return;
-    setPrivateLoading(true); setError("");
-    try {
-      const [one, two] = [profile.id, member.id].sort();
-      let { data: conversation, error: findError } = await supabase.from("private_conversations").select("id,participant_one_id,participant_two_id,created_at").eq("participant_one_id", one).eq("participant_two_id", two).maybeSingle();
-      if (findError) throw findError;
-      if (!conversation) {
-        const { data: created, error: createError } = await supabase.from("private_conversations").insert({ participant_one_id: one, participant_two_id: two }).select("id,participant_one_id,participant_two_id,created_at").single();
-        if (createError) {
-          if (createError.code !== "23505") throw createError;
-          const retry = await supabase.from("private_conversations").select("id,participant_one_id,participant_two_id,created_at").eq("participant_one_id", one).eq("participant_two_id", two).single();
-          if (retry.error) throw retry.error;
-          conversation = retry.data;
-        } else conversation = created;
-      }
-      const { error: unhideError } = await supabase.from("private_chat_hidden").delete().eq("user_id", profile.id).eq("conversation_id", conversation.id);
-      if (unhideError) throw unhideError;
-      const otherMember = memberDirectory.find((item) => item.id === member.id) || member;
-      setPrivateActiveConversation({ ...conversation, otherMember });
-      setPrivateDraft("");
-      setActiveSection("private-chat");
-      await loadPrivateMessages(conversation.id);
-      await loadPrivateConversations();
-    } catch (privateError) {
-      setError("Percakapan privat tidak dapat dibuka: " + (privateError?.message || "Kesalahan tidak diketahui."));
-    } finally {
-      setPrivateLoading(false);
-    }
+  async function openPrivateConversation() {
+    setError("Fitur chat sudah dihentikan dan tidak tersedia lagi.");
   }
 
   async function sendPrivateMessage(event) {
@@ -1659,20 +1477,6 @@ export default function App() {
     setMessage("Chat dihapus dari daftar Anda. Riwayat lawan bicara tetap tersimpan.");
     await loadPrivateConversations();
   }
-
-  useEffect(() => {
-    if (!supabase || !profile?.id || profile.status !== "active" || activeSection !== "private-chat") return undefined;
-    let alive = true;
-    const refreshPrivateData = async () => {
-      await loadPrivateConversations();
-      if (privateActiveConversation?.id) await loadPrivateMessages(privateActiveConversation.id);
-    };
-    refreshPrivateData();
-    const refreshTimer = window.setInterval(() => {
-      if (alive && document.visibilityState === "visible" && activeSection === "private-chat") refreshPrivateData();
-    }, 60000);
-    return () => { alive = false; window.clearInterval(refreshTimer); };
-  }, [profile?.id, profile?.status, activeSection, privateActiveConversation?.id, memberDirectory.length]);
 
   const formatBytes = (bytes) => {
     const n = Number(bytes || 0);
