@@ -26,6 +26,6 @@ Use the connection string from the correct project for each secret. Do not use t
 - The Storage transfer keeps all buckets private, uses no overwrite for differing objects, and verifies every copied file by SHA-256.
 - The workflow installs `pg_cron` but intentionally creates no scheduled jobs. Daily dues and cleanup jobs remain unscheduled until final ledger verification.
 - The workflow does not deploy Edge Functions, change Cloudflare, or push to `main`.
-- A brief source write-freeze will be required for the final snapshot/cutover. The database script also checks source row-content signatures during export and after restore and stops if it detects changes.
+- The workflow acquires a temporary PostgreSQL SHARE lock on all application, Auth-user/identity, and Storage tables before the snapshot. Reads remain available; writes/registrations/uploads are briefly held until the migration job finishes or is cancelled. The lock is released automatically even if a later step fails. The database script also checks source row-content signatures during export and after restore and stops if it detects changes.
 
 Once these four secrets exist, the assistant can add the one-time marker file to start the workflow. No secret values need to be sent in chat.
