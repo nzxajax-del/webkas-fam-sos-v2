@@ -58,7 +58,7 @@ jobs:
               psql "$DB_URL" -X --single-transaction -v ON_ERROR_STOP=1 \
                 -f /migrations/20261107082257_separate_legacy_and_current_payment_proofs.sql \
                 -f /migrations/20261107090715_harden_authenticated_rpc_search_paths.sql
-              chat_tables="$(psql "$DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM information_schema.tables WHERE table_schema = \'public\' AND table_type = \'BASE TABLE\' AND table_name IN (\'chat_messages\',\'p4_p5_p6_chat_messages\',\'p5_p6_chat_messages\',\'private_chat_hidden\',\'private_conversations\',\'private_messages\')")"
+              chat_tables="$(psql "$DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE' AND table_name IN ('chat_messages','p4_p5_p6_chat_messages','p5_p6_chat_messages','private_chat_hidden','private_conversations','private_messages')")"
               if [ "$chat_tables" -gt 0 ]; then
                 psql "$DB_URL" -X --single-transaction -v ON_ERROR_STOP=1 \
                   -f /migrations/20261107090531_retire_chat_features_and_preserve_legacy_proofs.sql
@@ -86,7 +86,7 @@ jobs:
           docker run --rm --network host \
             -e SOURCE_DB_URL="$SOURCE_DB_URL" \
             -e TARGET_DB_URL="$TARGET_DB_URL" \
-            -e STORAGE_TRANSFER_OUTCOME="$STORAGE_TRANSFER_OUTCOME" postgres:17 sh -ec '
+            postgres:17 sh -ec '
               for query in \
                 "SELECT count(*) FROM auth.users" \
                 "SELECT count(*) FROM auth.identities"; do
