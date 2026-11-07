@@ -1,0 +1,75 @@
+{
+  "captured_at_utc": "2026-11-07T02:32:00Z",
+  "source_project": {
+    "ref": "lzciyzibqbujshoizlbu",
+    "status": "ACTIVE_HEALTHY",
+    "database_engine": "PostgreSQL 17",
+    "public_tables": 19,
+    "public_and_private_columns": 144,
+    "constraints": 102,
+    "indexes": 47,
+    "policies": 45,
+    "triggers": 18,
+    "auth_users": 84,
+    "users_with_password_hash": 84,
+    "storage_buckets": [
+      {
+        "id": "payment-proofs",
+        "private": true,
+        "objects": 3,
+        "bytes": 5570882
+      },
+      {
+        "id": "profile-photos",
+        "private": true,
+        "objects": 29,
+        "bytes": 24540765
+      },
+      {
+        "id": "registration-proofs",
+        "private": true,
+        "objects": 31,
+        "bytes": 26212302
+      }
+    ],
+    "storage_objects_total": 63,
+    "storage_bytes_total": 56388949,
+    "edge_functions": 7,
+    "realtime_tables": 11
+  },
+  "target_project": {
+    "ref": "cdqmeenrwsbkcpclitgh",
+    "status": "ACTIVE_HEALTHY",
+    "public_application_tables": 0,
+    "edge_functions": 0,
+    "application_data_migrated": false
+  },
+  "runtime_incident": {
+    "observed": "HTTP 402 responses from Auth token endpoints and multiple REST endpoints on source project on 2026-11-07",
+    "scope": "cross-service, not limited to one app endpoint",
+    "root_cause": "not established from available logs; exact quota/restriction code not exposed in returned request logs"
+  },
+  "protection": {
+    "source_database_modified": false,
+    "target_schema_modified": false,
+    "production_frontend_config_modified": false,
+    "production_deployment_performed": false
+  },
+  "limitations": {
+    "complete_database_dump_available": false,
+    "auth_user_import_tool_available": false,
+    "storage_object_copy_tool_available": false,
+    "edge_function_secret_export_tool_available": false,
+    "railway_shell_exec_tool_available": false
+  },
+  "next_required_steps": [
+    "Obtain a complete restorable PostgreSQL backup including schema, data, roles/grants and migration metadata.",
+    "Preserve auth.users UUIDs, encrypted_password hashes, identities, app/user metadata and auth configuration without exposing hashes in chat.",
+    "Copy all Storage objects and bucket policies while preserving object paths and metadata.",
+    "Reconcile 104 applied migration records against repository files; 69 applied versions are absent and 33 repository files do not match the applied version set.",
+    "Rebuild and verify the target schema, functions, RLS, grants, triggers, realtime publication and cron jobs.",
+    "Restore Edge Functions and their required secrets.",
+    "Run parity checks for users, profiles, wallets, arrears, transactions, dues, submissions and files before an approved cutover."
+  ],
+  "note": "Read-only technical status report. This is not a backup and cannot restore WEBKAS by itself."
+}
