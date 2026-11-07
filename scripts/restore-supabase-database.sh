@@ -111,7 +111,7 @@ echo "Checking source application snapshot..."
 SOURCE_APP_SIGNATURE_BEFORE="$(db_query "$SOURCE_DB_URL" "$APP_SIGNATURE_SQL")"
 SOURCE_APP_COUNTS_BEFORE="$(db_query "$SOURCE_DB_URL" "$APP_COUNTS_SQL")"
 
-TARGET_APP_TABLES="$(db_query "$TARGET_DB_URL" "SELECT count(*) FROM information_schema.tables WHERE table_schema IN ('public','private') AND table_type='BASE TABLE' AND table_name IN ('member_profiles','dues_settings','member_wallets','wallet_transactions','daily_dues_log','payment_submissions','admin_audit_log','dues_rate_history','app_branding_settings','chat_messages','private_conversations','private_messages','private_chat_hidden','p5_p6_chat_messages','p4_p5_p6_chat_messages','member_rank_rate_history','information_messages','member_leave_requests','treasury_history','admin_bootstrap_tokens','storage_cleanup_state','admin_transaction_report_state','rank_dues_rate_history')")"
+TARGET_APP_TABLES="$(db_query "$TARGET_DB_URL" "SELECT count(*) FROM information_schema.tables WHERE table_schema IN ('public','private') AND table_type='BASE TABLE' AND table_name IN ('member_profiles','dues_settings','member_wallets','wallet_transactions','daily_dues_log','payment_submissions','admin_audit_log','dues_rate_history','app_branding_settings','member_rank_rate_history','information_messages','member_leave_requests','treasury_history','admin_bootstrap_tokens','storage_cleanup_state','admin_transaction_report_state','rank_dues_rate_history')")"
 TARGET_AUTH_USERS="$(db_query "$TARGET_DB_URL" "SELECT count(*) FROM auth.users")"
 TARGET_AUTH_IDENTITIES="$(db_query "$TARGET_DB_URL" "SELECT count(*) FROM auth.identities")"
 TARGET_STORAGE_BUCKETS="$(db_query "$TARGET_DB_URL" "SELECT count(*) FROM storage.buckets")"
