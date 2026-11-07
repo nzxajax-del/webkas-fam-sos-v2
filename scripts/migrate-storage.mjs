@@ -191,10 +191,14 @@ for (const bucket of bucketConfig) {
   const files = await listAllObjects(source, bucket.name);
   const results = await runPool(files, 3, (file) => copyOne(bucket.name, file));
   const targetFiles = await listAllObjects(target, bucket.name);
-  const sourcePaths = files.map((file) => file.path).sort();
-  const targetPaths = targetFiles.map((file) => file.path).sort();
-  if (JSON.stringify(sourcePaths) !== JSON.stringify(targetPaths)) {
-    throw new Error(`Object path inventory mismatch in bucket ${bucket.name}; refusing to mark transfer complete.`);
+  const sourceInventory = files
+    .map((file) => ({ path: file.path, size: file.size, mimeType: file.mimeType, cacheControl: file.cacheControl }))
+    .sort((a, b) => a.path.localeCompare(b.path));
+  const targetInventory = targetFiles
+    .map((file) => ({ path: file.path, size: file.size, mimeType: file.mimeType, cacheControl: file.cacheControl }))
+    .sort((a, b) => a.path.localeCompare(b.path));
+  if (JSON.stringify(sourceInventory) !== JSON.stringify(targetInventory)) {
+    throw new Error(`Object path/metadata inventory mismatch in bucket ${bucket.name}; refusing to mark transfer complete.`);
   }
 
   const bytes = results.reduce((sum, item) => sum + item.bytes, 0);
