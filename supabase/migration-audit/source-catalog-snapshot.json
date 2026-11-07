@@ -1,0 +1,3072 @@
+{
+  "columns": [
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "admin_bootstrap_tokens",
+      "column": "token_hash",
+      "schema": "private",
+      "default": null,
+      "ordinal": 1,
+      "nullable": "NO"
+    },
+    {
+      "udt": "timestamptz",
+      "type": "timestamp with time zone",
+      "table": "admin_bootstrap_tokens",
+      "column": "created_at",
+      "schema": "private",
+      "default": "now()",
+      "ordinal": 2,
+      "nullable": "NO"
+    },
+    {
+      "udt": "timestamptz",
+      "type": "timestamp with time zone",
+      "table": "admin_bootstrap_tokens",
+      "column": "used_at",
+      "schema": "private",
+      "default": null,
+      "ordinal": 3,
+      "nullable": "YES"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "admin_bootstrap_tokens",
+      "column": "used_by",
+      "schema": "private",
+      "default": null,
+      "ordinal": 4,
+      "nullable": "YES"
+    },
+    {
+      "udt": "bool",
+      "type": "boolean",
+      "table": "admin_transaction_report_state",
+      "column": "singleton",
+      "schema": "private",
+      "default": "true",
+      "ordinal": 1,
+      "nullable": "NO"
+    },
+    {
+      "udt": "timestamptz",
+      "type": "timestamp with time zone",
+      "table": "admin_transaction_report_state",
+      "column": "hidden_through",
+      "schema": "private",
+      "default": null,
+      "ordinal": 2,
+      "nullable": "YES"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "admin_transaction_report_state",
+      "column": "updated_by",
+      "schema": "private",
+      "default": null,
+      "ordinal": 3,
+      "nullable": "YES"
+    },
+    {
+      "udt": "timestamptz",
+      "type": "timestamp with time zone",
+      "table": "admin_transaction_report_state",
+      "column": "updated_at",
+      "schema": "private",
+      "default": "clock_timestamp()",
+      "ordinal": 4,
+      "nullable": "NO"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "rank_dues_rate_history",
+      "column": "rank_code",
+      "schema": "private",
+      "default": null,
+      "ordinal": 1,
+      "nullable": "NO"
+    },
+    {
+      "udt": "date",
+      "type": "date",
+      "table": "rank_dues_rate_history",
+      "column": "effective_from",
+      "schema": "private",
+      "default": null,
+      "ordinal": 2,
+      "nullable": "NO"
+    },
+    {
+      "udt": "numeric",
+      "type": "numeric",
+      "table": "rank_dues_rate_history",
+      "column": "daily_amount",
+      "schema": "private",
+      "default": null,
+      "ordinal": 3,
+      "nullable": "NO"
+    },
+    {
+      "udt": "timestamptz",
+      "type": "timestamp with time zone",
+      "table": "rank_dues_rate_history",
+      "column": "created_at",
+      "schema": "private",
+      "default": "now()",
+      "ordinal": 4,
+      "nullable": "NO"
+    },
+    {
+      "udt": "bool",
+      "type": "boolean",
+      "table": "storage_cleanup_state",
+      "column": "singleton",
+      "schema": "private",
+      "default": "true",
+      "ordinal": 1,
+      "nullable": "NO"
+    },
+    {
+      "udt": "timestamptz",
+      "type": "timestamp with time zone",
+      "table": "storage_cleanup_state",
+      "column": "last_cleanup_at",
+      "schema": "private",
+      "default": null,
+      "ordinal": 2,
+      "nullable": "YES"
+    },
+    {
+      "udt": "int8",
+      "type": "bigint",
+      "table": "storage_cleanup_state",
+      "column": "last_size_bytes",
+      "schema": "private",
+      "default": null,
+      "ordinal": 3,
+      "nullable": "YES"
+    },
+    {
+      "udt": "int8",
+      "type": "bigint",
+      "table": "storage_cleanup_state",
+      "column": "last_chat_deleted",
+      "schema": "private",
+      "default": "0",
+      "ordinal": 4,
+      "nullable": "NO"
+    },
+    {
+      "udt": "int8",
+      "type": "bigint",
+      "table": "storage_cleanup_state",
+      "column": "last_payment_submissions_deleted",
+      "schema": "private",
+      "default": "0",
+      "ordinal": 5,
+      "nullable": "NO"
+    },
+    {
+      "udt": "int8",
+      "type": "bigint",
+      "table": "storage_cleanup_state",
+      "column": "last_wallet_transactions_deleted",
+      "schema": "private",
+      "default": "0",
+      "ordinal": 6,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "admin_audit_log",
+      "column": "id",
+      "schema": "public",
+      "default": "gen_random_uuid()",
+      "ordinal": 1,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "admin_audit_log",
+      "column": "admin_id",
+      "schema": "public",
+      "default": null,
+      "ordinal": 2,
+      "nullable": "YES"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "admin_audit_log",
+      "column": "action",
+      "schema": "public",
+      "default": null,
+      "ordinal": 3,
+      "nullable": "NO"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "admin_audit_log",
+      "column": "target_type",
+      "schema": "public",
+      "default": null,
+      "ordinal": 4,
+      "nullable": "YES"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "admin_audit_log",
+      "column": "target_id",
+      "schema": "public",
+      "default": null,
+      "ordinal": 5,
+      "nullable": "YES"
+    },
+    {
+      "udt": "jsonb",
+      "type": "jsonb",
+      "table": "admin_audit_log",
+      "column": "details",
+      "schema": "public",
+      "default": "'{}'::jsonb",
+      "ordinal": 6,
+      "nullable": "NO"
+    },
+    {
+      "udt": "timestamptz",
+      "type": "timestamp with time zone",
+      "table": "admin_audit_log",
+      "column": "created_at",
+      "schema": "public",
+      "default": "now()",
+      "ordinal": 7,
+      "nullable": "NO"
+    },
+    {
+      "udt": "int2",
+      "type": "smallint",
+      "table": "app_branding_settings",
+      "column": "id",
+      "schema": "public",
+      "default": "1",
+      "ordinal": 1,
+      "nullable": "NO"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "app_branding_settings",
+      "column": "site_name",
+      "schema": "public",
+      "default": "'WEBKAS FAM SOS V2'::text",
+      "ordinal": 2,
+      "nullable": "NO"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "app_branding_settings",
+      "column": "family_name",
+      "schema": "public",
+      "default": "'FAM SOS'::text",
+      "ordinal": 3,
+      "nullable": "NO"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "app_branding_settings",
+      "column": "subtitle",
+      "schema": "public",
+      "default": "'CATATAN KAS KELUARGA'::text",
+      "ordinal": 4,
+      "nullable": "NO"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "app_branding_settings",
+      "column": "accent_color",
+      "schema": "public",
+      "default": "'#c1f45a'::text",
+      "ordinal": 5,
+      "nullable": "NO"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "app_branding_settings",
+      "column": "background_color",
+      "schema": "public",
+      "default": "'#0b0e0b'::text",
+      "ordinal": 6,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "app_branding_settings",
+      "column": "updated_by",
+      "schema": "public",
+      "default": null,
+      "ordinal": 7,
+      "nullable": "YES"
+    },
+    {
+      "udt": "timestamptz",
+      "type": "timestamp with time zone",
+      "table": "app_branding_settings",
+      "column": "updated_at",
+      "schema": "public",
+      "default": "now()",
+      "ordinal": 8,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "chat_messages",
+      "column": "id",
+      "schema": "public",
+      "default": "gen_random_uuid()",
+      "ordinal": 1,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "chat_messages",
+      "column": "sender_id",
+      "schema": "public",
+      "default": null,
+      "ordinal": 2,
+      "nullable": "NO"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "chat_messages",
+      "column": "body",
+      "schema": "public",
+      "default": null,
+      "ordinal": 3,
+      "nullable": "NO"
+    },
+    {
+      "udt": "timestamptz",
+      "type": "timestamp with time zone",
+      "table": "chat_messages",
+      "column": "created_at",
+      "schema": "public",
+      "default": "now()",
+      "ordinal": 4,
+      "nullable": "NO"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "chat_messages",
+      "column": "sender_display_name",
+      "schema": "public",
+      "default": null,
+      "ordinal": 5,
+      "nullable": "YES"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "chat_messages",
+      "column": "sender_role",
+      "schema": "public",
+      "default": null,
+      "ordinal": 6,
+      "nullable": "YES"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "daily_dues_log",
+      "column": "id",
+      "schema": "public",
+      "default": "gen_random_uuid()",
+      "ordinal": 1,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "daily_dues_log",
+      "column": "member_id",
+      "schema": "public",
+      "default": null,
+      "ordinal": 2,
+      "nullable": "NO"
+    },
+    {
+      "udt": "date",
+      "type": "date",
+      "table": "daily_dues_log",
+      "column": "due_date",
+      "schema": "public",
+      "default": null,
+      "ordinal": 3,
+      "nullable": "NO"
+    },
+    {
+      "udt": "numeric",
+      "type": "numeric",
+      "table": "daily_dues_log",
+      "column": "daily_amount",
+      "schema": "public",
+      "default": null,
+      "ordinal": 4,
+      "nullable": "NO"
+    },
+    {
+      "udt": "numeric",
+      "type": "numeric",
+      "table": "daily_dues_log",
+      "column": "balance_deducted",
+      "schema": "public",
+      "default": "0",
+      "ordinal": 5,
+      "nullable": "NO"
+    },
+    {
+      "udt": "numeric",
+      "type": "numeric",
+      "table": "daily_dues_log",
+      "column": "arrears_added",
+      "schema": "public",
+      "default": "0",
+      "ordinal": 6,
+      "nullable": "NO"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "daily_dues_log",
+      "column": "outcome",
+      "schema": "public",
+      "default": null,
+      "ordinal": 7,
+      "nullable": "NO"
+    },
+    {
+      "udt": "timestamptz",
+      "type": "timestamp with time zone",
+      "table": "daily_dues_log",
+      "column": "created_at",
+      "schema": "public",
+      "default": "now()",
+      "ordinal": 8,
+      "nullable": "NO"
+    },
+    {
+      "udt": "date",
+      "type": "date",
+      "table": "dues_rate_history",
+      "column": "effective_from",
+      "schema": "public",
+      "default": null,
+      "ordinal": 1,
+      "nullable": "NO"
+    },
+    {
+      "udt": "numeric",
+      "type": "numeric",
+      "table": "dues_rate_history",
+      "column": "daily_amount",
+      "schema": "public",
+      "default": null,
+      "ordinal": 2,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "dues_rate_history",
+      "column": "created_by",
+      "schema": "public",
+      "default": null,
+      "ordinal": 3,
+      "nullable": "YES"
+    },
+    {
+      "udt": "timestamptz",
+      "type": "timestamp with time zone",
+      "table": "dues_rate_history",
+      "column": "created_at",
+      "schema": "public",
+      "default": "now()",
+      "ordinal": 4,
+      "nullable": "NO"
+    },
+    {
+      "udt": "int2",
+      "type": "smallint",
+      "table": "dues_settings",
+      "column": "id",
+      "schema": "public",
+      "default": "1",
+      "ordinal": 1,
+      "nullable": "NO"
+    },
+    {
+      "udt": "date",
+      "type": "date",
+      "table": "dues_settings",
+      "column": "report_date",
+      "schema": "public",
+      "default": "((now() AT TIME ZONE 'Asia/Jakarta'::text))::date",
+      "ordinal": 2,
+      "nullable": "NO"
+    },
+    {
+      "udt": "numeric",
+      "type": "numeric",
+      "table": "dues_settings",
+      "column": "daily_amount",
+      "schema": "public",
+      "default": "1000",
+      "ordinal": 3,
+      "nullable": "NO"
+    },
+    {
+      "udt": "numeric",
+      "type": "numeric",
+      "table": "dues_settings",
+      "column": "adm_default",
+      "schema": "public",
+      "default": "10000",
+      "ordinal": 4,
+      "nullable": "NO"
+    },
+    {
+      "udt": "timestamptz",
+      "type": "timestamp with time zone",
+      "table": "dues_settings",
+      "column": "updated_at",
+      "schema": "public",
+      "default": "now()",
+      "ordinal": 5,
+      "nullable": "NO"
+    },
+    {
+      "udt": "bool",
+      "type": "boolean",
+      "table": "dues_settings",
+      "column": "cash_operations_enabled",
+      "schema": "public",
+      "default": "false",
+      "ordinal": 6,
+      "nullable": "NO"
+    },
+    {
+      "udt": "int4",
+      "type": "integer",
+      "table": "dues_settings",
+      "column": "proof_retention_days",
+      "schema": "public",
+      "default": "7",
+      "ordinal": 7,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "information_messages",
+      "column": "id",
+      "schema": "public",
+      "default": "gen_random_uuid()",
+      "ordinal": 1,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "information_messages",
+      "column": "sender_id",
+      "schema": "public",
+      "default": null,
+      "ordinal": 2,
+      "nullable": "NO"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "information_messages",
+      "column": "body",
+      "schema": "public",
+      "default": null,
+      "ordinal": 3,
+      "nullable": "NO"
+    },
+    {
+      "udt": "timestamptz",
+      "type": "timestamp with time zone",
+      "table": "information_messages",
+      "column": "created_at",
+      "schema": "public",
+      "default": "now()",
+      "ordinal": 4,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "member_leave_requests",
+      "column": "id",
+      "schema": "public",
+      "default": "gen_random_uuid()",
+      "ordinal": 1,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "member_leave_requests",
+      "column": "member_id",
+      "schema": "public",
+      "default": null,
+      "ordinal": 2,
+      "nullable": "NO"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "member_leave_requests",
+      "column": "leave_type",
+      "schema": "public",
+      "default": null,
+      "ordinal": 3,
+      "nullable": "NO"
+    },
+    {
+      "udt": "int4",
+      "type": "integer",
+      "table": "member_leave_requests",
+      "column": "offline_days",
+      "schema": "public",
+      "default": null,
+      "ordinal": 4,
+      "nullable": "YES"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "member_leave_requests",
+      "column": "reason",
+      "schema": "public",
+      "default": null,
+      "ordinal": 5,
+      "nullable": "NO"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "member_leave_requests",
+      "column": "status",
+      "schema": "public",
+      "default": "'submitted'::text",
+      "ordinal": 6,
+      "nullable": "NO"
+    },
+    {
+      "udt": "timestamptz",
+      "type": "timestamp with time zone",
+      "table": "member_leave_requests",
+      "column": "created_at",
+      "schema": "public",
+      "default": "now()",
+      "ordinal": 7,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "member_profiles",
+      "column": "id",
+      "schema": "public",
+      "default": null,
+      "ordinal": 1,
+      "nullable": "NO"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "member_profiles",
+      "column": "display_name",
+      "schema": "public",
+      "default": null,
+      "ordinal": 2,
+      "nullable": "NO"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "member_profiles",
+      "column": "role",
+      "schema": "public",
+      "default": "'member'::text",
+      "ordinal": 3,
+      "nullable": "NO"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "member_profiles",
+      "column": "status",
+      "schema": "public",
+      "default": "'pending'::text",
+      "ordinal": 4,
+      "nullable": "NO"
+    },
+    {
+      "udt": "timestamptz",
+      "type": "timestamp with time zone",
+      "table": "member_profiles",
+      "column": "created_at",
+      "schema": "public",
+      "default": "now()",
+      "ordinal": 5,
+      "nullable": "NO"
+    },
+    {
+      "udt": "timestamptz",
+      "type": "timestamp with time zone",
+      "table": "member_profiles",
+      "column": "updated_at",
+      "schema": "public",
+      "default": "now()",
+      "ordinal": 6,
+      "nullable": "NO"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "member_profiles",
+      "column": "login_username",
+      "schema": "public",
+      "default": null,
+      "ordinal": 7,
+      "nullable": "NO"
+    },
+    {
+      "udt": "date",
+      "type": "date",
+      "table": "member_profiles",
+      "column": "dues_start_date",
+      "schema": "public",
+      "default": null,
+      "ordinal": 8,
+      "nullable": "YES"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "member_profiles",
+      "column": "rank_code",
+      "schema": "public",
+      "default": "'P1'::text",
+      "ordinal": 9,
+      "nullable": "NO"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "member_profiles",
+      "column": "registration_proof_path",
+      "schema": "public",
+      "default": null,
+      "ordinal": 10,
+      "nullable": "YES"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "member_profiles",
+      "column": "registration_note",
+      "schema": "public",
+      "default": null,
+      "ordinal": 11,
+      "nullable": "YES"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "member_profiles",
+      "column": "profile_photo_path",
+      "schema": "public",
+      "default": null,
+      "ordinal": 12,
+      "nullable": "YES"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "member_profiles",
+      "column": "phone_number",
+      "schema": "public",
+      "default": null,
+      "ordinal": 13,
+      "nullable": "YES"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "member_rank_rate_history",
+      "column": "member_id",
+      "schema": "public",
+      "default": null,
+      "ordinal": 1,
+      "nullable": "NO"
+    },
+    {
+      "udt": "date",
+      "type": "date",
+      "table": "member_rank_rate_history",
+      "column": "effective_from",
+      "schema": "public",
+      "default": null,
+      "ordinal": 2,
+      "nullable": "NO"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "member_rank_rate_history",
+      "column": "rank_code",
+      "schema": "public",
+      "default": null,
+      "ordinal": 3,
+      "nullable": "NO"
+    },
+    {
+      "udt": "timestamptz",
+      "type": "timestamp with time zone",
+      "table": "member_rank_rate_history",
+      "column": "created_at",
+      "schema": "public",
+      "default": "now()",
+      "ordinal": 4,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "member_wallets",
+      "column": "member_id",
+      "schema": "public",
+      "default": null,
+      "ordinal": 1,
+      "nullable": "NO"
+    },
+    {
+      "udt": "numeric",
+      "type": "numeric",
+      "table": "member_wallets",
+      "column": "balance",
+      "schema": "public",
+      "default": "0",
+      "ordinal": 2,
+      "nullable": "NO"
+    },
+    {
+      "udt": "numeric",
+      "type": "numeric",
+      "table": "member_wallets",
+      "column": "arrears",
+      "schema": "public",
+      "default": "0",
+      "ordinal": 3,
+      "nullable": "NO"
+    },
+    {
+      "udt": "date",
+      "type": "date",
+      "table": "member_wallets",
+      "column": "next_pay",
+      "schema": "public",
+      "default": null,
+      "ordinal": 4,
+      "nullable": "YES"
+    },
+    {
+      "udt": "date",
+      "type": "date",
+      "table": "member_wallets",
+      "column": "unpaid_from",
+      "schema": "public",
+      "default": null,
+      "ordinal": 5,
+      "nullable": "YES"
+    },
+    {
+      "udt": "numeric",
+      "type": "numeric",
+      "table": "member_wallets",
+      "column": "adm_due",
+      "schema": "public",
+      "default": "0",
+      "ordinal": 6,
+      "nullable": "NO"
+    },
+    {
+      "udt": "bool",
+      "type": "boolean",
+      "table": "member_wallets",
+      "column": "exempt_kas",
+      "schema": "public",
+      "default": "false",
+      "ordinal": 7,
+      "nullable": "NO"
+    },
+    {
+      "udt": "timestamptz",
+      "type": "timestamp with time zone",
+      "table": "member_wallets",
+      "column": "created_at",
+      "schema": "public",
+      "default": "now()",
+      "ordinal": 8,
+      "nullable": "NO"
+    },
+    {
+      "udt": "timestamptz",
+      "type": "timestamp with time zone",
+      "table": "member_wallets",
+      "column": "updated_at",
+      "schema": "public",
+      "default": "now()",
+      "ordinal": 9,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "p4_p5_p6_chat_messages",
+      "column": "id",
+      "schema": "public",
+      "default": "gen_random_uuid()",
+      "ordinal": 1,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "p4_p5_p6_chat_messages",
+      "column": "sender_id",
+      "schema": "public",
+      "default": null,
+      "ordinal": 2,
+      "nullable": "NO"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "p4_p5_p6_chat_messages",
+      "column": "body",
+      "schema": "public",
+      "default": null,
+      "ordinal": 3,
+      "nullable": "NO"
+    },
+    {
+      "udt": "timestamptz",
+      "type": "timestamp with time zone",
+      "table": "p4_p5_p6_chat_messages",
+      "column": "created_at",
+      "schema": "public",
+      "default": "now()",
+      "ordinal": 4,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "p5_p6_chat_messages",
+      "column": "id",
+      "schema": "public",
+      "default": "gen_random_uuid()",
+      "ordinal": 1,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "p5_p6_chat_messages",
+      "column": "sender_id",
+      "schema": "public",
+      "default": null,
+      "ordinal": 2,
+      "nullable": "NO"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "p5_p6_chat_messages",
+      "column": "body",
+      "schema": "public",
+      "default": null,
+      "ordinal": 3,
+      "nullable": "NO"
+    },
+    {
+      "udt": "timestamptz",
+      "type": "timestamp with time zone",
+      "table": "p5_p6_chat_messages",
+      "column": "created_at",
+      "schema": "public",
+      "default": "now()",
+      "ordinal": 4,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "payment_submissions",
+      "column": "id",
+      "schema": "public",
+      "default": "gen_random_uuid()",
+      "ordinal": 1,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "payment_submissions",
+      "column": "member_id",
+      "schema": "public",
+      "default": null,
+      "ordinal": 2,
+      "nullable": "NO"
+    },
+    {
+      "udt": "numeric",
+      "type": "numeric",
+      "table": "payment_submissions",
+      "column": "amount",
+      "schema": "public",
+      "default": null,
+      "ordinal": 3,
+      "nullable": "NO"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "payment_submissions",
+      "column": "proof_path",
+      "schema": "public",
+      "default": null,
+      "ordinal": 4,
+      "nullable": "NO"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "payment_submissions",
+      "column": "status",
+      "schema": "public",
+      "default": "'pending'::text",
+      "ordinal": 5,
+      "nullable": "NO"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "payment_submissions",
+      "column": "review_note",
+      "schema": "public",
+      "default": null,
+      "ordinal": 6,
+      "nullable": "YES"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "payment_submissions",
+      "column": "reviewed_by",
+      "schema": "public",
+      "default": null,
+      "ordinal": 7,
+      "nullable": "YES"
+    },
+    {
+      "udt": "timestamptz",
+      "type": "timestamp with time zone",
+      "table": "payment_submissions",
+      "column": "reviewed_at",
+      "schema": "public",
+      "default": null,
+      "ordinal": 8,
+      "nullable": "YES"
+    },
+    {
+      "udt": "timestamptz",
+      "type": "timestamp with time zone",
+      "table": "payment_submissions",
+      "column": "created_at",
+      "schema": "public",
+      "default": "now()",
+      "ordinal": 9,
+      "nullable": "NO"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "payment_submissions",
+      "column": "payment_type",
+      "schema": "public",
+      "default": "'kas'::text",
+      "ordinal": 10,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "private_chat_hidden",
+      "column": "user_id",
+      "schema": "public",
+      "default": null,
+      "ordinal": 1,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "private_chat_hidden",
+      "column": "conversation_id",
+      "schema": "public",
+      "default": null,
+      "ordinal": 2,
+      "nullable": "NO"
+    },
+    {
+      "udt": "timestamptz",
+      "type": "timestamp with time zone",
+      "table": "private_chat_hidden",
+      "column": "hidden_at",
+      "schema": "public",
+      "default": "now()",
+      "ordinal": 3,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "private_conversations",
+      "column": "id",
+      "schema": "public",
+      "default": "gen_random_uuid()",
+      "ordinal": 1,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "private_conversations",
+      "column": "participant_one_id",
+      "schema": "public",
+      "default": null,
+      "ordinal": 2,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "private_conversations",
+      "column": "participant_two_id",
+      "schema": "public",
+      "default": null,
+      "ordinal": 3,
+      "nullable": "NO"
+    },
+    {
+      "udt": "timestamptz",
+      "type": "timestamp with time zone",
+      "table": "private_conversations",
+      "column": "created_at",
+      "schema": "public",
+      "default": "now()",
+      "ordinal": 4,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "private_messages",
+      "column": "id",
+      "schema": "public",
+      "default": "gen_random_uuid()",
+      "ordinal": 1,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "private_messages",
+      "column": "conversation_id",
+      "schema": "public",
+      "default": null,
+      "ordinal": 2,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "private_messages",
+      "column": "sender_id",
+      "schema": "public",
+      "default": null,
+      "ordinal": 3,
+      "nullable": "NO"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "private_messages",
+      "column": "body",
+      "schema": "public",
+      "default": null,
+      "ordinal": 4,
+      "nullable": "NO"
+    },
+    {
+      "udt": "timestamptz",
+      "type": "timestamp with time zone",
+      "table": "private_messages",
+      "column": "created_at",
+      "schema": "public",
+      "default": "now()",
+      "ordinal": 5,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "treasury_history",
+      "column": "id",
+      "schema": "public",
+      "default": "gen_random_uuid()",
+      "ordinal": 1,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "treasury_history",
+      "column": "sender_id",
+      "schema": "public",
+      "default": null,
+      "ordinal": 2,
+      "nullable": "NO"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "treasury_history",
+      "column": "sender_name",
+      "schema": "public",
+      "default": null,
+      "ordinal": 3,
+      "nullable": "NO"
+    },
+    {
+      "udt": "numeric",
+      "type": "numeric",
+      "table": "treasury_history",
+      "column": "opening_balance",
+      "schema": "public",
+      "default": null,
+      "ordinal": 4,
+      "nullable": "NO"
+    },
+    {
+      "udt": "numeric",
+      "type": "numeric",
+      "table": "treasury_history",
+      "column": "income",
+      "schema": "public",
+      "default": "0",
+      "ordinal": 5,
+      "nullable": "NO"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "treasury_history",
+      "column": "income_note",
+      "schema": "public",
+      "default": "''::text",
+      "ordinal": 6,
+      "nullable": "NO"
+    },
+    {
+      "udt": "numeric",
+      "type": "numeric",
+      "table": "treasury_history",
+      "column": "expense",
+      "schema": "public",
+      "default": "0",
+      "ordinal": 7,
+      "nullable": "NO"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "treasury_history",
+      "column": "expense_note",
+      "schema": "public",
+      "default": "''::text",
+      "ordinal": 8,
+      "nullable": "NO"
+    },
+    {
+      "udt": "numeric",
+      "type": "numeric",
+      "table": "treasury_history",
+      "column": "closing_balance",
+      "schema": "public",
+      "default": null,
+      "ordinal": 9,
+      "nullable": "YES"
+    },
+    {
+      "udt": "timestamptz",
+      "type": "timestamp with time zone",
+      "table": "treasury_history",
+      "column": "created_at",
+      "schema": "public",
+      "default": "now()",
+      "ordinal": 10,
+      "nullable": "NO"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "treasury_history",
+      "column": "sender_role",
+      "schema": "public",
+      "default": "'admin'::text",
+      "ordinal": 11,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "wallet_transactions",
+      "column": "id",
+      "schema": "public",
+      "default": "gen_random_uuid()",
+      "ordinal": 1,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "wallet_transactions",
+      "column": "member_id",
+      "schema": "public",
+      "default": null,
+      "ordinal": 2,
+      "nullable": "NO"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "wallet_transactions",
+      "column": "transaction_type",
+      "schema": "public",
+      "default": null,
+      "ordinal": 3,
+      "nullable": "NO"
+    },
+    {
+      "udt": "numeric",
+      "type": "numeric",
+      "table": "wallet_transactions",
+      "column": "amount",
+      "schema": "public",
+      "default": null,
+      "ordinal": 4,
+      "nullable": "NO"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "wallet_transactions",
+      "column": "reference_id",
+      "schema": "public",
+      "default": null,
+      "ordinal": 5,
+      "nullable": "YES"
+    },
+    {
+      "udt": "text",
+      "type": "text",
+      "table": "wallet_transactions",
+      "column": "description",
+      "schema": "public",
+      "default": null,
+      "ordinal": 6,
+      "nullable": "YES"
+    },
+    {
+      "udt": "uuid",
+      "type": "uuid",
+      "table": "wallet_transactions",
+      "column": "created_by",
+      "schema": "public",
+      "default": null,
+      "ordinal": 7,
+      "nullable": "YES"
+    },
+    {
+      "udt": "timestamptz",
+      "type": "timestamp with time zone",
+      "table": "wallet_transactions",
+      "column": "created_at",
+      "schema": "public",
+      "default": "now()",
+      "ordinal": 8,
+      "nullable": "NO"
+    }
+  ],
+  "indexes": [
+    {
+      "name": "admin_bootstrap_tokens_pkey",
+      "table": "admin_bootstrap_tokens",
+      "schema": "private",
+      "definition": "CREATE UNIQUE INDEX admin_bootstrap_tokens_pkey ON private.admin_bootstrap_tokens USING btree (token_hash)"
+    },
+    {
+      "name": "admin_bootstrap_tokens_used_by_idx",
+      "table": "admin_bootstrap_tokens",
+      "schema": "private",
+      "definition": "CREATE INDEX admin_bootstrap_tokens_used_by_idx ON private.admin_bootstrap_tokens USING btree (used_by) WHERE (used_by IS NOT NULL)"
+    },
+    {
+      "name": "admin_transaction_report_state_pkey",
+      "table": "admin_transaction_report_state",
+      "schema": "private",
+      "definition": "CREATE UNIQUE INDEX admin_transaction_report_state_pkey ON private.admin_transaction_report_state USING btree (singleton)"
+    },
+    {
+      "name": "rank_dues_rate_history_pkey",
+      "table": "rank_dues_rate_history",
+      "schema": "private",
+      "definition": "CREATE UNIQUE INDEX rank_dues_rate_history_pkey ON private.rank_dues_rate_history USING btree (rank_code, effective_from)"
+    },
+    {
+      "name": "storage_cleanup_state_pkey",
+      "table": "storage_cleanup_state",
+      "schema": "private",
+      "definition": "CREATE UNIQUE INDEX storage_cleanup_state_pkey ON private.storage_cleanup_state USING btree (singleton)"
+    },
+    {
+      "name": "admin_audit_log_admin_id_idx",
+      "table": "admin_audit_log",
+      "schema": "public",
+      "definition": "CREATE INDEX admin_audit_log_admin_id_idx ON public.admin_audit_log USING btree (admin_id)"
+    },
+    {
+      "name": "admin_audit_log_pkey",
+      "table": "admin_audit_log",
+      "schema": "public",
+      "definition": "CREATE UNIQUE INDEX admin_audit_log_pkey ON public.admin_audit_log USING btree (id)"
+    },
+    {
+      "name": "app_branding_settings_pkey",
+      "table": "app_branding_settings",
+      "schema": "public",
+      "definition": "CREATE UNIQUE INDEX app_branding_settings_pkey ON public.app_branding_settings USING btree (id)"
+    },
+    {
+      "name": "chat_messages_created_at_idx",
+      "table": "chat_messages",
+      "schema": "public",
+      "definition": "CREATE INDEX chat_messages_created_at_idx ON public.chat_messages USING btree (created_at DESC)"
+    },
+    {
+      "name": "chat_messages_pkey",
+      "table": "chat_messages",
+      "schema": "public",
+      "definition": "CREATE UNIQUE INDEX chat_messages_pkey ON public.chat_messages USING btree (id)"
+    },
+    {
+      "name": "chat_messages_sender_id_idx",
+      "table": "chat_messages",
+      "schema": "public",
+      "definition": "CREATE INDEX chat_messages_sender_id_idx ON public.chat_messages USING btree (sender_id, created_at DESC)"
+    },
+    {
+      "name": "daily_dues_log_member_id_due_date_key",
+      "table": "daily_dues_log",
+      "schema": "public",
+      "definition": "CREATE UNIQUE INDEX daily_dues_log_member_id_due_date_key ON public.daily_dues_log USING btree (member_id, due_date)"
+    },
+    {
+      "name": "daily_dues_log_pkey",
+      "table": "daily_dues_log",
+      "schema": "public",
+      "definition": "CREATE UNIQUE INDEX daily_dues_log_pkey ON public.daily_dues_log USING btree (id)"
+    },
+    {
+      "name": "dues_rate_history_created_by_idx",
+      "table": "dues_rate_history",
+      "schema": "public",
+      "definition": "CREATE INDEX dues_rate_history_created_by_idx ON public.dues_rate_history USING btree (created_by) WHERE (created_by IS NOT NULL)"
+    },
+    {
+      "name": "dues_rate_history_pkey",
+      "table": "dues_rate_history",
+      "schema": "public",
+      "definition": "CREATE UNIQUE INDEX dues_rate_history_pkey ON public.dues_rate_history USING btree (effective_from)"
+    },
+    {
+      "name": "dues_settings_pkey",
+      "table": "dues_settings",
+      "schema": "public",
+      "definition": "CREATE UNIQUE INDEX dues_settings_pkey ON public.dues_settings USING btree (id)"
+    },
+    {
+      "name": "information_messages_pkey",
+      "table": "information_messages",
+      "schema": "public",
+      "definition": "CREATE UNIQUE INDEX information_messages_pkey ON public.information_messages USING btree (id)"
+    },
+    {
+      "name": "member_leave_requests_created_idx",
+      "table": "member_leave_requests",
+      "schema": "public",
+      "definition": "CREATE INDEX member_leave_requests_created_idx ON public.member_leave_requests USING btree (created_at DESC)"
+    },
+    {
+      "name": "member_leave_requests_member_created_idx",
+      "table": "member_leave_requests",
+      "schema": "public",
+      "definition": "CREATE INDEX member_leave_requests_member_created_idx ON public.member_leave_requests USING btree (member_id, created_at DESC)"
+    },
+    {
+      "name": "member_leave_requests_pkey",
+      "table": "member_leave_requests",
+      "schema": "public",
+      "definition": "CREATE UNIQUE INDEX member_leave_requests_pkey ON public.member_leave_requests USING btree (id)"
+    },
+    {
+      "name": "member_profiles_display_name_lower_uidx",
+      "table": "member_profiles",
+      "schema": "public",
+      "definition": "CREATE UNIQUE INDEX member_profiles_display_name_lower_uidx ON public.member_profiles USING btree (lower(display_name))"
+    },
+    {
+      "name": "member_profiles_login_username_lower_uidx",
+      "table": "member_profiles",
+      "schema": "public",
+      "definition": "CREATE UNIQUE INDEX member_profiles_login_username_lower_uidx ON public.member_profiles USING btree (lower(login_username))"
+    },
+    {
+      "name": "member_profiles_pkey",
+      "table": "member_profiles",
+      "schema": "public",
+      "definition": "CREATE UNIQUE INDEX member_profiles_pkey ON public.member_profiles USING btree (id)"
+    },
+    {
+      "name": "member_rank_rate_history_pkey",
+      "table": "member_rank_rate_history",
+      "schema": "public",
+      "definition": "CREATE UNIQUE INDEX member_rank_rate_history_pkey ON public.member_rank_rate_history USING btree (member_id, effective_from)"
+    },
+    {
+      "name": "member_wallets_pkey",
+      "table": "member_wallets",
+      "schema": "public",
+      "definition": "CREATE UNIQUE INDEX member_wallets_pkey ON public.member_wallets USING btree (member_id)"
+    },
+    {
+      "name": "p4_p5_p6_chat_messages_created_at_idx",
+      "table": "p4_p5_p6_chat_messages",
+      "schema": "public",
+      "definition": "CREATE INDEX p4_p5_p6_chat_messages_created_at_idx ON public.p4_p5_p6_chat_messages USING btree (created_at DESC)"
+    },
+    {
+      "name": "p4_p5_p6_chat_messages_pkey",
+      "table": "p4_p5_p6_chat_messages",
+      "schema": "public",
+      "definition": "CREATE UNIQUE INDEX p4_p5_p6_chat_messages_pkey ON public.p4_p5_p6_chat_messages USING btree (id)"
+    },
+    {
+      "name": "p5_p6_chat_messages_created_at_idx",
+      "table": "p5_p6_chat_messages",
+      "schema": "public",
+      "definition": "CREATE INDEX p5_p6_chat_messages_created_at_idx ON public.p5_p6_chat_messages USING btree (created_at DESC)"
+    },
+    {
+      "name": "p5_p6_chat_messages_pkey",
+      "table": "p5_p6_chat_messages",
+      "schema": "public",
+      "definition": "CREATE UNIQUE INDEX p5_p6_chat_messages_pkey ON public.p5_p6_chat_messages USING btree (id)"
+    },
+    {
+      "name": "payment_submissions_member_id_idx",
+      "table": "payment_submissions",
+      "schema": "public",
+      "definition": "CREATE INDEX payment_submissions_member_id_idx ON public.payment_submissions USING btree (member_id)"
+    },
+    {
+      "name": "payment_submissions_one_pending_per_member_idx",
+      "table": "payment_submissions",
+      "schema": "public",
+      "definition": "CREATE UNIQUE INDEX payment_submissions_one_pending_per_member_idx ON public.payment_submissions USING btree (member_id) WHERE (status = 'pending'::text)"
+    },
+    {
+      "name": "payment_submissions_pkey",
+      "table": "payment_submissions",
+      "schema": "public",
+      "definition": "CREATE UNIQUE INDEX payment_submissions_pkey ON public.payment_submissions USING btree (id)"
+    },
+    {
+      "name": "payment_submissions_reviewed_by_idx",
+      "table": "payment_submissions",
+      "schema": "public",
+      "definition": "CREATE INDEX payment_submissions_reviewed_by_idx ON public.payment_submissions USING btree (reviewed_by)"
+    },
+    {
+      "name": "payment_submissions_status_created_idx",
+      "table": "payment_submissions",
+      "schema": "public",
+      "definition": "CREATE INDEX payment_submissions_status_created_idx ON public.payment_submissions USING btree (status, created_at)"
+    },
+    {
+      "name": "private_chat_hidden_conversation_idx",
+      "table": "private_chat_hidden",
+      "schema": "public",
+      "definition": "CREATE INDEX private_chat_hidden_conversation_idx ON public.private_chat_hidden USING btree (conversation_id)"
+    },
+    {
+      "name": "private_chat_hidden_pkey",
+      "table": "private_chat_hidden",
+      "schema": "public",
+      "definition": "CREATE UNIQUE INDEX private_chat_hidden_pkey ON public.private_chat_hidden USING btree (user_id, conversation_id)"
+    },
+    {
+      "name": "private_conversations_pair_unique",
+      "table": "private_conversations",
+      "schema": "public",
+      "definition": "CREATE UNIQUE INDEX private_conversations_pair_unique ON public.private_conversations USING btree (participant_one_id, participant_two_id)"
+    },
+    {
+      "name": "private_conversations_participant_two_idx",
+      "table": "private_conversations",
+      "schema": "public",
+      "definition": "CREATE INDEX private_conversations_participant_two_idx ON public.private_conversations USING btree (participant_two_id, created_at DESC)"
+    },
+    {
+      "name": "private_conversations_pkey",
+      "table": "private_conversations",
+      "schema": "public",
+      "definition": "CREATE UNIQUE INDEX private_conversations_pkey ON public.private_conversations USING btree (id)"
+    },
+    {
+      "name": "private_messages_conversation_created_idx",
+      "table": "private_messages",
+      "schema": "public",
+      "definition": "CREATE INDEX private_messages_conversation_created_idx ON public.private_messages USING btree (conversation_id, created_at DESC)"
+    },
+    {
+      "name": "private_messages_pkey",
+      "table": "private_messages",
+      "schema": "public",
+      "definition": "CREATE UNIQUE INDEX private_messages_pkey ON public.private_messages USING btree (id)"
+    },
+    {
+      "name": "treasury_history_created_at_idx",
+      "table": "treasury_history",
+      "schema": "public",
+      "definition": "CREATE INDEX treasury_history_created_at_idx ON public.treasury_history USING btree (created_at DESC)"
+    },
+    {
+      "name": "treasury_history_pkey",
+      "table": "treasury_history",
+      "schema": "public",
+      "definition": "CREATE UNIQUE INDEX treasury_history_pkey ON public.treasury_history USING btree (id)"
+    },
+    {
+      "name": "treasury_history_sender_id_idx",
+      "table": "treasury_history",
+      "schema": "public",
+      "definition": "CREATE INDEX treasury_history_sender_id_idx ON public.treasury_history USING btree (sender_id)"
+    },
+    {
+      "name": "wallet_transactions_created_by_idx",
+      "table": "wallet_transactions",
+      "schema": "public",
+      "definition": "CREATE INDEX wallet_transactions_created_by_idx ON public.wallet_transactions USING btree (created_by)"
+    },
+    {
+      "name": "wallet_transactions_member_created_idx",
+      "table": "wallet_transactions",
+      "schema": "public",
+      "definition": "CREATE INDEX wallet_transactions_member_created_idx ON public.wallet_transactions USING btree (member_id, created_at DESC)"
+    },
+    {
+      "name": "wallet_transactions_pkey",
+      "table": "wallet_transactions",
+      "schema": "public",
+      "definition": "CREATE UNIQUE INDEX wallet_transactions_pkey ON public.wallet_transactions USING btree (id)"
+    }
+  ],
+  "policies": [
+    {
+      "cmd": "SELECT",
+      "name": "admin_audit_log_admin_select",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "admin_audit_log",
+      "using": "( SELECT private.is_admin() AS is_admin)",
+      "schema": "public"
+    },
+    {
+      "cmd": "SELECT",
+      "name": "app_branding_public_read",
+      "check": null,
+      "roles": [
+        "anon",
+        "authenticated"
+      ],
+      "table": "app_branding_settings",
+      "using": "(id = 1)",
+      "schema": "public"
+    },
+    {
+      "cmd": "SELECT",
+      "name": "Active members read chat",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "chat_messages",
+      "using": "(EXISTS ( SELECT 1\n   FROM member_profiles me\n  WHERE ((me.id = ( SELECT auth.uid() AS uid)) AND (me.status = 'active'::text) AND (me.role = ANY (ARRAY['admin'::text, 'member'::text])))))",
+      "schema": "public"
+    },
+    {
+      "cmd": "INSERT",
+      "name": "Active members send own chat",
+      "check": "((sender_id = ( SELECT auth.uid() AS uid)) AND (EXISTS ( SELECT 1\n   FROM member_profiles me\n  WHERE ((me.id = ( SELECT auth.uid() AS uid)) AND (me.status = 'active'::text) AND (me.role = ANY (ARRAY['admin'::text, 'member'::text]))))) AND ((char_length(btrim(body)) >= 1) AND (char_length(btrim(body)) <= 2000)))",
+      "roles": [
+        "authenticated"
+      ],
+      "table": "chat_messages",
+      "using": null,
+      "schema": "public"
+    },
+    {
+      "cmd": "DELETE",
+      "name": "Sender or admin delete chat",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "chat_messages",
+      "using": "((sender_id = ( SELECT auth.uid() AS uid)) OR (EXISTS ( SELECT 1\n   FROM member_profiles me\n  WHERE ((me.id = ( SELECT auth.uid() AS uid)) AND (me.role = 'admin'::text) AND (me.status = 'active'::text)))))",
+      "schema": "public"
+    },
+    {
+      "cmd": "DELETE",
+      "name": "chat_messages_delete_admin_assistant",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "chat_messages",
+      "using": "private.is_admin_assistant()",
+      "schema": "public"
+    },
+    {
+      "cmd": "INSERT",
+      "name": "chat_messages_insert_admin_assistant",
+      "check": "((sender_id = auth.uid()) AND private.is_admin_assistant() AND ((char_length(btrim(body)) >= 1) AND (char_length(btrim(body)) <= 2000)))",
+      "roles": [
+        "authenticated"
+      ],
+      "table": "chat_messages",
+      "using": null,
+      "schema": "public"
+    },
+    {
+      "cmd": "SELECT",
+      "name": "chat_messages_select_admin_assistant",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "chat_messages",
+      "using": "private.is_admin_assistant()",
+      "schema": "public"
+    },
+    {
+      "cmd": "SELECT",
+      "name": "daily_dues_log_admin_select",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "daily_dues_log",
+      "using": "( SELECT private.is_admin() AS is_admin)",
+      "schema": "public"
+    },
+    {
+      "cmd": "SELECT",
+      "name": "dues_rate_history_admin_select",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "dues_rate_history",
+      "using": "private.is_admin()",
+      "schema": "public"
+    },
+    {
+      "cmd": "SELECT",
+      "name": "dues_settings_select_authenticated",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "dues_settings",
+      "using": "(( SELECT auth.uid() AS uid) IS NOT NULL)",
+      "schema": "public"
+    },
+    {
+      "cmd": "SELECT",
+      "name": "Active members can read information",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "information_messages",
+      "using": "(EXISTS ( SELECT 1\n   FROM member_profiles viewer\n  WHERE ((viewer.id = ( SELECT auth.uid() AS uid)) AND (viewer.status = 'active'::text))))",
+      "schema": "public"
+    },
+    {
+      "cmd": "INSERT",
+      "name": "Authorized ranks can post information",
+      "check": "((sender_id = ( SELECT auth.uid() AS uid)) AND (EXISTS ( SELECT 1\n   FROM member_profiles sender\n  WHERE ((sender.id = ( SELECT auth.uid() AS uid)) AND (sender.status = 'active'::text) AND ((sender.role = ANY (ARRAY['admin'::text, 'admin_assistant'::text])) OR (sender.rank_code = ANY (ARRAY['P5'::text, 'P6'::text])))))))",
+      "roles": [
+        "authenticated"
+      ],
+      "table": "information_messages",
+      "using": null,
+      "schema": "public"
+    },
+    {
+      "cmd": "DELETE",
+      "name": "Authorized users can delete information",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "information_messages",
+      "using": "(EXISTS ( SELECT 1\n   FROM member_profiles actor\n  WHERE ((actor.id = ( SELECT auth.uid() AS uid)) AND (actor.status = 'active'::text) AND ((actor.role = 'admin'::text) OR ((information_messages.sender_id = ( SELECT auth.uid() AS uid)) AND ((actor.role = 'admin_assistant'::text) OR (actor.rank_code = ANY (ARRAY['P5'::text, 'P6'::text]))))))))",
+      "schema": "public"
+    },
+    {
+      "cmd": "DELETE",
+      "name": "member_leave_requests_delete_admin",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "member_leave_requests",
+      "using": "( SELECT private.is_admin() AS is_admin)",
+      "schema": "public"
+    },
+    {
+      "cmd": "INSERT",
+      "name": "member_leave_requests_insert_self_active",
+      "check": "((member_id = auth.uid()) AND (EXISTS ( SELECT 1\n   FROM member_profiles p\n  WHERE ((p.id = auth.uid()) AND (p.status = 'active'::text)))))",
+      "roles": [
+        "authenticated"
+      ],
+      "table": "member_leave_requests",
+      "using": null,
+      "schema": "public"
+    },
+    {
+      "cmd": "SELECT",
+      "name": "member_leave_requests_select_all_active_members",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "member_leave_requests",
+      "using": "(EXISTS ( SELECT 1\n   FROM member_profiles viewer\n  WHERE ((viewer.id = auth.uid()) AND (viewer.status = 'active'::text))))",
+      "schema": "public"
+    },
+    {
+      "cmd": "SELECT",
+      "name": "member_profiles_assistant_payment_read",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "member_profiles",
+      "using": "(( SELECT private.is_admin_assistant() AS is_admin_assistant) AND (role = 'member'::text) AND (status = 'active'::text) AND (rank_code = ANY (ARRAY['P1'::text, 'P2'::text, 'P3'::text, 'P4'::text])))",
+      "schema": "public"
+    },
+    {
+      "cmd": "SELECT",
+      "name": "member_profiles_select_admin_assistant",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "member_profiles",
+      "using": "private.is_admin_assistant()",
+      "schema": "public"
+    },
+    {
+      "cmd": "SELECT",
+      "name": "member_profiles_select_self_or_admin",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "member_profiles",
+      "using": "((id = ( SELECT auth.uid() AS uid)) OR ( SELECT private.is_admin() AS is_admin))",
+      "schema": "public"
+    },
+    {
+      "cmd": "DELETE",
+      "name": "member_wallets_admin_delete",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "member_wallets",
+      "using": "( SELECT private.is_admin() AS is_admin)",
+      "schema": "public"
+    },
+    {
+      "cmd": "INSERT",
+      "name": "member_wallets_admin_insert",
+      "check": "( SELECT private.is_admin() AS is_admin)",
+      "roles": [
+        "authenticated"
+      ],
+      "table": "member_wallets",
+      "using": null,
+      "schema": "public"
+    },
+    {
+      "cmd": "UPDATE",
+      "name": "member_wallets_admin_update",
+      "check": "( SELECT private.is_admin() AS is_admin)",
+      "roles": [
+        "authenticated"
+      ],
+      "table": "member_wallets",
+      "using": "( SELECT private.is_admin() AS is_admin)",
+      "schema": "public"
+    },
+    {
+      "cmd": "SELECT",
+      "name": "member_wallets_select_self_or_admin",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "member_wallets",
+      "using": "((member_id = ( SELECT auth.uid() AS uid)) OR ( SELECT private.is_admin() AS is_admin))",
+      "schema": "public"
+    },
+    {
+      "cmd": "DELETE",
+      "name": "P4 P5 P6 members can delete own rank room messages",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "p4_p5_p6_chat_messages",
+      "using": "((sender_id = auth.uid()) AND (EXISTS ( SELECT 1\n   FROM member_profiles p\n  WHERE ((p.id = auth.uid()) AND (p.status = 'active'::text) AND ((p.rank_code = ANY (ARRAY['P4'::text, 'P5'::text, 'P6'::text])) OR (p.role = 'admin'::text))))))",
+      "schema": "public"
+    },
+    {
+      "cmd": "SELECT",
+      "name": "P4 P5 P6 members can read rank room",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "p4_p5_p6_chat_messages",
+      "using": "(EXISTS ( SELECT 1\n   FROM member_profiles p\n  WHERE ((p.id = auth.uid()) AND (p.status = 'active'::text) AND ((p.rank_code = ANY (ARRAY['P4'::text, 'P5'::text, 'P6'::text])) OR (p.role = 'admin'::text)))))",
+      "schema": "public"
+    },
+    {
+      "cmd": "INSERT",
+      "name": "P4 P5 P6 members can send rank room messages",
+      "check": "((sender_id = auth.uid()) AND (EXISTS ( SELECT 1\n   FROM member_profiles p\n  WHERE ((p.id = auth.uid()) AND (p.status = 'active'::text) AND ((p.rank_code = ANY (ARRAY['P4'::text, 'P5'::text, 'P6'::text])) OR (p.role = 'admin'::text))))))",
+      "roles": [
+        "authenticated"
+      ],
+      "table": "p4_p5_p6_chat_messages",
+      "using": null,
+      "schema": "public"
+    },
+    {
+      "cmd": "DELETE",
+      "name": "P5 P6 members can delete own rank room messages",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "p5_p6_chat_messages",
+      "using": "((sender_id = auth.uid()) AND (EXISTS ( SELECT 1\n   FROM member_profiles p\n  WHERE ((p.id = auth.uid()) AND (p.status = 'active'::text) AND ((p.rank_code = ANY (ARRAY['P5'::text, 'P6'::text])) OR (p.role = 'admin'::text))))))",
+      "schema": "public"
+    },
+    {
+      "cmd": "SELECT",
+      "name": "P5 P6 members can read rank room",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "p5_p6_chat_messages",
+      "using": "(EXISTS ( SELECT 1\n   FROM member_profiles p\n  WHERE ((p.id = auth.uid()) AND (p.status = 'active'::text) AND ((p.rank_code = ANY (ARRAY['P5'::text, 'P6'::text])) OR (p.role = 'admin'::text)))))",
+      "schema": "public"
+    },
+    {
+      "cmd": "INSERT",
+      "name": "P5 P6 members can send rank room messages",
+      "check": "((sender_id = auth.uid()) AND (EXISTS ( SELECT 1\n   FROM member_profiles p\n  WHERE ((p.id = auth.uid()) AND (p.status = 'active'::text) AND ((p.rank_code = ANY (ARRAY['P5'::text, 'P6'::text])) OR (p.role = 'admin'::text))))))",
+      "roles": [
+        "authenticated"
+      ],
+      "table": "p5_p6_chat_messages",
+      "using": null,
+      "schema": "public"
+    },
+    {
+      "cmd": "SELECT",
+      "name": "payment_submissions_assistant_payment_read",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "payment_submissions",
+      "using": "(( SELECT private.is_admin_assistant() AS is_admin_assistant) AND (EXISTS ( SELECT 1\n   FROM member_profiles m\n  WHERE ((m.id = payment_submissions.member_id) AND (m.role = 'member'::text) AND (m.status = 'active'::text) AND (m.rank_code = ANY (ARRAY['P1'::text, 'P2'::text, 'P3'::text, 'P4'::text]))))))",
+      "schema": "public"
+    },
+    {
+      "cmd": "INSERT",
+      "name": "payment_submissions_insert_self_pending",
+      "check": "((member_id = ( SELECT auth.uid() AS uid)) AND (status = 'pending'::text) AND (reviewed_by IS NULL) AND (reviewed_at IS NULL) AND (proof_path ~~ ((( SELECT auth.uid() AS uid))::text || '/%'::text)) AND (EXISTS ( SELECT 1\n   FROM member_profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND (p.status = 'active'::text) AND (p.role = 'member'::text)))))",
+      "roles": [
+        "authenticated"
+      ],
+      "table": "payment_submissions",
+      "using": null,
+      "schema": "public"
+    },
+    {
+      "cmd": "SELECT",
+      "name": "payment_submissions_select_self_or_developer",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "payment_submissions",
+      "using": "((member_id = ( SELECT auth.uid() AS uid)) OR ( SELECT private.is_developer() AS is_developer))",
+      "schema": "public"
+    },
+    {
+      "cmd": "DELETE",
+      "name": "private_chat_hidden_delete_own",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "private_chat_hidden",
+      "using": "(user_id = ( SELECT auth.uid() AS uid))",
+      "schema": "public"
+    },
+    {
+      "cmd": "INSERT",
+      "name": "private_chat_hidden_insert_own",
+      "check": "((user_id = ( SELECT auth.uid() AS uid)) AND (EXISTS ( SELECT 1\n   FROM private_conversations c\n  WHERE ((c.id = private_chat_hidden.conversation_id) AND ((c.participant_one_id = ( SELECT auth.uid() AS uid)) OR (c.participant_two_id = ( SELECT auth.uid() AS uid)))))))",
+      "roles": [
+        "authenticated"
+      ],
+      "table": "private_chat_hidden",
+      "using": null,
+      "schema": "public"
+    },
+    {
+      "cmd": "SELECT",
+      "name": "private_chat_hidden_select_own",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "private_chat_hidden",
+      "using": "(user_id = ( SELECT auth.uid() AS uid))",
+      "schema": "public"
+    },
+    {
+      "cmd": "INSERT",
+      "name": "private_conversations_insert_participants",
+      "check": "(((participant_one_id = ( SELECT auth.uid() AS uid)) OR (participant_two_id = ( SELECT auth.uid() AS uid))) AND (EXISTS ( SELECT 1\n   FROM member_profiles me\n  WHERE ((me.id = ( SELECT auth.uid() AS uid)) AND (me.status = 'active'::text)))))",
+      "roles": [
+        "authenticated"
+      ],
+      "table": "private_conversations",
+      "using": null,
+      "schema": "public"
+    },
+    {
+      "cmd": "SELECT",
+      "name": "private_conversations_select_participants",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "private_conversations",
+      "using": "(((participant_one_id = ( SELECT auth.uid() AS uid)) OR (participant_two_id = ( SELECT auth.uid() AS uid))) AND (EXISTS ( SELECT 1\n   FROM member_profiles me\n  WHERE ((me.id = ( SELECT auth.uid() AS uid)) AND (me.status = 'active'::text)))))",
+      "schema": "public"
+    },
+    {
+      "cmd": "INSERT",
+      "name": "private_messages_insert_sender",
+      "check": "((sender_id = ( SELECT auth.uid() AS uid)) AND (EXISTS ( SELECT 1\n   FROM private_conversations c\n  WHERE ((c.id = private_messages.conversation_id) AND ((c.participant_one_id = ( SELECT auth.uid() AS uid)) OR (c.participant_two_id = ( SELECT auth.uid() AS uid)))))))",
+      "roles": [
+        "authenticated"
+      ],
+      "table": "private_messages",
+      "using": null,
+      "schema": "public"
+    },
+    {
+      "cmd": "SELECT",
+      "name": "private_messages_select_participants",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "private_messages",
+      "using": "((EXISTS ( SELECT 1\n   FROM private_conversations c\n  WHERE ((c.id = private_messages.conversation_id) AND ((c.participant_one_id = ( SELECT auth.uid() AS uid)) OR (c.participant_two_id = ( SELECT auth.uid() AS uid)))))) AND (EXISTS ( SELECT 1\n   FROM member_profiles me\n  WHERE ((me.id = ( SELECT auth.uid() AS uid)) AND (me.status = 'active'::text)))))",
+      "schema": "public"
+    },
+    {
+      "cmd": "DELETE",
+      "name": "treasury_history_delete_admin_assistant_developer",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "treasury_history",
+      "using": "(EXISTS ( SELECT 1\n   FROM member_profiles actor\n  WHERE ((actor.id = ( SELECT auth.uid() AS uid)) AND (actor.status = 'active'::text) AND (actor.role = ANY (ARRAY['admin'::text, 'admin_assistant'::text])))))",
+      "schema": "public"
+    },
+    {
+      "cmd": "INSERT",
+      "name": "treasury_history_insert_admin_developer",
+      "check": "((sender_id = ( SELECT auth.uid() AS uid)) AND (EXISTS ( SELECT 1\n   FROM member_profiles actor\n  WHERE ((actor.id = ( SELECT auth.uid() AS uid)) AND (actor.status = 'active'::text) AND (actor.role = ANY (ARRAY['admin'::text, 'admin_assistant'::text])) AND (treasury_history.sender_role = actor.role)))))",
+      "roles": [
+        "authenticated"
+      ],
+      "table": "treasury_history",
+      "using": null,
+      "schema": "public"
+    },
+    {
+      "cmd": "SELECT",
+      "name": "treasury_history_select_active_members",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "treasury_history",
+      "using": "(EXISTS ( SELECT 1\n   FROM member_profiles viewer\n  WHERE ((viewer.id = ( SELECT auth.uid() AS uid)) AND (viewer.status = 'active'::text))))",
+      "schema": "public"
+    },
+    {
+      "cmd": "UPDATE",
+      "name": "treasury_history_update_admin_assistant_developer",
+      "check": "(EXISTS ( SELECT 1\n   FROM member_profiles actor\n  WHERE ((actor.id = ( SELECT auth.uid() AS uid)) AND (actor.status = 'active'::text) AND (actor.role = ANY (ARRAY['admin'::text, 'admin_assistant'::text])))))",
+      "roles": [
+        "authenticated"
+      ],
+      "table": "treasury_history",
+      "using": "(EXISTS ( SELECT 1\n   FROM member_profiles actor\n  WHERE ((actor.id = ( SELECT auth.uid() AS uid)) AND (actor.status = 'active'::text) AND (actor.role = ANY (ARRAY['admin'::text, 'admin_assistant'::text])))))",
+      "schema": "public"
+    },
+    {
+      "cmd": "SELECT",
+      "name": "wallet_transactions_select_self_or_admin",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "wallet_transactions",
+      "using": "((member_id = ( SELECT auth.uid() AS uid)) OR ( SELECT private.is_admin() AS is_admin))",
+      "schema": "public"
+    }
+  ],
+  "triggers": [
+    {
+      "name": "chat_set_sender_metadata",
+      "event": "INSERT",
+      "table": "chat_messages",
+      "timing": "BEFORE",
+      "definition": "EXECUTE FUNCTION private.chat_set_sender_metadata()"
+    },
+    {
+      "name": "guard_rate_history_master_only",
+      "event": "INSERT",
+      "table": "dues_rate_history",
+      "timing": "BEFORE",
+      "definition": "EXECUTE FUNCTION private.guard_rate_history_master_only()"
+    },
+    {
+      "name": "guard_rate_history_master_only",
+      "event": "DELETE",
+      "table": "dues_rate_history",
+      "timing": "BEFORE",
+      "definition": "EXECUTE FUNCTION private.guard_rate_history_master_only()"
+    },
+    {
+      "name": "guard_rate_history_master_only",
+      "event": "UPDATE",
+      "table": "dues_rate_history",
+      "timing": "BEFORE",
+      "definition": "EXECUTE FUNCTION private.guard_rate_history_master_only()"
+    },
+    {
+      "name": "guard_daily_rate_master_only",
+      "event": "UPDATE",
+      "table": "dues_settings",
+      "timing": "BEFORE",
+      "definition": "EXECUTE FUNCTION private.guard_daily_rate_master_only()"
+    },
+    {
+      "name": "set_dues_settings_updated_at",
+      "event": "UPDATE",
+      "table": "dues_settings",
+      "timing": "BEFORE",
+      "definition": "EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "name": "guard_member_profile_admin_boundaries",
+      "event": "DELETE",
+      "table": "member_profiles",
+      "timing": "BEFORE",
+      "definition": "EXECUTE FUNCTION private.guard_admin_role_boundaries()"
+    },
+    {
+      "name": "guard_member_profile_admin_boundaries",
+      "event": "UPDATE",
+      "table": "member_profiles",
+      "timing": "BEFORE",
+      "definition": "EXECUTE FUNCTION private.guard_admin_role_boundaries()"
+    },
+    {
+      "name": "initialize_member_dues_start",
+      "event": "UPDATE",
+      "table": "member_profiles",
+      "timing": "BEFORE",
+      "definition": "EXECUTE FUNCTION private.initialize_member_dues_start()"
+    },
+    {
+      "name": "set_member_profiles_updated_at",
+      "event": "UPDATE",
+      "table": "member_profiles",
+      "timing": "BEFORE",
+      "definition": "EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "name": "guard_wallet_admin_boundaries",
+      "event": "INSERT",
+      "table": "member_wallets",
+      "timing": "BEFORE",
+      "definition": "EXECUTE FUNCTION private.guard_wallet_admin_boundaries()"
+    },
+    {
+      "name": "guard_wallet_admin_boundaries",
+      "event": "DELETE",
+      "table": "member_wallets",
+      "timing": "BEFORE",
+      "definition": "EXECUTE FUNCTION private.guard_wallet_admin_boundaries()"
+    },
+    {
+      "name": "guard_wallet_admin_boundaries",
+      "event": "UPDATE",
+      "table": "member_wallets",
+      "timing": "BEFORE",
+      "definition": "EXECUTE FUNCTION private.guard_wallet_admin_boundaries()"
+    },
+    {
+      "name": "set_member_wallets_updated_at",
+      "event": "UPDATE",
+      "table": "member_wallets",
+      "timing": "BEFORE",
+      "definition": "EXECUTE FUNCTION set_updated_at()"
+    },
+    {
+      "name": "guard_cash_approval",
+      "event": "UPDATE",
+      "table": "payment_submissions",
+      "timing": "BEFORE",
+      "definition": "EXECUTE FUNCTION private.guard_cash_approval()"
+    },
+    {
+      "name": "payment_rejection_note_required",
+      "event": "UPDATE",
+      "table": "payment_submissions",
+      "timing": "BEFORE",
+      "definition": "EXECUTE FUNCTION require_payment_rejection_note()"
+    },
+    {
+      "name": "private_conversations_validate_insert",
+      "event": "INSERT",
+      "table": "private_conversations",
+      "timing": "BEFORE",
+      "definition": "EXECUTE FUNCTION private.validate_private_conversation_insert()"
+    },
+    {
+      "name": "private_messages_validate_insert",
+      "event": "INSERT",
+      "table": "private_messages",
+      "timing": "BEFORE",
+      "definition": "EXECUTE FUNCTION private.validate_private_message_insert()"
+    }
+  ],
+  "captured_at": "2026-11-07T02:30:30.484927+00:00",
+  "constraints": [
+    {
+      "name": "admin_bootstrap_tokens_pkey",
+      "type": "p",
+      "table": "admin_bootstrap_tokens",
+      "schema": "private",
+      "definition": "PRIMARY KEY (token_hash)"
+    },
+    {
+      "name": "admin_bootstrap_tokens_token_hash_check",
+      "type": "c",
+      "table": "admin_bootstrap_tokens",
+      "schema": "private",
+      "definition": "CHECK ((token_hash ~ '^[a-f0-9]{64}$'::text))"
+    },
+    {
+      "name": "admin_bootstrap_tokens_used_by_fkey",
+      "type": "f",
+      "table": "admin_bootstrap_tokens",
+      "schema": "private",
+      "definition": "FOREIGN KEY (used_by) REFERENCES auth.users(id) ON DELETE SET NULL"
+    },
+    {
+      "name": "admin_transaction_report_state_pkey",
+      "type": "p",
+      "table": "admin_transaction_report_state",
+      "schema": "private",
+      "definition": "PRIMARY KEY (singleton)"
+    },
+    {
+      "name": "admin_transaction_report_state_singleton_check",
+      "type": "c",
+      "table": "admin_transaction_report_state",
+      "schema": "private",
+      "definition": "CHECK (singleton)"
+    },
+    {
+      "name": "rank_dues_rate_history_daily_amount_check",
+      "type": "c",
+      "table": "rank_dues_rate_history",
+      "schema": "private",
+      "definition": "CHECK ((daily_amount >= (0)::numeric))"
+    },
+    {
+      "name": "rank_dues_rate_history_pkey",
+      "type": "p",
+      "table": "rank_dues_rate_history",
+      "schema": "private",
+      "definition": "PRIMARY KEY (rank_code, effective_from)"
+    },
+    {
+      "name": "rank_dues_rate_history_rank_code_check",
+      "type": "c",
+      "table": "rank_dues_rate_history",
+      "schema": "private",
+      "definition": "CHECK ((rank_code = ANY (ARRAY['P1'::text, 'P2'::text, 'P3'::text, 'P4'::text, 'P5'::text, 'P6'::text, 'P7'::text])))"
+    },
+    {
+      "name": "storage_cleanup_state_pkey",
+      "type": "p",
+      "table": "storage_cleanup_state",
+      "schema": "private",
+      "definition": "PRIMARY KEY (singleton)"
+    },
+    {
+      "name": "storage_cleanup_state_singleton_check",
+      "type": "c",
+      "table": "storage_cleanup_state",
+      "schema": "private",
+      "definition": "CHECK (singleton)"
+    },
+    {
+      "name": "admin_audit_log_admin_id_fkey",
+      "type": "f",
+      "table": "admin_audit_log",
+      "schema": "public",
+      "definition": "FOREIGN KEY (admin_id) REFERENCES auth.users(id) ON DELETE SET NULL"
+    },
+    {
+      "name": "admin_audit_log_pkey",
+      "type": "p",
+      "table": "admin_audit_log",
+      "schema": "public",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "name": "app_branding_settings_accent_color_check",
+      "type": "c",
+      "table": "app_branding_settings",
+      "schema": "public",
+      "definition": "CHECK ((accent_color ~ '^#[0-9A-Fa-f]{6}$'::text))"
+    },
+    {
+      "name": "app_branding_settings_background_color_check",
+      "type": "c",
+      "table": "app_branding_settings",
+      "schema": "public",
+      "definition": "CHECK ((background_color ~ '^#[0-9A-Fa-f]{6}$'::text))"
+    },
+    {
+      "name": "app_branding_settings_family_name_check",
+      "type": "c",
+      "table": "app_branding_settings",
+      "schema": "public",
+      "definition": "CHECK (((length(btrim(family_name)) >= 2) AND (length(btrim(family_name)) <= 60)))"
+    },
+    {
+      "name": "app_branding_settings_id_check",
+      "type": "c",
+      "table": "app_branding_settings",
+      "schema": "public",
+      "definition": "CHECK ((id = 1))"
+    },
+    {
+      "name": "app_branding_settings_pkey",
+      "type": "p",
+      "table": "app_branding_settings",
+      "schema": "public",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "name": "app_branding_settings_site_name_check",
+      "type": "c",
+      "table": "app_branding_settings",
+      "schema": "public",
+      "definition": "CHECK (((length(btrim(site_name)) >= 3) AND (length(btrim(site_name)) <= 80)))"
+    },
+    {
+      "name": "app_branding_settings_subtitle_check",
+      "type": "c",
+      "table": "app_branding_settings",
+      "schema": "public",
+      "definition": "CHECK (((length(btrim(subtitle)) >= 2) AND (length(btrim(subtitle)) <= 80)))"
+    },
+    {
+      "name": "app_branding_settings_updated_by_fkey",
+      "type": "f",
+      "table": "app_branding_settings",
+      "schema": "public",
+      "definition": "FOREIGN KEY (updated_by) REFERENCES auth.users(id) ON DELETE SET NULL"
+    },
+    {
+      "name": "chat_messages_body_check",
+      "type": "c",
+      "table": "chat_messages",
+      "schema": "public",
+      "definition": "CHECK (((char_length(btrim(body)) >= 1) AND (char_length(btrim(body)) <= 2000)))"
+    },
+    {
+      "name": "chat_messages_pkey",
+      "type": "p",
+      "table": "chat_messages",
+      "schema": "public",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "name": "chat_messages_sender_id_fkey",
+      "type": "f",
+      "table": "chat_messages",
+      "schema": "public",
+      "definition": "FOREIGN KEY (sender_id) REFERENCES member_profiles(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "daily_dues_log_arrears_added_check",
+      "type": "c",
+      "table": "daily_dues_log",
+      "schema": "public",
+      "definition": "CHECK ((arrears_added >= (0)::numeric))"
+    },
+    {
+      "name": "daily_dues_log_balance_deducted_check",
+      "type": "c",
+      "table": "daily_dues_log",
+      "schema": "public",
+      "definition": "CHECK ((balance_deducted >= (0)::numeric))"
+    },
+    {
+      "name": "daily_dues_log_daily_amount_check",
+      "type": "c",
+      "table": "daily_dues_log",
+      "schema": "public",
+      "definition": "CHECK ((daily_amount >= (0)::numeric))"
+    },
+    {
+      "name": "daily_dues_log_member_id_due_date_key",
+      "type": "u",
+      "table": "daily_dues_log",
+      "schema": "public",
+      "definition": "UNIQUE (member_id, due_date)"
+    },
+    {
+      "name": "daily_dues_log_member_id_fkey",
+      "type": "f",
+      "table": "daily_dues_log",
+      "schema": "public",
+      "definition": "FOREIGN KEY (member_id) REFERENCES member_profiles(id) ON DELETE RESTRICT"
+    },
+    {
+      "name": "daily_dues_log_outcome_check",
+      "type": "c",
+      "table": "daily_dues_log",
+      "schema": "public",
+      "definition": "CHECK ((outcome = ANY (ARRAY['deducted'::text, 'arrears'::text, 'exempt'::text, 'skipped'::text])))"
+    },
+    {
+      "name": "daily_dues_log_pkey",
+      "type": "p",
+      "table": "daily_dues_log",
+      "schema": "public",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "name": "dues_rate_history_created_by_fkey",
+      "type": "f",
+      "table": "dues_rate_history",
+      "schema": "public",
+      "definition": "FOREIGN KEY (created_by) REFERENCES auth.users(id) ON DELETE SET NULL"
+    },
+    {
+      "name": "dues_rate_history_daily_amount_check",
+      "type": "c",
+      "table": "dues_rate_history",
+      "schema": "public",
+      "definition": "CHECK ((daily_amount > (0)::numeric))"
+    },
+    {
+      "name": "dues_rate_history_pkey",
+      "type": "p",
+      "table": "dues_rate_history",
+      "schema": "public",
+      "definition": "PRIMARY KEY (effective_from)"
+    },
+    {
+      "name": "dues_settings_adm_default_check",
+      "type": "c",
+      "table": "dues_settings",
+      "schema": "public",
+      "definition": "CHECK ((adm_default >= (0)::numeric))"
+    },
+    {
+      "name": "dues_settings_daily_amount_check",
+      "type": "c",
+      "table": "dues_settings",
+      "schema": "public",
+      "definition": "CHECK ((daily_amount >= (0)::numeric))"
+    },
+    {
+      "name": "dues_settings_id_check",
+      "type": "c",
+      "table": "dues_settings",
+      "schema": "public",
+      "definition": "CHECK ((id = 1))"
+    },
+    {
+      "name": "dues_settings_pkey",
+      "type": "p",
+      "table": "dues_settings",
+      "schema": "public",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "name": "dues_settings_proof_retention_days_check",
+      "type": "c",
+      "table": "dues_settings",
+      "schema": "public",
+      "definition": "CHECK ((proof_retention_days = ANY (ARRAY[3, 7, 30])))"
+    },
+    {
+      "name": "information_messages_body_check",
+      "type": "c",
+      "table": "information_messages",
+      "schema": "public",
+      "definition": "CHECK (((length(btrim(body)) >= 1) AND (length(btrim(body)) <= 2000)))"
+    },
+    {
+      "name": "information_messages_pkey",
+      "type": "p",
+      "table": "information_messages",
+      "schema": "public",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "name": "information_messages_sender_id_fkey",
+      "type": "f",
+      "table": "information_messages",
+      "schema": "public",
+      "definition": "FOREIGN KEY (sender_id) REFERENCES auth.users(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "member_leave_requests_leave_type_check",
+      "type": "c",
+      "table": "member_leave_requests",
+      "schema": "public",
+      "definition": "CHECK ((leave_type = ANY (ARRAY['offline'::text, 'not_wb'::text])))"
+    },
+    {
+      "name": "member_leave_requests_member_id_fkey",
+      "type": "f",
+      "table": "member_leave_requests",
+      "schema": "public",
+      "definition": "FOREIGN KEY (member_id) REFERENCES member_profiles(id) ON DELETE RESTRICT"
+    },
+    {
+      "name": "member_leave_requests_pkey",
+      "type": "p",
+      "table": "member_leave_requests",
+      "schema": "public",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "name": "member_leave_requests_reason_check",
+      "type": "c",
+      "table": "member_leave_requests",
+      "schema": "public",
+      "definition": "CHECK (((length(btrim(reason)) >= 1) AND (length(btrim(reason)) <= 1000)))"
+    },
+    {
+      "name": "member_leave_requests_status_check",
+      "type": "c",
+      "table": "member_leave_requests",
+      "schema": "public",
+      "definition": "CHECK ((status = 'submitted'::text))"
+    },
+    {
+      "name": "member_leave_requests_type_fields",
+      "type": "c",
+      "table": "member_leave_requests",
+      "schema": "public",
+      "definition": "CHECK ((((leave_type = 'offline'::text) AND ((offline_days >= 1) AND (offline_days <= 365))) OR ((leave_type = 'not_wb'::text) AND (offline_days IS NULL))))"
+    },
+    {
+      "name": "member_profiles_display_name_nonempty",
+      "type": "c",
+      "table": "member_profiles",
+      "schema": "public",
+      "definition": "CHECK (((length(btrim(display_name)) >= 1) AND (length(btrim(display_name)) <= 80)))"
+    },
+    {
+      "name": "member_profiles_id_fkey",
+      "type": "f",
+      "table": "member_profiles",
+      "schema": "public",
+      "definition": "FOREIGN KEY (id) REFERENCES auth.users(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "member_profiles_login_username_format",
+      "type": "c",
+      "table": "member_profiles",
+      "schema": "public",
+      "definition": "CHECK ((login_username ~ '^[a-z0-9._-]{3,30}$'::text))"
+    },
+    {
+      "name": "member_profiles_pkey",
+      "type": "p",
+      "table": "member_profiles",
+      "schema": "public",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "name": "member_profiles_rank_code_check",
+      "type": "c",
+      "table": "member_profiles",
+      "schema": "public",
+      "definition": "CHECK ((rank_code = ANY (ARRAY['P1'::text, 'P2'::text, 'P3'::text, 'P4'::text, 'P5'::text, 'P6'::text, 'P7'::text])))"
+    },
+    {
+      "name": "member_profiles_role_check",
+      "type": "c",
+      "table": "member_profiles",
+      "schema": "public",
+      "definition": "CHECK ((role = ANY (ARRAY['member'::text, 'admin'::text, 'admin_assistant'::text])))"
+    },
+    {
+      "name": "member_profiles_status_check",
+      "type": "c",
+      "table": "member_profiles",
+      "schema": "public",
+      "definition": "CHECK ((status = ANY (ARRAY['pending'::text, 'active'::text, 'rejected'::text, 'inactive'::text])))"
+    },
+    {
+      "name": "member_rank_rate_history_member_id_fkey",
+      "type": "f",
+      "table": "member_rank_rate_history",
+      "schema": "public",
+      "definition": "FOREIGN KEY (member_id) REFERENCES member_profiles(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "member_rank_rate_history_pkey",
+      "type": "p",
+      "table": "member_rank_rate_history",
+      "schema": "public",
+      "definition": "PRIMARY KEY (member_id, effective_from)"
+    },
+    {
+      "name": "member_rank_rate_history_rank_code_check",
+      "type": "c",
+      "table": "member_rank_rate_history",
+      "schema": "public",
+      "definition": "CHECK ((rank_code = ANY (ARRAY['P1'::text, 'P2'::text, 'P3'::text, 'P4'::text, 'P5'::text, 'P6'::text, 'P7'::text])))"
+    },
+    {
+      "name": "member_wallets_adm_due_check",
+      "type": "c",
+      "table": "member_wallets",
+      "schema": "public",
+      "definition": "CHECK ((adm_due >= (0)::numeric))"
+    },
+    {
+      "name": "member_wallets_arrears_check",
+      "type": "c",
+      "table": "member_wallets",
+      "schema": "public",
+      "definition": "CHECK ((arrears >= (0)::numeric))"
+    },
+    {
+      "name": "member_wallets_balance_check",
+      "type": "c",
+      "table": "member_wallets",
+      "schema": "public",
+      "definition": "CHECK ((balance >= (0)::numeric))"
+    },
+    {
+      "name": "member_wallets_member_id_fkey",
+      "type": "f",
+      "table": "member_wallets",
+      "schema": "public",
+      "definition": "FOREIGN KEY (member_id) REFERENCES member_profiles(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "member_wallets_pkey",
+      "type": "p",
+      "table": "member_wallets",
+      "schema": "public",
+      "definition": "PRIMARY KEY (member_id)"
+    },
+    {
+      "name": "p4_p5_p6_chat_messages_body_check",
+      "type": "c",
+      "table": "p4_p5_p6_chat_messages",
+      "schema": "public",
+      "definition": "CHECK (((char_length(btrim(body)) >= 1) AND (char_length(btrim(body)) <= 2000)))"
+    },
+    {
+      "name": "p4_p5_p6_chat_messages_pkey",
+      "type": "p",
+      "table": "p4_p5_p6_chat_messages",
+      "schema": "public",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "name": "p4_p5_p6_chat_messages_sender_id_fkey",
+      "type": "f",
+      "table": "p4_p5_p6_chat_messages",
+      "schema": "public",
+      "definition": "FOREIGN KEY (sender_id) REFERENCES auth.users(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "p5_p6_chat_messages_body_check",
+      "type": "c",
+      "table": "p5_p6_chat_messages",
+      "schema": "public",
+      "definition": "CHECK (((char_length(btrim(body)) >= 1) AND (char_length(btrim(body)) <= 2000)))"
+    },
+    {
+      "name": "p5_p6_chat_messages_pkey",
+      "type": "p",
+      "table": "p5_p6_chat_messages",
+      "schema": "public",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "name": "p5_p6_chat_messages_sender_id_fkey",
+      "type": "f",
+      "table": "p5_p6_chat_messages",
+      "schema": "public",
+      "definition": "FOREIGN KEY (sender_id) REFERENCES auth.users(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "payment_review_fields_consistent",
+      "type": "c",
+      "table": "payment_submissions",
+      "schema": "public",
+      "definition": "CHECK ((((status = 'pending'::text) AND (reviewed_by IS NULL) AND (reviewed_at IS NULL)) OR ((status = ANY (ARRAY['approved'::text, 'rejected'::text])) AND (reviewed_by IS NOT NULL) AND (reviewed_at IS NOT NULL))))"
+    },
+    {
+      "name": "payment_submissions_amount_check",
+      "type": "c",
+      "table": "payment_submissions",
+      "schema": "public",
+      "definition": "CHECK ((amount > (0)::numeric))"
+    },
+    {
+      "name": "payment_submissions_member_id_fkey",
+      "type": "f",
+      "table": "payment_submissions",
+      "schema": "public",
+      "definition": "FOREIGN KEY (member_id) REFERENCES member_profiles(id) ON DELETE RESTRICT"
+    },
+    {
+      "name": "payment_submissions_payment_type_check",
+      "type": "c",
+      "table": "payment_submissions",
+      "schema": "public",
+      "definition": "CHECK ((payment_type = ANY (ARRAY['kas'::text, 'adm'::text])))"
+    },
+    {
+      "name": "payment_submissions_pkey",
+      "type": "p",
+      "table": "payment_submissions",
+      "schema": "public",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "name": "payment_submissions_reviewed_by_fkey",
+      "type": "f",
+      "table": "payment_submissions",
+      "schema": "public",
+      "definition": "FOREIGN KEY (reviewed_by) REFERENCES auth.users(id) ON DELETE SET NULL"
+    },
+    {
+      "name": "payment_submissions_status_check",
+      "type": "c",
+      "table": "payment_submissions",
+      "schema": "public",
+      "definition": "CHECK ((status = ANY (ARRAY['pending'::text, 'approved'::text, 'rejected'::text])))"
+    },
+    {
+      "name": "private_chat_hidden_conversation_id_fkey",
+      "type": "f",
+      "table": "private_chat_hidden",
+      "schema": "public",
+      "definition": "FOREIGN KEY (conversation_id) REFERENCES private_conversations(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "private_chat_hidden_pkey",
+      "type": "p",
+      "table": "private_chat_hidden",
+      "schema": "public",
+      "definition": "PRIMARY KEY (user_id, conversation_id)"
+    },
+    {
+      "name": "private_chat_hidden_user_id_fkey",
+      "type": "f",
+      "table": "private_chat_hidden",
+      "schema": "public",
+      "definition": "FOREIGN KEY (user_id) REFERENCES member_profiles(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "private_conversations_distinct_participants",
+      "type": "c",
+      "table": "private_conversations",
+      "schema": "public",
+      "definition": "CHECK ((participant_one_id <> participant_two_id))"
+    },
+    {
+      "name": "private_conversations_pair_unique",
+      "type": "u",
+      "table": "private_conversations",
+      "schema": "public",
+      "definition": "UNIQUE (participant_one_id, participant_two_id)"
+    },
+    {
+      "name": "private_conversations_participant_one_id_fkey",
+      "type": "f",
+      "table": "private_conversations",
+      "schema": "public",
+      "definition": "FOREIGN KEY (participant_one_id) REFERENCES member_profiles(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "private_conversations_participant_two_id_fkey",
+      "type": "f",
+      "table": "private_conversations",
+      "schema": "public",
+      "definition": "FOREIGN KEY (participant_two_id) REFERENCES member_profiles(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "private_conversations_pkey",
+      "type": "p",
+      "table": "private_conversations",
+      "schema": "public",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "name": "private_conversations_sorted_participants",
+      "type": "c",
+      "table": "private_conversations",
+      "schema": "public",
+      "definition": "CHECK ((participant_one_id < participant_two_id))"
+    },
+    {
+      "name": "private_messages_body_check",
+      "type": "c",
+      "table": "private_messages",
+      "schema": "public",
+      "definition": "CHECK (((char_length(btrim(body)) >= 1) AND (char_length(btrim(body)) <= 2000)))"
+    },
+    {
+      "name": "private_messages_conversation_id_fkey",
+      "type": "f",
+      "table": "private_messages",
+      "schema": "public",
+      "definition": "FOREIGN KEY (conversation_id) REFERENCES private_conversations(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "private_messages_pkey",
+      "type": "p",
+      "table": "private_messages",
+      "schema": "public",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "name": "private_messages_sender_id_fkey",
+      "type": "f",
+      "table": "private_messages",
+      "schema": "public",
+      "definition": "FOREIGN KEY (sender_id) REFERENCES member_profiles(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "treasury_history_expense_check",
+      "type": "c",
+      "table": "treasury_history",
+      "schema": "public",
+      "definition": "CHECK ((expense >= (0)::numeric))"
+    },
+    {
+      "name": "treasury_history_expense_note_check",
+      "type": "c",
+      "table": "treasury_history",
+      "schema": "public",
+      "definition": "CHECK ((char_length(expense_note) <= 500))"
+    },
+    {
+      "name": "treasury_history_income_check",
+      "type": "c",
+      "table": "treasury_history",
+      "schema": "public",
+      "definition": "CHECK ((income >= (0)::numeric))"
+    },
+    {
+      "name": "treasury_history_income_note_check",
+      "type": "c",
+      "table": "treasury_history",
+      "schema": "public",
+      "definition": "CHECK ((char_length(income_note) <= 500))"
+    },
+    {
+      "name": "treasury_history_opening_balance_check",
+      "type": "c",
+      "table": "treasury_history",
+      "schema": "public",
+      "definition": "CHECK ((opening_balance >= (0)::numeric))"
+    },
+    {
+      "name": "treasury_history_pkey",
+      "type": "p",
+      "table": "treasury_history",
+      "schema": "public",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "name": "treasury_history_sender_id_fkey",
+      "type": "f",
+      "table": "treasury_history",
+      "schema": "public",
+      "definition": "FOREIGN KEY (sender_id) REFERENCES member_profiles(id) ON DELETE RESTRICT"
+    },
+    {
+      "name": "treasury_history_sender_name_check",
+      "type": "c",
+      "table": "treasury_history",
+      "schema": "public",
+      "definition": "CHECK (((char_length(btrim(sender_name)) >= 1) AND (char_length(btrim(sender_name)) <= 80)))"
+    },
+    {
+      "name": "treasury_history_sender_role_check",
+      "type": "c",
+      "table": "treasury_history",
+      "schema": "public",
+      "definition": "CHECK ((sender_role = ANY (ARRAY['admin'::text, 'admin_assistant'::text])))"
+    },
+    {
+      "name": "wallet_transactions_amount_check",
+      "type": "c",
+      "table": "wallet_transactions",
+      "schema": "public",
+      "definition": "CHECK ((amount > (0)::numeric))"
+    },
+    {
+      "name": "wallet_transactions_created_by_fkey",
+      "type": "f",
+      "table": "wallet_transactions",
+      "schema": "public",
+      "definition": "FOREIGN KEY (created_by) REFERENCES auth.users(id) ON DELETE SET NULL"
+    },
+    {
+      "name": "wallet_transactions_member_id_fkey",
+      "type": "f",
+      "table": "wallet_transactions",
+      "schema": "public",
+      "definition": "FOREIGN KEY (member_id) REFERENCES member_profiles(id) ON DELETE RESTRICT"
+    },
+    {
+      "name": "wallet_transactions_pkey",
+      "type": "p",
+      "table": "wallet_transactions",
+      "schema": "public",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "name": "wallet_transactions_transaction_type_check",
+      "type": "c",
+      "table": "wallet_transactions",
+      "schema": "public",
+      "definition": "CHECK ((transaction_type = ANY (ARRAY['payment_credit'::text, 'daily_deduction'::text, 'arrears_accrual'::text, 'admin_adjustment'::text, 'adm_payment'::text])))"
+    }
+  ],
+  "source_project_ref": "lzciyzibqbujshoizlbu"
+}
