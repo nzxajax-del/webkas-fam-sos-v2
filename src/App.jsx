@@ -113,8 +113,6 @@ export default function App() {
   const [treasuryEditId, setTreasuryEditId] = useState(null);
   const [treasuryEditDraft, setTreasuryEditDraft] = useState(null);
   const [treasuryEditSaving, setTreasuryEditSaving] = useState(false);
-  const rankChat456ListRef = useRef(null);
-  const chatListRef = useRef(null);
   const [dbMetrics, setDbMetrics] = useState(null);
   const [dbMetricsLoading, setDbMetricsLoading] = useState(false);
   const [pendingMembers, setPendingMembers] = useState([]);
