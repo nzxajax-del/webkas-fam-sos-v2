@@ -1,0 +1,1716 @@
+{
+  "created_utc": "2026-11-07T00:28:44.197Z",
+  "source_project": "lzciyzibqbujshoizlbu",
+  "backup_scope": "metadata and deployed Edge Function source only; NOT a restorable database/data backup",
+  "database": {
+    "table_count": 19,
+    "tables": [
+      {
+        "name": "public.member_profiles",
+        "rows": 84,
+        "rls_enabled": true,
+        "columns": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "nullable": false
+          },
+          {
+            "name": "display_name",
+            "type": "text",
+            "nullable": false,
+            "check": "length(btrim(display_name)) >= 1 AND length(btrim(display_name)) <= 80"
+          },
+          {
+            "name": "role",
+            "type": "text",
+            "nullable": false,
+            "default": "'member'::text",
+            "check": "role = ANY (ARRAY['member'::text, 'admin'::text, 'admin_assistant'::text])"
+          },
+          {
+            "name": "status",
+            "type": "text",
+            "nullable": false,
+            "default": "'pending'::text",
+            "check": "status = ANY (ARRAY['pending'::text, 'active'::text, 'rejected'::text, 'inactive'::text])"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp with time zone",
+            "nullable": false,
+            "default": "now()"
+          },
+          {
+            "name": "updated_at",
+            "type": "timestamp with time zone",
+            "nullable": false,
+            "default": "now()"
+          },
+          {
+            "name": "login_username",
+            "type": "text",
+            "nullable": false,
+            "check": "login_username ~ '^[a-z0-9._-]{3,30}$'::text"
+          },
+          {
+            "name": "dues_start_date",
+            "type": "date",
+            "nullable": true
+          },
+          {
+            "name": "rank_code",
+            "type": "text",
+            "nullable": false,
+            "default": "'P1'::text",
+            "check": "rank_code = ANY (ARRAY['P1'::text, 'P2'::text, 'P3'::text, 'P4'::text, 'P5'::text, 'P6'::text, 'P7'::text])"
+          },
+          {
+            "name": "registration_proof_path",
+            "type": "text",
+            "nullable": true
+          },
+          {
+            "name": "registration_note",
+            "type": "text",
+            "nullable": true
+          },
+          {
+            "name": "profile_photo_path",
+            "type": "text",
+            "nullable": true
+          },
+          {
+            "name": "phone_number",
+            "type": "text",
+            "nullable": true
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [
+          {
+            "name": "treasury_history_sender_id_fkey",
+            "source_table": "public.treasury_history",
+            "source_columns": [
+              "sender_id"
+            ],
+            "target_table": "public.member_profiles",
+            "target_columns": [
+              "id"
+            ]
+          },
+          {
+            "name": "member_leave_requests_member_id_fkey",
+            "source_table": "public.member_leave_requests",
+            "source_columns": [
+              "member_id"
+            ],
+            "target_table": "public.member_profiles",
+            "target_columns": [
+              "id"
+            ]
+          },
+          {
+            "name": "member_rank_rate_history_member_id_fkey",
+            "source_table": "public.member_rank_rate_history",
+            "source_columns": [
+              "member_id"
+            ],
+            "target_table": "public.member_profiles",
+            "target_columns": [
+              "id"
+            ]
+          },
+          {
+            "name": "private_chat_hidden_user_id_fkey",
+            "source_table": "public.private_chat_hidden",
+            "source_columns": [
+              "user_id"
+            ],
+            "target_table": "public.member_profiles",
+            "target_columns": [
+              "id"
+            ]
+          },
+          {
+            "name": "private_messages_sender_id_fkey",
+            "source_table": "public.private_messages",
+            "source_columns": [
+              "sender_id"
+            ],
+            "target_table": "public.member_profiles",
+            "target_columns": [
+              "id"
+            ]
+          },
+          {
+            "name": "private_conversations_participant_two_id_fkey",
+            "source_table": "public.private_conversations",
+            "source_columns": [
+              "participant_two_id"
+            ],
+            "target_table": "public.member_profiles",
+            "target_columns": [
+              "id"
+            ]
+          },
+          {
+            "name": "private_conversations_participant_one_id_fkey",
+            "source_table": "public.private_conversations",
+            "source_columns": [
+              "participant_one_id"
+            ],
+            "target_table": "public.member_profiles",
+            "target_columns": [
+              "id"
+            ]
+          },
+          {
+            "name": "daily_dues_log_member_id_fkey",
+            "source_table": "public.daily_dues_log",
+            "source_columns": [
+              "member_id"
+            ],
+            "target_table": "public.member_profiles",
+            "target_columns": [
+              "id"
+            ]
+          },
+          {
+            "name": "payment_submissions_member_id_fkey",
+            "source_table": "public.payment_submissions",
+            "source_columns": [
+              "member_id"
+            ],
+            "target_table": "public.member_profiles",
+            "target_columns": [
+              "id"
+            ]
+          },
+          {
+            "name": "member_profiles_id_fkey",
+            "source_table": "public.member_profiles",
+            "source_columns": [
+              "id"
+            ],
+            "target_table": "auth.users",
+            "target_columns": [
+              "id"
+            ]
+          },
+          {
+            "name": "member_wallets_member_id_fkey",
+            "source_table": "public.member_wallets",
+            "source_columns": [
+              "member_id"
+            ],
+            "target_table": "public.member_profiles",
+            "target_columns": [
+              "id"
+            ]
+          },
+          {
+            "name": "wallet_transactions_member_id_fkey",
+            "source_table": "public.wallet_transactions",
+            "source_columns": [
+              "member_id"
+            ],
+            "target_table": "public.member_profiles",
+            "target_columns": [
+              "id"
+            ]
+          },
+          {
+            "name": "chat_messages_sender_id_fkey",
+            "source_table": "public.chat_messages",
+            "source_columns": [
+              "sender_id"
+            ],
+            "target_table": "public.member_profiles",
+            "target_columns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "public.dues_settings",
+        "rows": 1,
+        "rls_enabled": true,
+        "columns": [
+          {
+            "name": "id",
+            "type": "smallint",
+            "nullable": false,
+            "default": "1",
+            "check": "id = 1"
+          },
+          {
+            "name": "report_date",
+            "type": "date",
+            "nullable": false,
+            "default": "((now() AT TIME ZONE 'Asia/Jakarta'::text))::date"
+          },
+          {
+            "name": "daily_amount",
+            "type": "numeric",
+            "nullable": false,
+            "default": "1000",
+            "check": "daily_amount >= 0::numeric"
+          },
+          {
+            "name": "adm_default",
+            "type": "numeric",
+            "nullable": false,
+            "default": "10000",
+            "check": "adm_default >= 0::numeric"
+          },
+          {
+            "name": "updated_at",
+            "type": "timestamp with time zone",
+            "nullable": false,
+            "default": "now()"
+          },
+          {
+            "name": "cash_operations_enabled",
+            "type": "boolean",
+            "nullable": false,
+            "default": "false"
+          },
+          {
+            "name": "proof_retention_days",
+            "type": "integer",
+            "nullable": false,
+            "default": "7",
+            "check": "proof_retention_days = ANY (ARRAY[3, 7, 30])"
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ]
+      },
+      {
+        "name": "public.member_wallets",
+        "rows": 84,
+        "rls_enabled": true,
+        "columns": [
+          {
+            "name": "member_id",
+            "type": "uuid",
+            "nullable": false
+          },
+          {
+            "name": "balance",
+            "type": "numeric",
+            "nullable": false,
+            "default": "0",
+            "check": "balance >= 0::numeric"
+          },
+          {
+            "name": "arrears",
+            "type": "numeric",
+            "nullable": false,
+            "default": "0",
+            "check": "arrears >= 0::numeric"
+          },
+          {
+            "name": "next_pay",
+            "type": "date",
+            "nullable": true
+          },
+          {
+            "name": "unpaid_from",
+            "type": "date",
+            "nullable": true
+          },
+          {
+            "name": "adm_due",
+            "type": "numeric",
+            "nullable": false,
+            "default": "0",
+            "check": "adm_due >= 0::numeric"
+          },
+          {
+            "name": "exempt_kas",
+            "type": "boolean",
+            "nullable": false,
+            "default": "false"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp with time zone",
+            "nullable": false,
+            "default": "now()"
+          },
+          {
+            "name": "updated_at",
+            "type": "timestamp with time zone",
+            "nullable": false,
+            "default": "now()"
+          }
+        ],
+        "primary_keys": [
+          "member_id"
+        ],
+        "foreign_keys": [
+          {
+            "name": "member_wallets_member_id_fkey",
+            "source_table": "public.member_wallets",
+            "source_columns": [
+              "member_id"
+            ],
+            "target_table": "public.member_profiles",
+            "target_columns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "public.wallet_transactions",
+        "rows": 1201,
+        "rls_enabled": true,
+        "columns": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "nullable": false,
+            "default": "gen_random_uuid()"
+          },
+          {
+            "name": "member_id",
+            "type": "uuid",
+            "nullable": false
+          },
+          {
+            "name": "transaction_type",
+            "type": "text",
+            "nullable": false,
+            "check": "transaction_type = ANY (ARRAY['payment_credit'::text, 'daily_deduction'::text, 'arrears_accrual'::text, 'admin_adjustment'::text, 'adm_payment'::text])"
+          },
+          {
+            "name": "amount",
+            "type": "numeric",
+            "nullable": false,
+            "check": "amount > 0::numeric"
+          },
+          {
+            "name": "reference_id",
+            "type": "uuid",
+            "nullable": true
+          },
+          {
+            "name": "description",
+            "type": "text",
+            "nullable": true
+          },
+          {
+            "name": "created_by",
+            "type": "uuid",
+            "nullable": true
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp with time zone",
+            "nullable": false,
+            "default": "now()"
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [
+          {
+            "name": "wallet_transactions_member_id_fkey",
+            "source_table": "public.wallet_transactions",
+            "source_columns": [
+              "member_id"
+            ],
+            "target_table": "public.member_profiles",
+            "target_columns": [
+              "id"
+            ]
+          },
+          {
+            "name": "wallet_transactions_created_by_fkey",
+            "source_table": "public.wallet_transactions",
+            "source_columns": [
+              "created_by"
+            ],
+            "target_table": "auth.users",
+            "target_columns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "public.daily_dues_log",
+        "rows": 1082,
+        "rls_enabled": true,
+        "columns": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "nullable": false,
+            "default": "gen_random_uuid()"
+          },
+          {
+            "name": "member_id",
+            "type": "uuid",
+            "nullable": false
+          },
+          {
+            "name": "due_date",
+            "type": "date",
+            "nullable": false
+          },
+          {
+            "name": "daily_amount",
+            "type": "numeric",
+            "nullable": false,
+            "check": "daily_amount >= 0::numeric"
+          },
+          {
+            "name": "balance_deducted",
+            "type": "numeric",
+            "nullable": false,
+            "default": "0",
+            "check": "balance_deducted >= 0::numeric"
+          },
+          {
+            "name": "arrears_added",
+            "type": "numeric",
+            "nullable": false,
+            "default": "0",
+            "check": "arrears_added >= 0::numeric"
+          },
+          {
+            "name": "outcome",
+            "type": "text",
+            "nullable": false,
+            "check": "outcome = ANY (ARRAY['deducted'::text, 'arrears'::text, 'exempt'::text, 'skipped'::text])"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp with time zone",
+            "nullable": false,
+            "default": "now()"
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [
+          {
+            "name": "daily_dues_log_member_id_fkey",
+            "source_table": "public.daily_dues_log",
+            "source_columns": [
+              "member_id"
+            ],
+            "target_table": "public.member_profiles",
+            "target_columns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "public.payment_submissions",
+        "rows": 235,
+        "rls_enabled": true,
+        "columns": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "nullable": false,
+            "default": "gen_random_uuid()"
+          },
+          {
+            "name": "member_id",
+            "type": "uuid",
+            "nullable": false
+          },
+          {
+            "name": "amount",
+            "type": "numeric",
+            "nullable": false,
+            "check": "amount > 0::numeric"
+          },
+          {
+            "name": "proof_path",
+            "type": "text",
+            "nullable": false
+          },
+          {
+            "name": "status",
+            "type": "text",
+            "nullable": false,
+            "default": "'pending'::text",
+            "check": "status = ANY (ARRAY['pending'::text, 'approved'::text, 'rejected'::text])"
+          },
+          {
+            "name": "review_note",
+            "type": "text",
+            "nullable": true
+          },
+          {
+            "name": "reviewed_by",
+            "type": "uuid",
+            "nullable": true
+          },
+          {
+            "name": "reviewed_at",
+            "type": "timestamp with time zone",
+            "nullable": true
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp with time zone",
+            "nullable": false,
+            "default": "now()"
+          },
+          {
+            "name": "payment_type",
+            "type": "text",
+            "nullable": false,
+            "default": "'kas'::text",
+            "check": "payment_type = ANY (ARRAY['kas'::text, 'adm'::text])"
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [
+          {
+            "name": "payment_submissions_reviewed_by_fkey",
+            "source_table": "public.payment_submissions",
+            "source_columns": [
+              "reviewed_by"
+            ],
+            "target_table": "auth.users",
+            "target_columns": [
+              "id"
+            ]
+          },
+          {
+            "name": "payment_submissions_member_id_fkey",
+            "source_table": "public.payment_submissions",
+            "source_columns": [
+              "member_id"
+            ],
+            "target_table": "public.member_profiles",
+            "target_columns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "public.admin_audit_log",
+        "rows": 626,
+        "rls_enabled": true,
+        "columns": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "nullable": false,
+            "default": "gen_random_uuid()"
+          },
+          {
+            "name": "admin_id",
+            "type": "uuid",
+            "nullable": true
+          },
+          {
+            "name": "action",
+            "type": "text",
+            "nullable": false
+          },
+          {
+            "name": "target_type",
+            "type": "text",
+            "nullable": true
+          },
+          {
+            "name": "target_id",
+            "type": "text",
+            "nullable": true
+          },
+          {
+            "name": "details",
+            "type": "jsonb",
+            "nullable": false,
+            "default": "'{}'::jsonb"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp with time zone",
+            "nullable": false,
+            "default": "now()"
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [
+          {
+            "name": "admin_audit_log_admin_id_fkey",
+            "source_table": "public.admin_audit_log",
+            "source_columns": [
+              "admin_id"
+            ],
+            "target_table": "auth.users",
+            "target_columns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "public.dues_rate_history",
+        "rows": 1,
+        "rls_enabled": true,
+        "columns": [
+          {
+            "name": "effective_from",
+            "type": "date",
+            "nullable": false
+          },
+          {
+            "name": "daily_amount",
+            "type": "numeric",
+            "nullable": false,
+            "check": "daily_amount > 0::numeric"
+          },
+          {
+            "name": "created_by",
+            "type": "uuid",
+            "nullable": true
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp with time zone",
+            "nullable": false,
+            "default": "now()"
+          }
+        ],
+        "primary_keys": [
+          "effective_from"
+        ],
+        "foreign_keys": [
+          {
+            "name": "dues_rate_history_created_by_fkey",
+            "source_table": "public.dues_rate_history",
+            "source_columns": [
+              "created_by"
+            ],
+            "target_table": "auth.users",
+            "target_columns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "public.app_branding_settings",
+        "rows": 1,
+        "rls_enabled": true,
+        "columns": [
+          {
+            "name": "id",
+            "type": "smallint",
+            "nullable": false,
+            "default": "1",
+            "check": "id = 1"
+          },
+          {
+            "name": "site_name",
+            "type": "text",
+            "nullable": false,
+            "default": "'WEBKAS FAM SOS V2'::text",
+            "check": "length(btrim(site_name)) >= 3 AND length(btrim(site_name)) <= 80"
+          },
+          {
+            "name": "family_name",
+            "type": "text",
+            "nullable": false,
+            "default": "'FAM SOS'::text",
+            "check": "length(btrim(family_name)) >= 2 AND length(btrim(family_name)) <= 60"
+          },
+          {
+            "name": "subtitle",
+            "type": "text",
+            "nullable": false,
+            "default": "'CATATAN KAS KELUARGA'::text",
+            "check": "length(btrim(subtitle)) >= 2 AND length(btrim(subtitle)) <= 80"
+          },
+          {
+            "name": "accent_color",
+            "type": "text",
+            "nullable": false,
+            "default": "'#c1f45a'::text",
+            "check": "accent_color ~ '^#[0-9A-Fa-f]{6}$'::text"
+          },
+          {
+            "name": "background_color",
+            "type": "text",
+            "nullable": false,
+            "default": "'#0b0e0b'::text",
+            "check": "background_color ~ '^#[0-9A-Fa-f]{6}$'::text"
+          },
+          {
+            "name": "updated_by",
+            "type": "uuid",
+            "nullable": true
+          },
+          {
+            "name": "updated_at",
+            "type": "timestamp with time zone",
+            "nullable": false,
+            "default": "now()"
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [
+          {
+            "name": "app_branding_settings_updated_by_fkey",
+            "source_table": "public.app_branding_settings",
+            "source_columns": [
+              "updated_by"
+            ],
+            "target_table": "auth.users",
+            "target_columns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "public.chat_messages",
+        "rows": 12,
+        "rls_enabled": true,
+        "columns": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "nullable": false,
+            "default": "gen_random_uuid()"
+          },
+          {
+            "name": "sender_id",
+            "type": "uuid",
+            "nullable": false
+          },
+          {
+            "name": "body",
+            "type": "text",
+            "nullable": false,
+            "check": "char_length(btrim(body)) >= 1 AND char_length(btrim(body)) <= 2000"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp with time zone",
+            "nullable": false,
+            "default": "now()"
+          },
+          {
+            "name": "sender_display_name",
+            "type": "text",
+            "nullable": true
+          },
+          {
+            "name": "sender_role",
+            "type": "text",
+            "nullable": true
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [
+          {
+            "name": "chat_messages_sender_id_fkey",
+            "source_table": "public.chat_messages",
+            "source_columns": [
+              "sender_id"
+            ],
+            "target_table": "public.member_profiles",
+            "target_columns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "public.private_conversations",
+        "rows": 6,
+        "rls_enabled": true,
+        "columns": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "nullable": false,
+            "default": "gen_random_uuid()"
+          },
+          {
+            "name": "participant_one_id",
+            "type": "uuid",
+            "nullable": false
+          },
+          {
+            "name": "participant_two_id",
+            "type": "uuid",
+            "nullable": false
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp with time zone",
+            "nullable": false,
+            "default": "now()"
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [
+          {
+            "name": "private_conversations_participant_two_id_fkey",
+            "source_table": "public.private_conversations",
+            "source_columns": [
+              "participant_two_id"
+            ],
+            "target_table": "public.member_profiles",
+            "target_columns": [
+              "id"
+            ]
+          },
+          {
+            "name": "private_chat_hidden_conversation_id_fkey",
+            "source_table": "public.private_chat_hidden",
+            "source_columns": [
+              "conversation_id"
+            ],
+            "target_table": "public.private_conversations",
+            "target_columns": [
+              "id"
+            ]
+          },
+          {
+            "name": "private_messages_conversation_id_fkey",
+            "source_table": "public.private_messages",
+            "source_columns": [
+              "conversation_id"
+            ],
+            "target_table": "public.private_conversations",
+            "target_columns": [
+              "id"
+            ]
+          },
+          {
+            "name": "private_conversations_participant_one_id_fkey",
+            "source_table": "public.private_conversations",
+            "source_columns": [
+              "participant_one_id"
+            ],
+            "target_table": "public.member_profiles",
+            "target_columns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "public.private_messages",
+        "rows": 16,
+        "rls_enabled": true,
+        "columns": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "nullable": false,
+            "default": "gen_random_uuid()"
+          },
+          {
+            "name": "conversation_id",
+            "type": "uuid",
+            "nullable": false
+          },
+          {
+            "name": "sender_id",
+            "type": "uuid",
+            "nullable": false
+          },
+          {
+            "name": "body",
+            "type": "text",
+            "nullable": false,
+            "check": "char_length(btrim(body)) >= 1 AND char_length(btrim(body)) <= 2000"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp with time zone",
+            "nullable": false,
+            "default": "now()"
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [
+          {
+            "name": "private_messages_sender_id_fkey",
+            "source_table": "public.private_messages",
+            "source_columns": [
+              "sender_id"
+            ],
+            "target_table": "public.member_profiles",
+            "target_columns": [
+              "id"
+            ]
+          },
+          {
+            "name": "private_messages_conversation_id_fkey",
+            "source_table": "public.private_messages",
+            "source_columns": [
+              "conversation_id"
+            ],
+            "target_table": "public.private_conversations",
+            "target_columns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "public.private_chat_hidden",
+        "rows": 3,
+        "rls_enabled": true,
+        "columns": [
+          {
+            "name": "user_id",
+            "type": "uuid",
+            "nullable": false
+          },
+          {
+            "name": "conversation_id",
+            "type": "uuid",
+            "nullable": false
+          },
+          {
+            "name": "hidden_at",
+            "type": "timestamp with time zone",
+            "nullable": false,
+            "default": "now()"
+          }
+        ],
+        "primary_keys": [
+          "user_id",
+          "conversation_id"
+        ],
+        "foreign_keys": [
+          {
+            "name": "private_chat_hidden_conversation_id_fkey",
+            "source_table": "public.private_chat_hidden",
+            "source_columns": [
+              "conversation_id"
+            ],
+            "target_table": "public.private_conversations",
+            "target_columns": [
+              "id"
+            ]
+          },
+          {
+            "name": "private_chat_hidden_user_id_fkey",
+            "source_table": "public.private_chat_hidden",
+            "source_columns": [
+              "user_id"
+            ],
+            "target_table": "public.member_profiles",
+            "target_columns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "public.p5_p6_chat_messages",
+        "rows": 2,
+        "rls_enabled": true,
+        "columns": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "nullable": false,
+            "default": "gen_random_uuid()"
+          },
+          {
+            "name": "sender_id",
+            "type": "uuid",
+            "nullable": false
+          },
+          {
+            "name": "body",
+            "type": "text",
+            "nullable": false,
+            "check": "char_length(btrim(body)) >= 1 AND char_length(btrim(body)) <= 2000"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp with time zone",
+            "nullable": false,
+            "default": "now()"
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [
+          {
+            "name": "p5_p6_chat_messages_sender_id_fkey",
+            "source_table": "public.p5_p6_chat_messages",
+            "source_columns": [
+              "sender_id"
+            ],
+            "target_table": "auth.users",
+            "target_columns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "public.p4_p5_p6_chat_messages",
+        "rows": 6,
+        "rls_enabled": true,
+        "columns": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "nullable": false,
+            "default": "gen_random_uuid()"
+          },
+          {
+            "name": "sender_id",
+            "type": "uuid",
+            "nullable": false
+          },
+          {
+            "name": "body",
+            "type": "text",
+            "nullable": false,
+            "check": "char_length(btrim(body)) >= 1 AND char_length(btrim(body)) <= 2000"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp with time zone",
+            "nullable": false,
+            "default": "now()"
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [
+          {
+            "name": "p4_p5_p6_chat_messages_sender_id_fkey",
+            "source_table": "public.p4_p5_p6_chat_messages",
+            "source_columns": [
+              "sender_id"
+            ],
+            "target_table": "auth.users",
+            "target_columns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "public.member_rank_rate_history",
+        "rows": 109,
+        "rls_enabled": true,
+        "columns": [
+          {
+            "name": "member_id",
+            "type": "uuid",
+            "nullable": false
+          },
+          {
+            "name": "effective_from",
+            "type": "date",
+            "nullable": false
+          },
+          {
+            "name": "rank_code",
+            "type": "text",
+            "nullable": false,
+            "check": "rank_code = ANY (ARRAY['P1'::text, 'P2'::text, 'P3'::text, 'P4'::text, 'P5'::text, 'P6'::text, 'P7'::text])"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp with time zone",
+            "nullable": false,
+            "default": "now()"
+          }
+        ],
+        "primary_keys": [
+          "member_id",
+          "effective_from"
+        ],
+        "foreign_keys": [
+          {
+            "name": "member_rank_rate_history_member_id_fkey",
+            "source_table": "public.member_rank_rate_history",
+            "source_columns": [
+              "member_id"
+            ],
+            "target_table": "public.member_profiles",
+            "target_columns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "public.information_messages",
+        "rows": 2,
+        "rls_enabled": true,
+        "columns": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "nullable": false,
+            "default": "gen_random_uuid()"
+          },
+          {
+            "name": "sender_id",
+            "type": "uuid",
+            "nullable": false
+          },
+          {
+            "name": "body",
+            "type": "text",
+            "nullable": false,
+            "check": "length(btrim(body)) >= 1 AND length(btrim(body)) <= 2000"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp with time zone",
+            "nullable": false,
+            "default": "now()"
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [
+          {
+            "name": "information_messages_sender_id_fkey",
+            "source_table": "public.information_messages",
+            "source_columns": [
+              "sender_id"
+            ],
+            "target_table": "auth.users",
+            "target_columns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "public.member_leave_requests",
+        "rows": 7,
+        "rls_enabled": true,
+        "columns": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "nullable": false,
+            "default": "gen_random_uuid()"
+          },
+          {
+            "name": "member_id",
+            "type": "uuid",
+            "nullable": false
+          },
+          {
+            "name": "leave_type",
+            "type": "text",
+            "nullable": false,
+            "check": "leave_type = ANY (ARRAY['offline'::text, 'not_wb'::text])"
+          },
+          {
+            "name": "offline_days",
+            "type": "integer",
+            "nullable": true
+          },
+          {
+            "name": "reason",
+            "type": "text",
+            "nullable": false,
+            "check": "length(btrim(reason)) >= 1 AND length(btrim(reason)) <= 1000"
+          },
+          {
+            "name": "status",
+            "type": "text",
+            "nullable": false,
+            "default": "'submitted'::text",
+            "check": "status = 'submitted'::text"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp with time zone",
+            "nullable": false,
+            "default": "now()"
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [
+          {
+            "name": "member_leave_requests_member_id_fkey",
+            "source_table": "public.member_leave_requests",
+            "source_columns": [
+              "member_id"
+            ],
+            "target_table": "public.member_profiles",
+            "target_columns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "public.treasury_history",
+        "rows": 8,
+        "rls_enabled": true,
+        "columns": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "nullable": false,
+            "default": "gen_random_uuid()"
+          },
+          {
+            "name": "sender_id",
+            "type": "uuid",
+            "nullable": false
+          },
+          {
+            "name": "sender_name",
+            "type": "text",
+            "nullable": false,
+            "check": "char_length(btrim(sender_name)) >= 1 AND char_length(btrim(sender_name)) <= 80"
+          },
+          {
+            "name": "opening_balance",
+            "type": "numeric",
+            "nullable": false,
+            "check": "opening_balance >= 0::numeric"
+          },
+          {
+            "name": "income",
+            "type": "numeric",
+            "nullable": false,
+            "default": "0",
+            "check": "income >= 0::numeric"
+          },
+          {
+            "name": "income_note",
+            "type": "text",
+            "nullable": false,
+            "default": "''::text",
+            "check": "char_length(income_note) <= 500"
+          },
+          {
+            "name": "expense",
+            "type": "numeric",
+            "nullable": false,
+            "default": "0",
+            "check": "expense >= 0::numeric"
+          },
+          {
+            "name": "expense_note",
+            "type": "text",
+            "nullable": false,
+            "default": "''::text",
+            "check": "char_length(expense_note) <= 500"
+          },
+          {
+            "name": "closing_balance",
+            "type": "numeric",
+            "nullable": true,
+            "default": "((opening_balance + income) - expense)"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp with time zone",
+            "nullable": false,
+            "default": "now()"
+          },
+          {
+            "name": "sender_role",
+            "type": "text",
+            "nullable": false,
+            "default": "'admin'::text",
+            "check": "sender_role = ANY (ARRAY['admin'::text, 'admin_assistant'::text])"
+          }
+        ],
+        "primary_keys": [
+          "id"
+        ],
+        "foreign_keys": [
+          {
+            "name": "treasury_history_sender_id_fkey",
+            "source_table": "public.treasury_history",
+            "source_columns": [
+              "sender_id"
+            ],
+            "target_table": "public.member_profiles",
+            "target_columns": [
+              "id"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "migrations": {
+    "applied_count": 104,
+    "repo_file_count": 68,
+    "missing_from_repo": [
+      {
+        "version": "20261021073221",
+        "name": "uic_daily_dues_registration_date"
+      },
+      {
+        "version": "20261021073307",
+        "name": "fix_historical_rate_fallback"
+      },
+      {
+        "version": "20261021074145",
+        "name": "add_private_member_profile_photos"
+      },
+      {
+        "version": "20261021074409",
+        "name": "guarded_member_account_deletion"
+      },
+      {
+        "version": "20261021074452",
+        "name": "allow_admin_cleanup_deleted_member_proofs"
+      },
+      {
+        "version": "20261021080958",
+        "name": "member_self_edit_display_name"
+      },
+      {
+        "version": "20261021092256",
+        "name": "p4_half_daily_dues_rate"
+      },
+      {
+        "version": "20261021092759",
+        "name": "admin_delete_completed_payment_history"
+      },
+      {
+        "version": "20261021093143",
+        "name": "member_group_chat"
+      },
+      {
+        "version": "20261021093333",
+        "name": "chat_sender_display_metadata"
+      },
+      {
+        "version": "20261021093546",
+        "name": "chat_auto_cleanup_12_hours"
+      },
+      {
+        "version": "20261021093554",
+        "name": "chat_clear_every_12_hours"
+      },
+      {
+        "version": "20261021093559",
+        "name": "admin_clear_chat_history"
+      },
+      {
+        "version": "20261021093903",
+        "name": "admin_database_storage_metrics"
+      },
+      {
+        "version": "20261021093908",
+        "name": "secure_admin_database_storage_metrics_wrapper"
+      },
+      {
+        "version": "20261021094244",
+        "name": "replace_chat_12h_cleanup_with_80pct_quota_cleanup"
+      },
+      {
+        "version": "20261021094301",
+        "name": "expose_verified_free_database_quota_and_cleanup_status"
+      },
+      {
+        "version": "20261021101240",
+        "name": "add_member_phone_and_chat_profile_summary"
+      },
+      {
+        "version": "20261021105112",
+        "name": "allow_zero_daily_rate"
+      },
+      {
+        "version": "20261021111222",
+        "name": "admin_master_assistant_role_boundaries"
+      },
+      {
+        "version": "20261021111755",
+        "name": "admin_assistant_rate_history_hardening"
+      },
+      {
+        "version": "20261021115543",
+        "name": "fix_chat_rank_and_profile_photo_access"
+      },
+      {
+        "version": "20261021115642",
+        "name": "harden_chat_profile_photo_visibility"
+      },
+      {
+        "version": "20261021115718",
+        "name": "use_invoker_for_chat_sender_rpc"
+      },
+      {
+        "version": "20261021122428",
+        "name": "admin_assistant_chat_notifications"
+      },
+      {
+        "version": "20261021123506",
+        "name": "admin_assistant_profile_photos"
+      },
+      {
+        "version": "20261021123947",
+        "name": "admin_assistant_self_display_name"
+      },
+      {
+        "version": "20261021124334",
+        "name": "admin_assistant_self_name_guard_exception"
+      },
+      {
+        "version": "20261021125042",
+        "name": "admin_hide_transaction_report_history"
+      },
+      {
+        "version": "20261021155732",
+        "name": "fix_admin_assistant_chat_profile_popup"
+      },
+      {
+        "version": "20261021233313",
+        "name": "restrict_bulk_chat_clear_to_super_admin"
+      },
+      {
+        "version": "20261021233849",
+        "name": "fix_bulk_chat_clear_where_clause"
+      },
+      {
+        "version": "20261022103128",
+        "name": "enable_private_chat_realtime_notifications"
+      },
+      {
+        "version": "20261022111732",
+        "name": "clear_reviewed_registration_proof_path"
+      },
+      {
+        "version": "20261022111841",
+        "name": "remove_unused_registration_proof_path_rpc"
+      },
+      {
+        "version": "20261023074022",
+        "name": "allow_permanent_member_deletion_with_financial_archive"
+      },
+      {
+        "version": "20261023082430",
+        "name": "include_phone_in_member_directory"
+      },
+      {
+        "version": "20261023092946",
+        "name": "create_p5_p6_private_rank_chat"
+      },
+      {
+        "version": "20261023093717",
+        "name": "create_p4_p5_p6_private_rank_chat"
+      },
+      {
+        "version": "20261023093729",
+        "name": "create_p4_p5_p6_private_rank_chat"
+      },
+      {
+        "version": "20261023095002",
+        "name": "add_p4_p5_p6_chat_history_clear"
+      },
+      {
+        "version": "20261023095156",
+        "name": "add_p5_p6_chat_history_clear"
+      },
+      {
+        "version": "20261025010136",
+        "name": "rank_based_daily_dues"
+      },
+      {
+        "version": "20261025110242",
+        "name": "information_announcements"
+      },
+      {
+        "version": "20261025110946",
+        "name": "information_message_deletion"
+      },
+      {
+        "version": "20261025111314",
+        "name": "admin_delete_information_message_rpc"
+      },
+      {
+        "version": "20261028114943",
+        "name": "member_leave_requests"
+      },
+      {
+        "version": "20261028115530",
+        "name": "shared_member_leave_chat"
+      },
+      {
+        "version": "20261028120533",
+        "name": "admin_delete_member_leave_request"
+      },
+      {
+        "version": "20261031170742",
+        "name": "apply_arrears_first_to_admin_balance_adjustments"
+      },
+      {
+        "version": "20261102130849",
+        "name": "allow_admin_delete_leave_requests"
+      },
+      {
+        "version": "20261103090913",
+        "name": "create_public_vault_history"
+      },
+      {
+        "version": "20261103090928",
+        "name": "allow_all_admins_manage_vault_entries"
+      },
+      {
+        "version": "20261103091022",
+        "name": "refine_vault_history_rls_and_indexes"
+      },
+      {
+        "version": "20261103091453",
+        "name": "restrict_assistant_payment_review_to_p1_p4"
+      },
+      {
+        "version": "20261103092254",
+        "name": "enable_vault_history_realtime_and_lock_anon_access"
+      },
+      {
+        "version": "20261103092327",
+        "name": "tighten_vault_history_authenticated_grants"
+      },
+      {
+        "version": "20261103094016",
+        "name": "add_safe_vault_entry_author_lookup"
+      },
+      {
+        "version": "20261103102559",
+        "name": "remove_vault_history_feature"
+      },
+      {
+        "version": "20261103110522",
+        "name": "create_treasury_history"
+      },
+      {
+        "version": "20261103110623",
+        "name": "allow_admin_assistant_treasury_posting"
+      },
+      {
+        "version": "20261103110752",
+        "name": "restrict_treasury_history_privileges"
+      },
+      {
+        "version": "20261103111206",
+        "name": "allow_admin_assistant_manage_treasury_history"
+      },
+      {
+        "version": "20261103142328",
+        "name": "require_payment_rejection_note"
+      },
+      {
+        "version": "20261103153349",
+        "name": "fix_admin_assistant_payment_review_access"
+      },
+      {
+        "version": "20261103153440",
+        "name": "limit_assistant_payment_data_scope"
+      },
+      {
+        "version": "20261103154959",
+        "name": "align_assistant_wallet_guard_with_payment_scope"
+      },
+      {
+        "version": "20261106115922",
+        "name": "schedule_p4_daily_dues_600_from_2026_11_07"
+      },
+      {
+        "version": "20261106120126",
+        "name": "add_rank_specific_dues_settings_menu_support"
+      }
+    ]
+  },
+  "edge_functions": [
+    {
+      "slug": "member-register",
+      "version": 6,
+      "verify_jwt": false,
+      "sha256": "cac7d15e29bd2a553813f74808badf2ee3377de8644d514e2d1a035d0498c1ff",
+      "status": "ACTIVE"
+    },
+    {
+      "slug": "cleanup-payment-proofs",
+      "version": 2,
+      "verify_jwt": true,
+      "sha256": "8f2e3e5c57359b84306f6f014d7035cd82b3b238bc9e3d32109934be1f25e368",
+      "status": "ACTIVE"
+    },
+    {
+      "slug": "account-settings",
+      "version": 2,
+      "verify_jwt": false,
+      "sha256": "1cf93a054b51d5f1663ef46e7d37c7729fc478a8927207f7e24a0b5678cc8bc8",
+      "status": "ACTIVE"
+    },
+    {
+      "slug": "review-payment",
+      "version": 6,
+      "verify_jwt": true,
+      "sha256": "749d2e61f5a32ebbce94f87d6a04565249665e658945b0f42a597b2c5182e13f",
+      "status": "ACTIVE"
+    },
+    {
+      "slug": "delete-completed-payment-history",
+      "version": 1,
+      "verify_jwt": true,
+      "sha256": "56e343ec125f24d02289e3b22be3ca662676284a207af939fb6424934f917ea0",
+      "status": "ACTIVE"
+    },
+    {
+      "slug": "admin-reset-member-password",
+      "version": 1,
+      "verify_jwt": false,
+      "sha256": "93796869150e60eedd4371ae1d12c15e13cf6d34aab8149f0f7c1f9336cb3d82",
+      "status": "ACTIVE"
+    },
+    {
+      "slug": "review-member-registration",
+      "version": 2,
+      "verify_jwt": true,
+      "sha256": "49eb3830134bffe8e94e3722b8039631d77ca21f73427f771825668cc1ea62b1",
+      "status": "ACTIVE"
+    }
+  ]
+}
