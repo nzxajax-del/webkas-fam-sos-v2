@@ -1,0 +1,45 @@
+name: WEBKAS production cutover build
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "src/**"
+      - "public/**"
+      - "package.json"
+      - "package-lock.json"
+      - "vite.config.*"
+      - "wrangler.jsonc"
+      - ".github/workflows/webkas-production-cutover-build.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Build production assets
+        run: npm run build
+      - name: Check updated Edge Functions
+        run: |
+          ./node_modules/.bin/esbuild \
+            supabase/functions/account-settings/index.ts \
+            supabase/functions/admin-reset-member-password/index.ts \
+            supabase/functions/cleanup-payment-proofs/index.ts \
+            supabase/functions/delete-completed-payment-history/index.ts \
+            supabase/functions/member-register/index.ts \
+            supabase/functions/review-member-registration/index.ts \
+            supabase/functions/review-payment/index.ts \
+            --bundle --outdir=/tmp/webkas-cutover-edge-check \
+            --platform=neutral --format=esm --external:https://*
