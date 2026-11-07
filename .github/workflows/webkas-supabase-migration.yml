@@ -89,7 +89,6 @@ jobs:
             -e STORAGE_TRANSFER_OUTCOME="$STORAGE_TRANSFER_OUTCOME" postgres:17 sh -ec '
               for query in \
                 "SELECT count(*) FROM auth.users" \
-                "SELECT count(*) FROM auth.identities" \
                 "SELECT count(*) FROM auth.identities"; do
                 source_value="$(psql "$SOURCE_DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "$query")"
                 target_value="$(psql "$TARGET_DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "$query")"
