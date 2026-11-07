@@ -1,0 +1,62 @@
+{
+  "captured_at_utc": "2026-11-07T02:45:08Z",
+  "source_project_ref": "lzciyzibqbujshoizlbu",
+  "mode": "read_only",
+  "performance_advisor": {
+    "unindexed_foreign_keys": {
+      "count": 5,
+      "findings": [
+        "app_branding_settings.updated_by",
+        "information_messages.sender_id",
+        "p4_p5_p6_chat_messages.sender_id",
+        "p5_p6_chat_messages.sender_id",
+        "private_messages.sender_id"
+      ],
+      "assessment": "Potential query and delete/update performance impact; verify workload and existing indexes before adding any index."
+    },
+    "auth_rls_initplan": {
+      "count": 9,
+      "affected_tables": [
+        "chat_messages",
+        "p4_p5_p6_chat_messages",
+        "p5_p6_chat_messages",
+        "member_leave_requests"
+      ],
+      "assessment": "Some RLS expressions may re-evaluate auth/current_setting functions per row. Consider SELECT-wrapping auth function calls after reviewing policy semantics and testing."
+    },
+    "unused_indexes": {
+      "count": 3,
+      "findings": [
+        "dues_rate_history_created_by_idx",
+        "admin_bootstrap_tokens_used_by_idx",
+        "private_chat_hidden_conversation_idx"
+      ],
+      "assessment": "Do not drop based only on this advisor; low traffic, newly created indexes, or rare administrative paths may explain zero observed usage."
+    },
+    "multiple_permissive_policies": {
+      "count": 5,
+      "affected_tables": [
+        "chat_messages",
+        "member_profiles",
+        "payment_submissions"
+      ],
+      "assessment": "Potential policy evaluation overhead. Consolidation must preserve distinct admin-assistant permissions and member visibility rules."
+    },
+    "health_advisor_findings": 0
+  },
+  "actions_taken": {
+    "database_modified": false,
+    "indexes_added_or_dropped": false,
+    "rls_policies_changed": false
+  },
+  "recommended_next_steps": [
+    "Inspect full policy definitions and frontend role paths before considering consolidation.",
+    "Compare foreign-key columns against all existing indexes before proposing additions.",
+    "Retain indexes until workload evidence supports removal.",
+    "Run regression tests for member, Developer, and Admin Assistant access before any policy optimization."
+  ],
+  "limitations": [
+    "Advisor findings are optimization signals, not proof of a production incident.",
+    "This report is not a migration or backup."
+  ]
+}
