@@ -88,13 +88,9 @@ jobs:
             CREATE TABLE public.member_profiles (id uuid, display_name text, login_username text, role text, status text, rank_code text);
             CREATE TABLE public.member_wallets (member_id uuid);
             CREATE TABLE public.admin_audit_log (id bigint);
-            CREATE TABLE public.chat_messages (id bigint);
             CREATE TABLE public.dues_settings (id bigint);
             CREATE TABLE public.information_messages (id bigint);
-            CREATE TABLE public.p4_p5_p6_chat_messages (id bigint);
-            CREATE TABLE public.p5_p6_chat_messages (id bigint);
             CREATE TABLE public.payment_submissions (id bigint);
-            CREATE TABLE public.private_messages (id bigint);
             CREATE TABLE public.wallet_transactions (id bigint);
             CREATE PUBLICATION supabase_realtime;
           "
@@ -112,7 +108,7 @@ jobs:
             SELECT
               (SELECT count(*) FROM pg_trigger WHERE tgname='on_auth_user_created' AND NOT tgisinternal) = 1
               AND (SELECT count(*) FROM pg_policies WHERE schemaname='storage') = 9
-              AND (SELECT count(*) FROM pg_publication_tables WHERE pubname='supabase_realtime' AND schemaname='public') = 11;
+              AND (SELECT count(*) FROM pg_publication_tables WHERE pubname='supabase_realtime' AND schemaname='public') = 7;
           " | grep -qx t
 
       - name: Stop temporary PostgreSQL
