@@ -28,4 +28,4 @@ Use the connection string from the correct project for each secret. Do not use t
 - The workflow does not deploy Edge Functions, change Cloudflare, or push to `main`.
 - The workflow acquires a temporary PostgreSQL SHARE lock on all application, Auth-user/identity, and Storage tables before the snapshot. Reads remain available; writes/registrations/uploads are briefly held until the migration job finishes or is cancelled. The lock is released automatically even if a later step fails. The database script also checks source row-content signatures during export and after restore and stops if it detects changes.
 
-Once these four secrets exist, the assistant can add the one-time marker file to start the workflow. No secret values need to be sent in chat.
+Once these four secrets exist, the assistant can add the one-time marker file to start the workflow. No secret values need to be sent in chat. This is the only credential setup required from the owner; the runner handles export, import, temporary source write-locking, Storage verification, and cleanup automatically.
