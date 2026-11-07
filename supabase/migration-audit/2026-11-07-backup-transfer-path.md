@@ -76,3 +76,8 @@ Source has 9 custom policies on `storage.objects`; target currently has 0. A non
 
 ## Edge Function deployment readiness
 The seven deployed function entrypoint files are byte-for-byte identical to the existing GitHub backups on this audit branch. The functions only reference Supabase's standard runtime variables (`SUPABASE_URL`, `SUPABASE_ANON_KEY`, and/or `SUPABASE_SERVICE_ROLE_KEY`); no additional custom environment variable names were found. No secrets were read. Before deploying, verify the target project injects the standard variables and review the `cleanup-payment-proofs` CORS allowlist because it does not currently include the production Cloudflare Worker origin.
+
+## Additional capacity and extension parity check
+Source database size is approximately 16 MB; target is approximately 10 MB. The source Storage objects total approximately 56.3 MB. These observed sizes are comfortably below the current Free-plan quotas (database and file storage), though ongoing egress/usage limits still need monitoring after cutover.
+
+The installed extension sets are almost identical. Both projects have `pg_stat_statements 1.11`, `pgcrypto 1.3`, `plpgsql 1.0`, `supabase_vault 0.3.1`, and `uuid-ossp 1.1`. The source additionally has `pg_cron 1.6.4`; the target has it available but not installed. Install it only during the controlled restore stage, and keep scheduled jobs disabled until ledger verification is complete.
