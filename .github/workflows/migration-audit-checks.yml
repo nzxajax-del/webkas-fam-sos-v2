@@ -54,7 +54,7 @@ jobs:
         run: npm run build
 
       - name: Check payment Edge Function TypeScript syntax
-        run: ./node_modules/.bin/esbuild supabase/functions/review-payment/index.ts supabase/functions/delete-completed-payment-history/index.ts --outdir=/tmp/webkas-edge-check --platform=neutral --format=esm --external:https://*
+        run: ./node_modules/.bin/esbuild supabase/functions/review-payment/index.ts supabase/functions/delete-completed-payment-history/index.ts --bundle --outdir=/tmp/webkas-edge-check --platform=neutral --format=esm --external:https://*
 
       - name: Start temporary PostgreSQL for restore-SQL syntax checks
         run: |
