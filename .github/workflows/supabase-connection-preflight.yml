@@ -1,0 +1,47 @@
+name: WEBKAS database connection preflight
+
+on:
+  push:
+    branches:
+      - supabase-migration-audit
+    paths:
+      - ".github/workflows/supabase-connection-preflight.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  read-only-connectivity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      SOURCE_DB_URL: ${{ secrets.SOURCE_DB_URL }}
+      TARGET_DB_URL: ${{ secrets.TARGET_DB_URL }}
+    steps:
+      - name: Check required database secrets exist without displaying them
+        shell: bash
+        run: |
+          set +x
+          test -n "$SOURCE_DB_URL" || { echo "SOURCE_DB_URL is missing."; exit 1; }
+          test -n "$TARGET_DB_URL" || { echo "TARGET_DB_URL is missing."; exit 1; }
+          echo "Both database secrets are present."
+
+      - name: Test source database with a read-only transaction
+        shell: bash
+        run: |
+          set +x
+          result="$(docker run --rm --network host \
+            -e DB_URL="$SOURCE_DB_URL" \
+            postgres:17 sh -ec 'PGCONNECT_TIMEOUT=15 psql "$DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "BEGIN READ ONLY; SELECT current_database() || chr(124) || current_setting(''transaction_read_only''); ROLLBACK;"')"
+          test "$result" = "$(printf 'BEGIN\npostgres|on\nROLLBACK')"
+          echo "Source database connection succeeded; query was read-only."
+
+      - name: Test target database with a read-only transaction
+        shell: bash
+        run: |
+          set +x
+          result="$(docker run --rm --network host \
+            -e DB_URL="$TARGET_DB_URL" \
+            postgres:17 sh -ec 'PGCONNECT_TIMEOUT=15 psql "$DB_URL" -X -A -t -v ON_ERROR_STOP=1 -c "BEGIN READ ONLY; SELECT current_database() || chr(124) || current_setting(''transaction_read_only''); ROLLBACK;"')"
+          test "$result" = "$(printf 'BEGIN\npostgres|on\nROLLBACK')"
+          echo "Target database connection succeeded; query was read-only."
