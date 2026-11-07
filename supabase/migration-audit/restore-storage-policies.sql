@@ -3,6 +3,16 @@
 -- helper functions, buckets, and Auth data are restored and verified.
 -- Source has 9 policies on storage.objects; target currently has 0.
 
+DROP POLICY IF EXISTS payment_proofs_assistant_read_p1_p4 ON storage.objects;
+DROP POLICY IF EXISTS payment_proofs_delete_developer ON storage.objects;
+DROP POLICY IF EXISTS payment_proofs_read_own_or_developer ON storage.objects;
+DROP POLICY IF EXISTS payment_proofs_upload_own_folder ON storage.objects;
+DROP POLICY IF EXISTS profile_photos_delete_own_or_admin ON storage.objects;
+DROP POLICY IF EXISTS profile_photos_read_own_or_admin ON storage.objects;
+DROP POLICY IF EXISTS profile_photos_upload_own_folder ON storage.objects;
+DROP POLICY IF EXISTS registration_proofs_admin_delete ON storage.objects;
+DROP POLICY IF EXISTS registration_proofs_admin_read ON storage.objects;
+
 CREATE POLICY payment_proofs_assistant_read_p1_p4
 ON storage.objects AS PERMISSIVE FOR SELECT TO authenticated
 USING (
