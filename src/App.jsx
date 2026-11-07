@@ -301,10 +301,6 @@ export default function App() {
   const appIconUnreadCount = Math.min(999,
     pendingRegistrationNotice +
     pendingPaymentNotice +
-    chatUnreadNotice +
-    privateChatUnreadNotice +
-    leadersUnreadNotice +
-    staffUnreadNotice +
     informationUnreadNotice +
     permissionsUnreadNotice
   );
