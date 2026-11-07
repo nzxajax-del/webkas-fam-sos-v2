@@ -42,7 +42,7 @@ jobs:
           from urllib.parse import urlsplit, unquote
 
           def check(label, variable):
-              raw = os.environ[variable].strip().lstrip("\\ufeff")
+              raw = os.environ[variable].strip().strip("\\ufeff\\u200e\\u200f\\u061c")
               # GitHub secrets are sometimes pasted with surrounding quote marks.
               if len(raw) >= 2 and raw[0] == raw[-1] and raw[0] in ("'", '"'):
                   raw = raw[1:-1].strip()
