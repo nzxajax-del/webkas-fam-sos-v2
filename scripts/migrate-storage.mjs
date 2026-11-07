@@ -182,8 +182,10 @@ async function runPool(items, concurrency, worker) {
 }
 
 for (const bucket of bucketConfig) {
-  await verifySourceBucket(bucket);
+  // Prepare the target buckets first so the database-only cutover can proceed
+  // even if the restricted source Storage API rejects binary downloads.
   await ensurePrivateBucket(bucket);
+  await verifySourceBucket(bucket);
 }
 
 const report = [];
