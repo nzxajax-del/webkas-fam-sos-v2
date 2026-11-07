@@ -16,6 +16,7 @@ on:
       - ".github/workflows/migration-audit-checks.yml"
       - ".github/workflows/webkas-supabase-migration.yml"
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
     branches:
       - supabase-migration-audit
     paths:
