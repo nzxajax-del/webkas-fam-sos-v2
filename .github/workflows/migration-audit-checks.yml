@@ -9,6 +9,8 @@ on:
       - "scripts/**"
       - "supabase/migration-audit/**"
       - "src/lib/supabase.js"
+      - "src/App.jsx"
+      - "supabase/migrations/**"
       - ".env.example"
       - ".github/workflows/migration-audit-checks.yml"
       - ".github/workflows/webkas-supabase-migration.yml"
