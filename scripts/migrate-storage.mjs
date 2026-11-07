@@ -74,6 +74,23 @@ async function listAllObjects(client, bucket) {
   return files;
 }
 
+async function verifySourceBucket(bucket) {
+  const { data: existing, error } = await source.storage.getBucket(bucket.name);
+  if (error || !existing) {
+    throw new Error(`Cannot inspect source bucket ${bucket.name}: ${error?.message || "bucket missing"}`);
+  }
+  if (existing.public !== false) {
+    throw new Error(`Source bucket ${bucket.name} is not private; refusing to change its visibility.`);
+  }
+  if (Number(existing.file_size_limit) !== bucket.fileSizeLimit) {
+    throw new Error(`Source bucket ${bucket.name} file-size limit differs from the audited configuration.`);
+  }
+  const sourceMimes = [...(existing.allowed_mime_types || [])].sort();
+  if (JSON.stringify(sourceMimes) !== JSON.stringify([...allowedMimeTypes].sort())) {
+    throw new Error(`Source bucket ${bucket.name} MIME restrictions differ from the audited configuration.`);
+  }
+}
+
 async function ensurePrivateBucket(bucket) {
   const { data: existing, error: getError } = await target.storage.getBucket(bucket.name);
   if (getError && !/not found|does not exist|404/i.test(getError.message || "")) {
@@ -165,6 +182,7 @@ async function runPool(items, concurrency, worker) {
 }
 
 for (const bucket of bucketConfig) {
+  await verifySourceBucket(bucket);
   await ensurePrivateBucket(bucket);
 }
 
@@ -172,7 +190,19 @@ const report = [];
 for (const bucket of bucketConfig) {
   const files = await listAllObjects(source, bucket.name);
   const results = await runPool(files, 3, (file) => copyOne(bucket.name, file));
+  const targetFiles = await listAllObjects(target, bucket.name);
+  const sourcePaths = files.map((file) => file.path).sort();
+  const targetPaths = targetFiles.map((file) => file.path).sort();
+  if (JSON.stringify(sourcePaths) !== JSON.stringify(targetPaths)) {
+    throw new Error(`Object path inventory mismatch in bucket ${bucket.name}; refusing to mark transfer complete.`);
+  }
+
   const bytes = results.reduce((sum, item) => sum + item.bytes, 0);
+  const targetBytes = targetFiles.reduce((sum, file) => sum + file.size, 0);
+  if (bytes !== targetBytes) {
+    throw new Error(`Object byte-count mismatch in bucket ${bucket.name}: source ${bytes}, target ${targetBytes}.`);
+  }
+
   const existing = results.filter((item) => item.alreadyPresent).length;
   report.push({ bucket: bucket.name, objects: files.length, bytes, alreadyPresent: existing });
 }
