@@ -1,17 +1,19 @@
 # WEBKAS FAM SOS V2
 
-Website kas baru Fam SOS dengan hosting Netlify, frontend React/Vite, dan backend Supabase V2 terpisah.
+Website kas Fam SOS dengan frontend React/Vite, aset statis pada Cloudflare Workers, dan backend Supabase V2 terpisah.
 
-## Hosting Netlify
-- Build command: `npm run build`
-- Publish directory: `dist`
-- Konfigurasi SPA ada di `netlify.toml`.
+## Hosting Cloudflare Workers
+- URL produksi yang sebelumnya ditetapkan: https://webkas-fam-sos-v2.nzxajax.workers.dev/
+- Worker name: `webkas-fam-sos-v2` (sesuai `wrangler.jsonc`).
+- Build command: `npm run build`; deploy command: `npx wrangler deploy`.
+- Aset hasil build dilayani dari `dist`; SPA fallback menggunakan `not_found_handling: single-page-application`.
 - Repository: [nzxajax-del/webkas-fam-sos-v2](https://github.com/nzxajax-del/webkas-fam-sos-v2), branch `main`.
-- Deployment otomatis memerlukan repository ini terhubung ke situs Netlify.
+- Catatan: konfigurasi repo menunjukkan target Cloudflare Workers. Status deployment live dan pengaturan domain harus diverifikasi di Cloudflare; keberadaan URL saja bukan bukti bahwa deployment terbaru sudah aktif.
+- `netlify.toml` adalah konfigurasi lama dan bukan sumber konfigurasi Worker.
 
 ## Supabase V2
-- Project ref: `lzciyzibqbujshoizlbu`
-- URL: `https://lzciyzibqbujshoizlbu.supabase.co`
+- Project ref yang saat ini menjadi fallback frontend: `cdqmeenrwsbkcpclitgh`
+- URL: `https://cdqmeenrwsbkcpclitgh.supabase.co`
 - Frontend memakai public publishable key fallback di `src/lib/supabase.js`; `VITE_SUPABASE_URL` dan `VITE_SUPABASE_ANON_KEY` dapat digunakan untuk override.
 - Publishable key memang dirancang untuk browser. **Jangan pernah** memasukkan service-role key, password, atau secret ke frontend, GitHub, atau variabel `VITE_*`.
 - Migrasi database berada di `supabase/migrations/`; source Edge Function pendaftaran berada di `supabase/functions/member-register/index.ts`.

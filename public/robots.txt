@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+# The application shell sends noindex directives; crawling is allowed so search engines can see them.
