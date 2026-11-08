@@ -1611,3 +1611,97 @@ svg.rank-symbol{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:ro
 @media(max-width:380px){.auth-panel-topbar{gap:8px}.auth-panel-topbar .brand-mark{gap:8px}.auth-panel-topbar .brand-mark strong{font-size:11px}.auth-admin-recovery-button{flex-basis:49px;min-width:49px;min-height:49px}}
 
 .admin-recovery-dashboard-link{display:block;margin:0 0 14px;color:#c1f45a;font-size:12px;font-weight:800;text-align:center;text-decoration:underline;text-underline-offset:3px}
+
+
+/* Cross-device baseline: keep the app shell inside narrow phone viewports. */
+html {
+  min-width: 320px;
+  min-height: 100%;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+body {
+  width: 100%;
+  min-width: 320px;
+  overflow-x: hidden;
+}
+#root {
+  width: 100%;
+  min-width: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+.panel,
+.dashboard-shell,
+.dashboard-header,
+.admin-layout,
+.admin-content,
+.history-panel,
+.section-head {
+  min-width: 0;
+}
+input,
+select,
+textarea,
+button {
+  max-width: 100%;
+  touch-action: manipulation;
+}
+.table-wrap {
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+img,
+video,
+canvas {
+  max-width: 100%;
+}
+@media (max-width: 600px) {
+  .page-shell {
+    width: 100%;
+    min-width: 0;
+    padding: 12px;
+  }
+  .dashboard-header {
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 9px;
+  }
+  .dashboard-header .brand-mark {
+    flex: 1 1 180px;
+    min-width: 0;
+  }
+  .dashboard-header .review-actions {
+    flex-wrap: wrap;
+    max-width: 100%;
+  }
+  .section-head {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .history-panel {
+    max-width: 100%;
+  }
+}
+@media (max-width: 360px) {
+  .page-shell {
+    padding: 8px;
+  }
+  .panel {
+    padding: 15px 12px;
+    border-radius: 14px;
+  }
+  .dashboard-header .brand-mark strong {
+    overflow-wrap: anywhere;
+  }
+}
+@supports (padding: max(0px)) {
+  .dashboard-shell {
+    padding-bottom: max(24px, env(safe-area-inset-bottom));
+  }
+}
+@supports not (height: 100dvh) {
+  #root {
+    min-height: 100vh;
+  }
+}
