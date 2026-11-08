@@ -51,7 +51,6 @@ jobs:
 
       - name: Transfer private Storage objects and verify SHA-256
         id: storage_transfer
-        continue-on-error: true
         run: node scripts/migrate-storage.mjs
 
       - name: Apply Storage policies and install pg_cron without scheduling jobs
