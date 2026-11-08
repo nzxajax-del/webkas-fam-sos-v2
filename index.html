@@ -13,7 +13,16 @@
     <title>SOS FAM</title>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <main role="status" aria-live="polite" style="min-height:100vh;display:grid;place-items:center;padding:24px;box-sizing:border-box;background:#0b0e0b;color:#f4f7ef;font:16px/1.5 system-ui,sans-serif;text-align:center">
+        <section style="width:min(100%,420px);padding:28px;box-sizing:border-box;border:1px solid #39452f;border-radius:20px;background:#11160f">
+          <h1 style="font-size:1.35rem">SOS FAM</h1>
+          <p style="color:#c5cebb">WEBKAS sedang dimuat. Mohon tunggu sebentar…</p>
+          <p style="color:#aab3a2;font-size:13px">Jika halaman ini tidak berubah, muat ulang halaman atau periksa koneksi internet.</p>
+          <button type="button" onclick="location.reload()" style="padding:12px 18px;border:0;border-radius:12px;background:#c1f45a;color:#10120e;font-weight:800">Muat ulang</button>
+        </section>
+      </main>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
     <script defer src="/pwa-access.js"></script>
   </body>
