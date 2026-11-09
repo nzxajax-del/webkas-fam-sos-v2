@@ -1,1 +1,0 @@
-Authorized WEBKAS database and private Storage restore to the audited target project. Source remains read-only; workflow must fail closed if source snapshot changes.
