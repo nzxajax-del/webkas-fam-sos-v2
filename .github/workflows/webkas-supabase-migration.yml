@@ -1,11 +1,13 @@
 name: WEBKAS Supabase migration execution
 
 on:
-  push:
-    branches:
-      - supabase-migration-audit
-    paths:
-      - "supabase/migration-audit/EXECUTE_MIGRATION"
+  workflow_dispatch:
+    inputs:
+      confirm_migration:
+        description: "I explicitly authorize the audited database and Storage restore now."
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -16,6 +18,7 @@ concurrency:
 
 jobs:
   restore-database-and-storage:
+    if: ${{ inputs.confirm_migration == true }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     env:
