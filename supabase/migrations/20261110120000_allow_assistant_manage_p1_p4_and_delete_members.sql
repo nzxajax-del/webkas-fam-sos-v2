@@ -16,7 +16,7 @@ BEGIN
   FROM public.member_profiles
   WHERE id = v_admin_id AND status = 'active';
 
-  IF v_admin_id IS NULL OR v_admin_role NOT IN ('admin', 'admin_assistant') THEN
+  IF v_admin_id IS NULL OR coalesce(v_admin_role, '') NOT IN ('admin', 'admin_assistant') THEN
     RAISE EXCEPTION 'Akses admin diperlukan' USING errcode = '42501';
   END IF;
 
