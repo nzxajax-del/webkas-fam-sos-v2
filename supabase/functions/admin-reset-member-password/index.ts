@@ -57,15 +57,18 @@ Deno.serve(async (req: Request) => {
   const { data: actor, error: actorError } = await admin
     .from("member_profiles").select("role,status").eq("id", userData.user.id).maybeSingle();
   if (actorError) return json({ error: "Verifikasi hak akses gagal." }, 500, origin);
-  if (actor?.role !== "admin" || actor?.status !== "active") {
-    return json({ error: "Hanya Super Admin aktif yang dapat mereset kata sandi anggota." }, 403, origin);
+  if (!["admin", "admin_assistant"].includes(actor?.role || "") || actor?.status !== "active") {
+    return json({ error: "Developer atau Admin Assistant aktif diperlukan." }, 403, origin);
   }
 
   const { data: target, error: targetError } = await admin
-    .from("member_profiles").select("id,login_username,role,status").eq("id", memberId).maybeSingle();
+    .from("member_profiles").select("id,login_username,role,status,rank_code").eq("id", memberId).maybeSingle();
   if (targetError) return json({ error: "Data akun tujuan gagal diperiksa." }, 500, origin);
   if (!target || target.role !== "member") return json({ error: "Reset hanya diizinkan untuk akun anggota, bukan akun admin." }, 404, origin);
   if (target.status === "rejected") return json({ error: "Akun yang ditolak tidak dapat direset." }, 403, origin);
+  if (actor.role === "admin_assistant" && !["P1", "P2", "P3", "P4"].includes(target.rank_code || "P1")) {
+    return json({ error: "Admin Assistant hanya dapat mereset sandi anggota P1 sampai P4." }, 403, origin);
+  }
 
   const { error: updateError } = await admin.auth.admin.updateUserById(memberId, { password: newPassword });
   if (updateError) return json({ error: "Kata sandi belum berhasil direset. Coba lagi." }, 400, origin);
