@@ -30,6 +30,27 @@ const compressImageForUpload = async (file, maxDimension = 1440, quality = 0.76)
     return file;
   }
 };
+const normalizeAccentColor = (value) => {
+  const raw = String(value || "").trim();
+  const match = raw.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+  if (!match) return "#c1f45a";
+  const hex = match[1].length === 3 ? match[1].split("").map((part) => part + part).join("") : match[1];
+  const channels = [0, 2, 4].map((index) => {
+    const channel = parseInt(hex.slice(index, index + 2), 16) / 255;
+    return channel <= 0.04045 ? channel / 12.92 : Math.pow((channel + 0.055) / 1.055, 2.4);
+  });
+  const luminance = channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722;
+  const contrast = (background) => {
+    const [r, g, b] = background;
+    const bg = [r, g, b].map((channel) => {
+      const normalized = channel / 255;
+      return normalized <= 0.04045 ? normalized / 12.92 : Math.pow((normalized + 0.055) / 1.055, 2.4);
+    });
+    const bgLuminance = bg[0] * 0.2126 + bg[1] * 0.7152 + bg[2] * 0.0722;
+    return (Math.max(luminance, bgLuminance) + 0.05) / (Math.min(luminance, bgLuminance) + 0.05);
+  };
+  return contrast([20, 25, 18]) >= 4.5 && contrast([11, 14, 11]) >= 4.5 ? "#" + hex : "#c1f45a";
+};
 const money = (value) => new Intl.NumberFormat("id-ID", { maximumFractionDigits: 2 }).format(Number(value || 0)) + " UIC";
 const treasuryMoney = (value) => { const amount = Number(value || 0); return Math.abs(amount) >= 1000 ? (amount / 1000).toLocaleString("id-ID", { maximumFractionDigits: 2 }) + "K" : amount.toLocaleString("id-ID", { maximumFractionDigits: 2 }); };
 const parseTreasuryInput = (value) => { const text = String(value ?? "").trim().replace(",", "."); if (!text) return 0; const amount = Number(text); return Number.isFinite(amount) ? amount * 1000 : NaN; };
@@ -1303,9 +1324,13 @@ export default function App() {
   }, [profile?.id, profile?.role, profile?.status]);
 
   useEffect(() => {
-    document.documentElement.style.setProperty("--lime", branding.accent_color || "#c1f45a");
-    document.documentElement.style.setProperty("--page-bg", branding.background_color || "#0b0e0b");
-    document.body.style.background = "radial-gradient(ellipse at 50% 0%, " + (branding.accent_color || "#c1f45a") + "22 0%, " + (branding.background_color || "#0b0e0b") + " 58%)";
+    // Keep the saved brand accent readable on every member device, even if an older
+    // dark-green value remains in the shared settings row or local browser cache.
+    const accent = normalizeAccentColor(branding.accent_color);
+    const pageBackground = /^#[0-9a-f]{6}$/i.test(String(branding.background_color || "")) ? branding.background_color : "#0b0e0b";
+    document.documentElement.style.setProperty("--lime", accent);
+    document.documentElement.style.setProperty("--page-bg", pageBackground);
+    document.body.style.background = "radial-gradient(ellipse at 50% 0%, " + accent + "22 0%, " + pageBackground + " 58%)";
   }, [branding]);
 
   if (!supabaseConfigured) {
