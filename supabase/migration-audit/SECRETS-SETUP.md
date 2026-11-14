@@ -1,31 +1,55 @@
-# WEBKAS migration runner — required private secrets
+# WEBKAS migration runner — credential and safety notes
 
-The gated workflow is `.github/workflows/webkas-supabase-migration.yml` on branch `supabase-migration-audit`. It will not run until a dedicated marker file is added to that branch. The workflow has not been triggered.
+> **HOLD — NOT AUTHORIZED FOR EXECUTION.** This document is a safety reference only. The recovery is not complete, and the migration workflow must not be dispatched under the current instructions.
 
-## Add these four values as GitHub Repository Secrets
+## Current workflow gate
 
-Repository: `nzxajax-del/webkas-fam-sos-v2`
+The workflow is `.github/workflows/webkas-supabase-migration.yml` on branch `supabase-migration-audit`.
 
-GitHub path: Settings → Secrets and variables → Actions → Repository secrets → New repository secret.
+- It is triggered by `workflow_dispatch` and requires the boolean input `confirm_migration` to be `true` (default: `false`).
+- It does **not** require a marker file. Do not create `EXECUTE_MIGRATION` or any equivalent trigger file.
+- Dispatching it performs writes to the **target** database and target Storage. It is a migration/restore operation, not a read-only audit. Do not dispatch it without fresh, explicit owner authorization after every recovery gate has passed.
+- It does not deploy Edge Functions, transfer Edge Function secrets, change Cloudflare, or switch production traffic.
+- The database restore script contains no explicit `LOCK TABLE` or `pg_advisory_lock` statement. It reads the source and writes the target; normal PostgreSQL read locks may still occur. This observation is not authorization to run it.
 
-| Secret name | Value to enter |
+## Private GitHub repository secrets
+
+If a future, explicitly authorized recovery run is approved, the workflow expects these repository secrets:
+
+| Secret name | Purpose |
 |---|---|
-| `SOURCE_DB_URL` | Old Supabase project's PostgreSQL **Session pooler** connection string, including its database password |
-| `TARGET_DB_URL` | New Supabase project's PostgreSQL **Session pooler** connection string, including its database password |
-| `SOURCE_SERVICE_ROLE_KEY` | Old Supabase project's backend-only `service_role` key from Project Settings → API Keys |
-| `TARGET_SERVICE_ROLE_KEY` | New Supabase project's backend-only `service_role` key from Project Settings → API Keys |
+| `SOURCE_DB_URL` | Source PostgreSQL connection string |
+| `TARGET_DB_URL` | Target PostgreSQL connection string |
+| `SOURCE_SERVICE_ROLE_KEY` | Source backend-only Storage access |
+| `TARGET_SERVICE_ROLE_KEY` | Target backend-only Storage access |
 
-Use the connection string from the correct project for each secret. Do not use the publishable/anon key in place of a service-role key.
+Store values only in GitHub's encrypted Repository Secrets. Never paste them into ChatGPT, repository files, issues, screenshots, or workflow logs. Do not send passwords or service-role keys in chat.
 
-## Security and execution notes
-- Never paste these values into ChatGPT, GitHub files, issue comments, screenshots, or workflow logs.
-- These values belong only in GitHub's encrypted Repository Secrets store.
-- No Supabase Personal Access Token is required by the prepared workflow.
-- Database dump files (including Auth password hashes) are held only in the temporary GitHub Actions runner directory, are never uploaded as artifacts, and are deleted when the job exits.
-- The workflow checks the target project reference and refuses to overwrite partial/different target data. It never deletes or modifies the source project.
-- The Storage transfer keeps all buckets private, uses no overwrite for differing objects, and verifies every copied file by SHA-256.
-- The workflow installs `pg_cron` but intentionally creates no scheduled jobs. Daily dues and cleanup jobs remain unscheduled until final ledger verification.
-- The workflow does not deploy Edge Functions, change Cloudflare, or push to `main`.
-- The workflow acquires a temporary PostgreSQL SHARE lock on all application, Auth-user/identity, and Storage tables before the snapshot. Reads remain available; writes/registrations/uploads are briefly held until the migration job finishes or is cancelled. The lock is released automatically even if a later step fails. The database script also checks source row-content signatures during export and after restore and stops if it detects changes.
+## Latest read-only audit — 2026-11-14
 
-Once these four secrets exist, the assistant can add the one-time marker file to start the workflow. No secret values need to be sent in chat. This is the only credential setup required from the owner; the runner handles export, import, temporary source write-locking, Storage verification, and cleanup automatically.
+Projects:
+- Source: `lzciyzibqbujshoizlbu` — `ACTIVE_HEALTHY`
+- Target: `cdqmeenrwsbkcpclitgh` — `ACTIVE_HEALTHY`
+
+Observed differences:
+- Auth users / identities: source 84 / 84; target 88 / 88.
+- Storage objects: source 63; target 0. The three target buckets exist, but they contain no objects.
+- Edge Functions: source has 7 active functions; target has the same 7 names plus one extra. All seven matching function code hashes differ, and target versions are lower.
+- Migration history: source has 105 recorded migrations; target has 20. Do not blindly replay migrations or infer schema parity from migration names.
+- Core table row counts and data are not equal. Source and target are both active; the source is not a frozen snapshot.
+
+The most recent migration execution (run #1, 2026-11-07) restored database rows and passed its Auth checksum stage, but Storage transfer failed because the source project returned `exceed_egress_quota`. The final parity stage was not completed. The latest audit workflow on this branch only validates syntax, build, and SQL against a temporary PostgreSQL test schema; it does not prove production migration parity.
+
+## Remaining gates
+
+Do not declare recovery complete until all of the following are independently verified:
+
+1. Database schema and application data are reconciled against the source, with a tested restore and rollback plan.
+2. Auth users, identities, password hashes, and login behavior are verified.
+3. Every source Storage object is copied and verified by path, metadata, size, and SHA-256.
+4. All 7 Edge Functions have matching, reviewed code and configuration; required secrets are provisioned securely and verified without exposing values.
+5. Login and role-specific core workflows pass smoke/regression tests.
+6. Production configuration is confirmed to use the target, and rollback is tested and ready.
+7. The old database remains intact as a usable backup, with its ongoing scheduled jobs and cleanup behavior explicitly accounted for.
+
+No production deployment, cutover, source write freeze, migration execution, member-data change, UI change, or feature change is authorized by this document.
