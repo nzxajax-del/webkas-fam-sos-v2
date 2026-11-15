@@ -15,9 +15,9 @@ No `EXECUTE_MIGRATION` file was created. The repository content lookup returned 
 
 - The repository is public and its default branch is `main`.
 - The branch `supabase-migration-audit` exists.
-- Comparing `main` to the audit branch reports **diverged: 88 commits ahead and 15 behind**. Do not merge this branch into `main` without a separate file-by-file review.
+- The audit branch is diverged from `main`. The comparison immediately before this final checkpoint correction reported **90 commits ahead and 15 behind**; this correction itself adds one more audit-only commit. Do not merge this branch into `main` without a separate file-by-file review.
 - The current `main` commit returned by the compare is `f16304d59e3a6db3c21307c148ccbc01301609b2` (2026-11-13).
-- The branch-specific safety-document commit inspected is `2af72063ab028bb078dfcb313f97e7fee31fe7cd`. The branch-search connector returns branch names but not the current branch-head SHA, so this commit is not asserted to be the branch head.
+- The prior safety-document correction commit inspected is `2af72063ab028bb078dfcb313f97e7fee31fe7cd`; this checkpoint is a later audit-only documentation update. The branch-search connector returns branch names but not the current branch-head SHA, so no unreturned SHA is inferred as the branch head.
 - `supabase/migration-audit/final-migration-readiness-status.json` still has an audit date of 2026-11-07 and contains stale target-empty statements. It is retained as historical evidence; use this newer checkpoint for the 2026-11-15 observations.
 
 ## GitHub Actions safety review
@@ -42,7 +42,7 @@ Both projects reported `ACTIVE_HEALTHY`:
 - Source `lzciyzibqbujshoizlbu`, PostgreSQL 17.11, region `ap-southeast-1`.
 - Target `cdqmeenrwsbkcpclitgh`, PostgreSQL 17.11, region `ap-northeast-1`.
 
-The source project is currently accessible for read-only SQL. The target project metadata and Edge Function inventory were accessible, but target SQL reads returned a permission error during this run. Therefore target row and Storage counts below are explicitly the **last recorded 2026-11-14 snapshot**, not a fresh 2026-11-15 verification.
+The source project is currently accessible for read-only SQL. The target project metadata and Edge Function inventory were accessible on the first pass, but target SQL reads returned a permission error; a later target metadata recheck also returned `link_id must identify an eligible linked account`. Therefore target row and Storage counts below are explicitly the **last recorded 2026-11-14 snapshot**, not a fresh 2026-11-15 verification.
 
 Source live counts on 2026-11-15:
 - Auth users: 84
