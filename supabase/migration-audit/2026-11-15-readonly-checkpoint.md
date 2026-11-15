@@ -7,7 +7,7 @@ Status: **HOLD — recovery is not complete; no migration or cutover is authoriz
 
 ## Scope and safety
 
-This checkpoint records read-only inspection only. No Supabase database writes, migrations, source locks/freezes, member-data changes, Storage uploads/deletes, Edge Function deployments, secret changes, Cloudflare deployment, production cutover, or UI/feature changes were performed.
+This checkpoint records read-only inspection of live Supabase and production resources. The only repository write in this run is this audit checkpoint document on the isolated audit branch. No Supabase database writes, migrations, source locks/freezes, member-data changes, Storage uploads/deletes, Edge Function deployments, secret changes, Cloudflare deployment, production cutover, or UI/feature changes were performed.
 
 No `EXECUTE_MIGRATION` file was created. The repository content lookup returned 404 for both the repository-root path and `supabase/migration-audit/EXECUTE_MIGRATION`.
 
