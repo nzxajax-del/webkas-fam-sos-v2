@@ -2,6 +2,8 @@
 -- The previous policy exposed every active member's leave reason and status to all members.
 DROP POLICY IF EXISTS member_leave_requests_select_all_active_members
   ON public.member_leave_requests;
+DROP POLICY IF EXISTS member_leave_requests_select_own_or_admin
+  ON public.member_leave_requests;
 
 CREATE POLICY member_leave_requests_select_own_or_admin
   ON public.member_leave_requests
