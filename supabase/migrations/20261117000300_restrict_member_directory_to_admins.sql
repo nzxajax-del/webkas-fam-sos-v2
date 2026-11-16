@@ -1,4 +1,5 @@
--- Member directory includes usernames and phone numbers. Limit it to administrative roles.
+-- Member directory includes usernames and phone numbers. Members see only their own
+-- entry; Developer and Admin Assistant may see the administrative directory.
 CREATE OR REPLACE FUNCTION private.get_public_member_directory()
 RETURNS TABLE(
   id uuid,
@@ -28,16 +29,18 @@ BEGIN
   WHERE p.id = v_user_id;
 
   IF v_caller_status IS DISTINCT FROM 'active'
-     OR v_caller_role NOT IN ('admin', 'admin_assistant') THEN
-    RAISE EXCEPTION 'Daftar anggota hanya dapat diakses Developer atau Admin Assistant aktif'
-      USING errcode = '42501';
+     OR v_caller_role NOT IN ('member', 'admin', 'admin_assistant') THEN
+    RAISE EXCEPTION 'Akun aktif diperlukan' USING errcode = '42501';
   END IF;
 
   RETURN QUERY
   SELECT p.id, p.display_name, p.login_username, p.rank_code, p.profile_photo_path, p.phone_number
   FROM public.member_profiles p
   WHERE p.status = 'active'
-    AND p.role IN ('member', 'admin', 'admin_assistant')
+    AND (
+      p.id = v_user_id
+      OR v_caller_role IN ('admin', 'admin_assistant')
+    )
   ORDER BY
     CASE p.rank_code
       WHEN 'P6' THEN 1
